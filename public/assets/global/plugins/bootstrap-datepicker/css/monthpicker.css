@@ -1,0 +1,206 @@
+.datepicker .quarter-active {
+    background-color: #c5d4ec!important;
+}
+
+.datepicker .thismonth {
+    color: #000;
+    background-color: #ffdb99;
+    border-color: #ffb733;
+}
+
+.datepicker th.datepicker-switch {
+	background: #e1efef;
+}
+
+.monthpicker {
+  position: absolute;
+  background: #fff;
+  padding: 4px;
+  margin-top: 1px;
+  border-radius: 4px;
+  width:278px;
+}
+
+.monthpicker.opensleft:before {
+  position: absolute;
+  top: -7px;
+  right: 9px;
+  display: inline-block;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #ccc;
+  border-left: 7px solid transparent;
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  content: '';
+}
+
+.monthpicker.opensleft:after {
+  position: absolute;
+  top: -6px;
+  right: 10px;
+  display: inline-block;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #fff;
+  border-left: 6px solid transparent;
+  content: '';
+}
+
+.monthpicker.dropdown-menu {
+  max-width: none;
+  z-index: 3000;
+}
+.monthpicker.single .choices, .monthpicker.single .calendar {
+  float: none;
+}
+
+.monthpicker .calendar {
+  display: none;
+  max-width: 270px;
+  margin: 4px;
+}
+
+.monthpicker.show-calendar .calendar {
+  display: block;
+}
+.monthpicker .calendar-table {
+  border: 1px solid #ddd;
+  padding: 4px;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.monthpicker table {
+  width: 100%;
+  margin: 0;
+}
+
+.monthpicker .input-mini {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #555;
+  display: block;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
+  margin: 0 0 5px 0;
+  padding: 0 6px 0 28px;
+  width: 100%!important;
+outline: 0!important;
+}
+
+.monthpicker .input-mini.active {
+  border: 1px solid #357ebd;
+}
+
+.monthpicker .monthpicker_input i {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+}
+
+.monthpicker .monthpicker_input {
+  position: relative;
+}
+
+/* Predefined Choices */
+
+.monthpicker .choices {
+  font-size: 11px;
+  float: none;
+  margin: 4px;
+  text-align: left;
+}
+
+.monthpicker .choices ul {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+}
+.monthpicker .choices ul>li.active {
+	border-radius: 4px;
+}
+
+.monthpicker .choices li {
+  font-size: 13px;
+  background: #f5f5f5;
+  border: 1px solid #f5f5f5;
+  color: #333;
+  padding: 3px 12px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.monthpicker .choices li.active, .monthpicker .choices li:hover {
+    background: #4b8df8!important;
+    border: 1px solid #4b8df8!important;
+    color: #fff;
+}
+
+.monthpicker .choices .btn {
+    margin-top: 10px!important;
+}
+
+/*  Larger Screen Styling */
+@media (min-width: 564px) {
+  .monthpicker{
+    width: auto;
+  }
+
+  .monthpicker .choices ul {
+    width: 160px;
+  }
+  .monthpicker.single .choices ul {
+    width: 100%;
+  }
+  .monthpicker .calendar.left .calendar-table {
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .monthpicker .calendar.right .calendar-table {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .monthpicker .calendar.left {
+    clear: left;
+    margin-right: 0;
+  }
+  .monthpicker.single .calendar.left {
+    clear: none;
+  }
+  .monthpicker.single .choices,
+  .monthpicker.single .calendar{
+    float:left;
+  }
+
+  .monthpicker .calendar.right {
+    margin-left: 0;
+  }
+
+  .monthpicker .left .monthpicker_input {
+    padding-right: 12px;
+  }
+
+  .monthpicker .calendar.left .calendar-table {
+    padding-right: 12px;
+  }
+
+  .monthpicker .choices,
+  .monthpicker .calendar {
+    float: left;
+  }
+}
+
+@media (min-width: 730px) {
+  .monthpicker .choices {
+    width: auto;
+    float: left;
+  }
+  .monthpicker .calendar.left {
+    clear: none;
+  }
+}

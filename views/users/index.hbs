@@ -1,0 +1,326 @@
+<div class="page-content-wrapper" ng-controller="UsersController">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-list"></i>
+                            <span class="caption-subject sbold uppercase"> Danh sách nhân viên</span>
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"> </a>
+                            <a href="javascript:;" ng-click="reset();" class="reload"> </a>
+                            <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                        </div>
+
+                        <div class="actions pull-left">
+                            {{#isActiveFunction Info.Role 'CreateUser'}}
+                            <a href="/admin/users/add" class="btn btn-circle btn-success"><i class="fa fa-plus"></i>
+                                Thêm mới
+                            </a>
+                            {{/isActiveFunction}}
+                            {{#isActiveFunction Info.Role 'CreateUser'}}
+                            <button href="#" class="btn btn-success btn-circle" data-toggle="modal"
+                                data-target="#import_file"><i class="fas fa-file-excel"></i>
+                                <span class="file-title">Import</span>
+                            </button>
+                            {{/isActiveFunction}}
+                            {{#isActiveFunction Info.Role 'CreateUser'}}
+                            <button href="#export" class="btn btn-success btn-circle" data-toggle="modal"><i
+                                    class="fas fa-file-excel"></i>
+                                <span class="file-title">Export</span>
+                            </button>
+                            {{/isActiveFunction}}
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="col-md-12 flex-box">
+                                    <div class="input-group" style="z-index: 1000 !important;">
+                                        <div class="input-group-control input-group-control-update">
+                                            <select style="width: 100px; display: none !important"
+                                                class="bs-select form-control limit-data" ng-model="paginate.Limit"
+                                                ng-change="paginate.Page = 1; list();"
+                                                ng-options="v as v for (k,v) in limitData">
+                                                <option value="" ng-if="hideOptions"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="input-group" style="z-index: 1000 !important;">
+                                        <div class="input-group-control input-group-control-update">
+                                            <select class="bs-select form-control pull-left"
+                                                ng-model="paginate.RoleObjectId" multiple
+                                                ng-change="filter()"
+                                                data-selected-text-format="count > 2" name="branch"
+                                                data-live-search="true" title="Tất cả quyền" style="display:none !important;"
+                                                data-size="4" ng-options="role._id as role.RoleName for role in roles">
+                                                <option value="" ng-if="hideOptions"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="input-group" style="max-width: 400px;">
+                                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                            <div class="btn-group mr-2" role="group">
+                                                <button type="button" class="btn btn-status status-Active"
+                                                    ng-click="paginate.Page=1;filterStatus(200)">
+                                                    Hoạt động (<span
+                                                        ng-bind="CountActive ? CountActive : 0"></span>)
+                                                </button>
+                                            </div>
+                                            <div class="btn-group mr-2" role="group">
+                                                <button type="button" class="btn btn-status status-New"
+                                                    ng-click="paginate.Page=1;filterStatus(100)">
+                                                    Mới (<span
+                                                        ng-bind="CountWaitingAccepted ? CountWaitingAccepted : 0"></span>)
+                                                </button>
+                                            </div>
+                                            <div class="btn-group mr-2" role="group">
+                                                <button type="button" ng-click="paginate.Page=1;filterStatus(400)"
+                                                    class="btn btn-status status-Inactive">
+                                                    Ngừng (<span
+                                                        ng-bind="CountInactive ? CountInactive : 0"></span>)
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 box-search-wrapper">
+                                <div class="col-md-12">
+                                    <div class="form-search pull-right">
+                                        <div class="input-icon right">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" ng-model="paginate.Search" name="bar_code"
+                                                class="form-control" ng-change="paginate.Page = 1; list()"
+                                                placeholder="Tìm kiếm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <table class="table" id="list_users">
+                                <thead>
+                                    <tr class="">
+                                        <th class="rowno"> # </th>
+                                        <th class="title" ng-click="sort('Info.FullName')">
+                                            Tên nhân viên</th>
+                                        <th class="title" ng-click="sort('UserName')">
+                                            Tên đăng nhập </th>
+                                        <th class="title" ng-click="sort('Info.Mobile')">
+                                            Số điện thoai </th>
+                                        <th class="title" ng-click="sort('Info.Email')">
+                                            Email </th>
+                                        <th class="title"> Quyền </th>
+                                        <th class="_status th-size-update">
+                                            Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody ng-repeat="user in users">
+                                    <tr class='click-row'>
+                                        <td class="rowno" ng-bind="$index + count"> </td>
+                                        <td class="title link" ng-click="viewInfo(user._id)"
+                                            ng-bind="user.Info.FullName" title="Xem chi tiết"></td>
+                                        <td class="title" ng-bind="user.UserName"></td>
+                                        <td class="title" ng-bind="user.Mobile">
+                                        </td>
+                                        <td class="title" ng-bind="user.Email">
+                                        </td>
+                                        <td class="title" ng-bind="user.RoleObjectId.RoleName"></td>
+                                        <td class="status th-size-update _status" id="status_table">
+                                            <div class="btn-group status dropup th-size-update" data-id="3">
+                                                <label class="btn btn-sm btn-status"
+                                                    ng-class="user.Status | filterStatusToClass"
+                                                    ng-bind="user.Status | filterStatusToText">
+                                                </label>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-info dropdown-toggle btn-update"
+                                                    data-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fa fa-angle-up"></i>
+                                                </button>
+                                                <ul class="dropdown-menu status pull-right" role="menu">
+                                                    <li class="status-Remove">
+                                                        <a href="javascript:;" data-value="Remove"
+                                                            ng-click="delete(user._id, user.Info.FullName)">
+                                                            Xóa </a>
+                                                    </li>
+                                                    <li class="status-Active">
+                                                        <a href="javascript:;" data-value="Active"
+                                                            ng-click="updateStatus(200, user._id, $index)">Hoạt
+                                                            động</a>
+                                                    </li>
+                                                    <li class="status-Inactive">
+                                                        <a href="javascript:;" data-value="Inactive"
+                                                            ng-click="updateStatus(400, user._id, $index)">Ngừng
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="boxs-footer dvd dvd-top">
+                            <div class="row" ng-if="pagination.show">
+                                <div class="col-sm-3 text-left">
+                                    <small class="text-muted"><span
+                                            ng-bind="'Hiển thị ' + pagination.skip + '-' + pagination.toSkip + '/' + pagination.total + ' mục'"></span>
+                                    </small>
+                                </div>
+                                <div class="col-sm-2 hidden-xs">
+                                </div>
+                                <div ng-if="pagination.show" class="col-sm-7 text-right">
+                                    <ul class="pagination m-0">
+                                        <li>
+                                            <a ng-click="firstPage()">
+                                                <i class="fas fa-angle-double-left"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="prevPage()">
+                                                <i class="fa fa-chevron-left"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        <li ng-repeat="page in pagination.pages" style="cursor: pointer"
+                                            ng-class="{active:pagination.page === page}">
+                                            <a ng-click="setPage(page)" ng-bind="page"></a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="nextPage()">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="endPage()">
+                                                <i class="fas fa-angle-double-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Export -->
+        <div class="modal fade in" id="export" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title"> <i class="fas fa-filter"></i> Lọc điều kiện xuất dữ liệu </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Chọn chi nhánh</label>
+                                        <div class="col-md-9">
+                                            <select class="bs-select form-control pull-left"
+                                                ng-model="export.Branches" multiple
+                                                data-selected-text-format="count > 2" name="branch"
+                                                data-live-search="true" title="Tất cả chi nhánh" style="display:none !important;"
+                                                data-size="4">
+                                                <option ng-model="a" ng-repeat="branch in branches"
+                                                    ng-value="branch._id" ng-bind="branch.BranchName"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Chọn quyền</label>
+                                        <div class="col-md-9">
+                                            <select class="bs-select form-control pull-left"
+                                                ng-model="export.Roles" multiple
+                                                data-selected-text-format="count > 2" name="branch"
+                                                data-live-search="true" title="Tất cả quyền" style="display:none !important;"
+                                                data-size="4">
+                                                <option ng-model="a" ng-repeat="role in roles"
+                                                    ng-value="role._id" ng-bind="role.Info[0].Name"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <!--end form -->
+                    </div>
+                    <div class="modal-footer">
+                        <a ng-click="exportFile()" class="btn green">Tải xuống</a>
+                        <button type="button" id="cancelBtn" data-dismiss="modal" class="btn btn-ok default"> Huỷ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END Export -->
+        <!-- Import -->
+        <div class="modal  fade in" id="import_file" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content ">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title"><i class="fab fa-product-hunt"></i> Chọn tập tin danh sách nhân viên
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" name="form_import" ng-validate="validator">
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-8">
+                                        <div class="actions pull-right">
+                                            <a href="/admin/users/downloadSampleExcel" class="btn green">
+                                                <i class="fa fa-download"></i>
+                                                Tải file mẫu
+                                            </a>
+                                            <button href="javascript:;" class="btn btn-success btn-file-upload"><i
+                                                    class="fas fa-file-excel"></i>
+                                                <span class="file-title">Import</span>
+                                                <span>
+                                                    <input type="file" ng-model="data" id="input-file-upload"
+                                                        class="input-file-upload" data-width="180" data-height="180"
+                                                        name="file" multiple
+                                                        accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                                        file-upload="files" title="Chọn file excel để import" />
+                                                </span>
+                                            </button>
+                                            <button ng-if="files.name" type="button" id="selectBtn" data-dismiss=""
+                                                class="btn green" ng-click="importFile()">
+                                                Thêm mới </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group" ng-if="files.name">
+                                    <label for="" class="col-md-3 control-label">Tên file: </label>
+                                    <label for="" class="text-left control-label col-md-8">
+                                        <i class="icon-check"></i>
+                                        Tập tin \{{files.name}} đã được tải lên
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <div class="loading-wrapper" id="loading_add">
+                                        <div>
+                                            <img src="/images/pictures/loading.gif" alt="loading">
+                                        </div>
+                                        <div class="title">
+                                            Đang thêm
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

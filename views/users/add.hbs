@@ -1,0 +1,290 @@
+<div class="page-content-wrapper" ng-controller="UsersAddController" 
+		data-ng-init="RoleCode = '{{Info.Role}}'; 
+		RoleObjectId = '{{Info.RoleObjectId}}'; 
+		UserObjectId = '{{Info.UserObjectId}}'; 
+		init();">
+	<!-- BEGIN CONTENT BODY -->
+	<div class="page-content">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="portlet light">
+					<div class="portlet-title">
+						<div class="caption">
+							<i class="flaticon-pin-staff portlet-title-icon"></i>
+							<span class="caption-subject bold uppercase"> Thông tin nhân viên </span>
+						</div>
+						<div class="actions">
+							<a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;"> </a>
+						</div>
+					</div>
+					<div class="portlet-body">
+
+						<div class="tabbable-custom ">
+							<ul class="nav nav-tabs ">
+								<li class="active">
+									<a href="#place_1" data-toggle="tab"> Thông tin </a>
+								</li>
+							</ul>
+							<div class="tab-content">
+								<div class="tab-pane active" id="place_1">
+									<div class="portlet light">
+										<div class="porlet-body form">
+											<form role="form" class="form-horizontal" name="f_CreateUser"
+												autocomplete="on" enctype="multipart/form-data" ng-validate="validator"
+												autocomplete="off">
+												<div class="form-body">
+													<div class="row mb-10">
+														<div class="col-md-12">
+															<div class="col-md-3">
+																<div class="fileinput fileinput-new"
+																	data-provides="fileinput">
+																	<div
+																		class="fileinput-new thumbnail profile-userpic size-img-profile">
+																		<img src="/images/avatar.jpg"
+																			alt="" />
+																	</div>
+																	<div
+																		class="fileinput-preview fileinput-exists thumbnail profile-userpic size-img-profile">
+																	</div>
+																	<div>
+																		<span class="btn default btn-file">
+																			<span class="fileinput-new"> Chọn ảnh
+																			</span>
+																			<span class="fileinput-exists"> Sửa ảnh
+																			</span>
+																			<input type="file" file-model
+																				ng-model="image" name="..."> </span>
+																		<a href="javascript:;"
+																			class="btn red fileinput-exists"
+																			data-dismiss="fileinput"> Xoá </a>
+																	</div>
+																</div>
+															</div>
+															<div class="col-md-9">
+																<div class="row">
+																	<div class="col-md-6">
+																		<div class="form-group">
+																			<label
+																				class="col-md-12 control-label vertical text-left">ID/Tên
+																				đăng nhâp<span
+																					class="required">(*)</span>:</label>
+																			<div class="col-md-12">
+																				<div class="input-group">
+																					<input type="text"
+																						class="form-control"
+																						ng-model="formCreate.UserName"
+																						name="username" required
+																						autocomplete="off">
+																					<div class="input-group-btn"
+																						id="member-status">
+																						<label
+																							class="btn btn-status status-\{{filterStatus(formCreate.Status).class}}"
+																							ng-bind="filterStatus(formCreate.Status).text">
+																						</label>
+																						<button type="button"
+																							class="btn green dropdown-toggle"
+																							data-toggle="dropdown"
+																							tabindex="-1">
+																							<i
+																								class="fa fa-angle-down"></i>
+																						</button>
+																						<ul class="dropdown-menu status pull-right"
+																							role="menu">
+																							<li class="status-New"><a
+																									href="javascript:;"
+																									data-value="New"
+																									ng-click="selectStatus(100)">
+																									Mới </a></li>
+																							<li class="status-Active"><a
+																									href="javascript:;"
+																									data-value="Active"
+																									ng-click="selectStatus(200)">
+																									Hoạt động </a></li>
+																						</ul>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<div class="form-group">
+																			<label
+																				class="col-md-12 control-label vertical text-left">Mật
+																				khẩu<span
+																					class="required">(*)</span>:</label>
+																			<div class="col-md-12">
+																				<input type="password" required
+																					class="form-control" value=""
+																					autocomplete="off"
+																					ng-model="formCreate.Password"
+																					name="password" placeholder="">
+																			</div>
+																		</div>
+																		<div class="form-group">
+																			<label
+																				class="col-md-12 control-label vertical text-left">Họ tên<span
+																					class="required">(*)</span>:</label>
+																			<div class="col-md-12">
+																				<input type="text" class="form-control"
+																					ng-model="formCreate.Info.FullName" required
+																					name="name" placeholder="">
+																			</div>
+																		</div>
+																	</div>
+																	<div class="col-md-6">
+																		<div class="form-group">
+																			<label class="col-md-12 control-label text-left">Giới tính<span
+																					class="required">(*)</span>:</label>
+																			<div class="col-md-12">
+																				<select class="selectpicker form-control"
+																					name="sex" ng-model="formCreate.Sex" required data-live-search="true" 
+																					ng-options="sex.key as sex.name for sex in Sex"
+																					data-title="Chọn giới tính">
+																					<option value="" ng-if="hideOption"></option>
+																				</select>
+																			</div>
+																		</div>
+																		<div class="form-group">
+																			<label
+																				class="col-md-12 control-label vertical text-left">Ngày sinh:</label>
+																			<div class="col-md-12">
+																				<div class="input-group date date-picker"
+																					data-date-format="dd-mm-yyyy"
+																					data-date-viewmode="years"
+																					data-date-today-highlight="true">
+																					<input type="text"
+																						class="form-control dashed-border"
+																						id="join_date"
+																						ng-model="formCreate.DateOfBirth"
+																						name="join_date"
+																						placeholder="Ngày sinh">
+																					<div class="form-control-focus">
+																					</div>
+																					<span class="input-group-addon"><i
+																							class="far fa-calendar-alt font-blue"></i></span>
+																				</div>
+																			</div>
+																		</div>
+																		<div class="form-group">
+																			<label
+																				class="col-md-12 control-label vertical text-left">Ngày gia nhập:</label>
+																			<div class="col-md-12">
+																				<div class="input-group date date-picker"
+																					data-date-format="dd-mm-yyyy"
+																					data-date-viewmode="years"
+																					data-date-today-highlight="true">
+																					<input type="text"
+																						class="form-control dashed-border"
+																						id="join_date"
+																						ng-model="formCreate.JoinDate"
+																						name="join_date"
+																						placeholder="Ngày gia nhập">
+																					<div class="form-control-focus">
+																					</div>
+																					<span class="input-group-addon"><i
+																							class="far fa-calendar-alt font-blue"></i></span>
+																				</div>
+																			</div>
+																		</div>
+																		
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+													<!--top row -->
+
+													<div class="row">
+														<div class="col-md-12">
+															<!-- left form -->
+															<div class="col-md-6">
+																<div class="note note-info note-title">
+																	<div class="caption">
+																		<span class="caption-subject">Thông tin quản
+																			lý</span>
+																	</div>
+																</div>
+																<div class="form-group">
+																	<label class="col-md-3 control-label text-left">Vai
+																		trò: </label>
+																	<div class="col-md-9">
+																		<select class="bs-select form-control"
+																			name="role" ng-model="formCreate.RoleObjectId"	required
+																			ng-options="role._id as role.RoleName for role in roles"
+																			data-live-search="true" data-size="5"
+																			data-title="Chọn vai trò">
+																			<option value="" ng-if="hideOption">
+																			</option>
+																		</select>
+																	</div>
+																</div>
+															</div>
+
+															<!-- right form -->
+															<div class="col-md-6">
+																<div class="note note-info note-title">
+																	<div class="caption">
+																		<span class="caption-subject">Thông tin liên hệ</span>
+																	</div>
+																</div>
+																<div class="form-group">
+																	<label
+																		class="col-md-12 control-label vertical text-left">Số
+																		điện thoại:</label>
+																	<div class="col-md-12">
+																		<input type="text" class="form-control"
+																			id="mobile"
+																			ng-model="formCreate.Mobile"
+																			name="mobile" placeholder="">
+																	</div>
+																</div>
+																<div class="form-group">
+																	<label
+																		class="col-md-12 control-label vertical text-left">Email:</label>
+																	<div class="col-md-12">
+																		<input type="email" class="form-control"
+																			ng-model="formCreate.Email"
+																			name="email" placeholder="">
+																	</div>
+																</div>
+																<div class="form-group">
+																	<label
+																		class="col-md-12 control-label vertical text-left">Số
+																		CMND/Căn cước:</label>
+																	<div class="col-md-12">
+																		<input type="text" class="form-control"
+																			ng-model="formCreate.Info.Passport"
+																			name="passport" placeholder="">
+																	</div>
+																</div>
+																<div class="form-group">
+																	<label
+																		class="col-md-12 control-label vertical text-left">Địa
+																		chỉ:</label>
+																	<div class="col-md-12">
+																		<input type="text" class="form-control"
+																			ng-model="formCreate.Info.Address"
+																			name="address" placeholder="">
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!--form body -->
+												<div class="form-actions right">
+													<button type="submit" class="btn green"
+														ng-click="create(f_CreateUser)">Lưu</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+<!-- END CONTENT -->

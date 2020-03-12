@@ -1,0 +1,926 @@
+<div class="page-content-wrapper">
+    <!-- BEGIN CONTENT -->
+    <div class="page-content">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="icon-puzzle"></i>
+                            <span class="caption-subject bold uppercase"> Cấu hình tỉnh/thành phố, quận/huyện, phường/xã </span>
+                            <span class="caption-helper"></span>
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"> </a>
+                            <a href="javascript:;" class="reload" ng-click="reload()">
+                            </a>
+                            <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-sm-6 col-s-6">
+                                <div class="portlet light" id="place-list">
+                                    <div class="portlet-title">
+                                        <div class="caption font-blue-oleo">
+                                            <i class="fas fa-list"></i>Danh sách tỉnh/thành phố
+                                        </div>
+                                        <div class="actions pull-left">
+                                            <a class="btn btn-circle btn-success" data-toggle="modal"
+                                                href="#create_province">
+                                                <i class="fa fa-plus"></i> Thêm mới
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="form-group row">
+                                            <div class="col-md-7">
+                                                <div class="col-md-12 flex-box">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5"
+                                                style="padding-right:0; padding-left: 0; margin-top: 5px;">
+                                                <div class="col-md-12">
+                                                    <div class="form-search pull-right">
+                                                        <div class="input-icon right">
+                                                            <i class="fas fa-search"></i>
+                                                            <input type="text" ng-model="paginateProvinces.Search"
+                                                                name="bar_code" class="form-control"
+                                                                ng-change="paginateProvinces.Page = 1; listProvinces()"
+                                                                placeholder="Tìm kiếm">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="table-scrollable wrapper-table-update">
+                                            <table class="table table-hover table-light">
+                                                <thead>
+                                                    <tr class="">
+                                                        <th class="rowno"> STT </th>
+                                                        <th class="title"> Mã tỉnh/thành phố</th>
+                                                        <th class="title"> Tên tỉnh/thành phố </th>
+                                                        <th class="title"> Số quận huyện </th>
+                                                        <th class="title"> Số phường/xã </th>
+                                                        <th class="th-size-update"> Trạng thái
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr data-code="SM" ng-repeat="province in provinces"
+                                                        id="tbody-\{{$index}}"
+                                                        data-ng-init="province.index = $index + countProvinces"
+                                                        ng-class="{selected: province.index === selectedRow}">
+                                                        <td class="click-cell rowno" style="width: 5%"
+                                                            ng-bind="$index + countProvinces"></td>
+                                                        <td class="click-cell code" style="width: 25%">
+                                                            <span class="text-primary" data-toggle="modal"
+                                                                ng-bind="province.ProvinceCode"
+                                                                ng-click="infoProvince(province._id); showListDistrictByProvince(province._id, province.index)"
+                                                                data-target="#update_province">
+                                                            </span>
+                                                        </td>
+                                                        <td class="click-cell title" style="width: 35%">
+                                                            <span class="text-primary" data-toggle="modal"
+                                                                ng-bind="province.ProvinceName"
+                                                                ng-click="infoProvince(province._id); showListDistrictByProvince(province._id, province.index)"
+                                                                href="#update_province"> </span>
+                                                        </td>
+                                                        <td class="click-cell quantity" style="width: 20%">
+                                                            <button ng-bind="province.TotalDistrict" type="button"
+                                                                ng-click="showListDistrictByProvince(province._id, province.index)"
+                                                                class="btn btn-sm btn-circle green btn-outline btn-place"></button>
+                                                        </td>
+                                                        <td class="click-cell quantity" style="width: 20%">
+                                                            <button ng-bind="province.Districts | filterSumWard" type="button"
+                                                                ng-click="showListDistrictByProvince(province._id, province.index)"
+                                                                class="btn btn-sm btn-circle green btn-outline btn-place"></button>
+                                                        </td>
+                                                        <td class="status th-size-update">
+                                                            <div class="btn-group status dropup" data-id="3">
+                                                                <label class="btn btn-sm btn-status"
+                                                                    ng-class="province.Status | filterStatusToClass"
+                                                                    ng-bind="province.Status | filterStatusToText">
+                                                                </label>
+                                                                <button type="button"
+                                                                    class="btn btn-sm btn-info dropdown-toggle"
+                                                                    data-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <ul class="dropdown-menu status pull-right" role="menu">
+                                                                    <li class="status-Remove"><a href="javascript:;"
+                                                                            data-value="Remove"
+                                                                            ng-click="deleteProvince(province._id, province.ProvinceName)">
+                                                                            {{Translate.Distributor.Distributors.W064}}
+                                                                        </a></li>
+                                                                    <li class="status-Inactive"><a href="javascript:;"
+                                                                            data-value="Inactive"
+                                                                            ng-click="updateStatusProvince(400, province._id, province.index )">
+                                                                            {{Translate.Distributor.Distributors.W065}}
+                                                                        </a></li>
+                                                                    <li class="status-Active"><a href="javascript:;"
+                                                                            data-value="Active"
+                                                                            ng-click="updateStatusProvince( 200, province._id, province.index)">
+                                                                            {{Translate.Distributor.Distributors.W066}}
+                                                                        </a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="boxs-footer dvd dvd-top" ng-style="myStyle">
+                                            <div class="row" ng-if="paginationProvinces.show">
+                                                <div class="col-sm-4 text-left">
+                                                    <small class="text-muted">
+                                                        {{Translate.Company.Province.W967}} <span
+                                                            ng-bind="paginationProvinces.skip + '-' + paginationProvinces.toSkip + '/' + paginationProvinces.total"></span>{{Translate.Company.Province.W968}}
+                                                    </small>
+                                                </div>
+                                                <div class="col-sm-8 text-right">
+                                                    <ul class="pagination m-0">
+                                                        <li>
+                                                            <a ng-click="firstPageProvinces()">
+                                                                <i class="fas fa-angle-double-left"></i>
+                                                                <div class="ripple-container"></div>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a ng-click="prevPageProvinces()">
+                                                                <i class="fa fa-chevron-left"></i>
+                                                                <div class="ripple-container"></div>
+                                                            </a>
+                                                        </li>
+                                                        <li ng-repeat="page in paginationProvinces.pages"
+                                                            style="cursor: pointer"
+                                                            ng-class="{active:paginationProvinces.page === page}">
+                                                            <a ng-click="setPageProvinces(page)" ng-bind="page"></a>
+                                                        </li>
+                                                        <li>
+                                                            <a ng-click="nextPageProvinces()">
+                                                                <i class="fa fa-chevron-right"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a ng-click="endPageProvinces()">
+                                                                <i class="fas fa-angle-double-right"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-s-6">
+                                <div class="portlet light" id="place-list">
+                                    <div class="portlet-title">
+                                        <div class="caption font-blue-oleo">
+                                            <i class="fas fa-list"></i>Danh sách quận/huyện
+                                        </div>
+                                        <div class="actions pull-left">
+                                            <a class="btn btn-circle btn-success" ng-click="changeCss();"
+                                                data-toggle="modal" href="#create_district">
+                                                <i class="fa fa-plus"></i> Thêm mới
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="form-group row">
+                                            <div class="col-md-7">
+                                                <div class="col-md-12 flex-box">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5"
+                                                style="padding-right:0; padding-left: 0; margin-top: 5px;">
+                                                <div class="col-md-12">
+                                                    <div class="form-search pull-right">
+                                                        <div class="input-icon right">
+                                                            <i class="fas fa-search"></i>
+                                                            <input type="text" ng-model="paginateDistricts.Search"
+                                                                name="bar_code" class="form-control"
+                                                                ng-change="paginateDistricts.Page = 1; searchDistrict()"
+                                                                placeholder="Tìm kiếm">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="table-scrollable">
+                                            <table class="table table-hover table-light">
+                                                <thead>
+                                                    <tr class="">
+                                                        <th class="rowno"> STT </th>
+                                                        <th class="title"> Mã quận/huyện </th>
+                                                        <th class="title"> Tên quận/huyện </th>
+                                                        <th class="title"> Tên tỉnh/thành phố </th>
+                                                        <th class="title"> Số phường/xã </th>
+                                                        <th class="th-size-update"> Trạng thái
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="district in districts" id="tbody-\{{$index}}"
+                                                        data-ng-init="district.index = $index + countDistricts"
+                                                        ng-class="{selected: district.index === selectedRowDistrict}">
+                                                        <td class="rowno" ng-bind="$index + countDistricts"> </td>
+
+                                                        <td class="click-cell">
+                                                            <span class="text-primary" data-toggle="modal"
+                                                                ng-bind="district.DistrictCode"
+                                                                ng-click="infoDistrict(district._id, district.index)"
+                                                                data-target="#update_district">
+                                                            </span>
+                                                        </td>
+                                                        <td class="click-cell">
+                                                            <span class="text-primary" data-toggle="modal"
+                                                                ng-bind="district.DistrictName"
+                                                                ng-click="infoDistrict(district._id, district.index)"
+                                                                data-target="#update_district">
+                                                            </span>
+                                                        </td>
+                                                        <td ng-bind="district.ProvinceObjectId.ProvinceName"></td>
+                                                        <td class="click-cell quantity" style="width: 20%">
+                                                            <button ng-bind="district.TotalWard" type="button"
+                                                                class="btn btn-sm btn-circle green btn-outline btn-place"
+                                                                ng-click="showWardsByDistrict(district._id, district.index)"></button>
+                                                        </td>
+                                                        <td class="status th-size-update">
+                                                            <div class="btn-group status dropup" data-id="3">
+                                                                <label class="btn btn-sm btn-status"
+                                                                    ng-class="district.Status | filterStatusToClass"
+                                                                    ng-bind="district.Status | filterStatusToText">
+                                                                </label>
+                                                                <button type="button"
+                                                                    class="btn btn-sm btn-info dropdown-toggle"
+                                                                    data-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <ul class="dropdown-menu status pull-right" role="menu">
+                                                                    <li class="status-Remove"><a href="javascript:;"
+                                                                            data-value="Remove"
+                                                                            ng-click="deleteDistrict(district._id, district.Name)">
+                                                                            {{Translate.Distributor.Distributors.W064}}
+                                                                        </a></li>
+                                                                    <li class="status-Inactive"><a href="javascript:;"
+                                                                            data-value="Inactive"
+                                                                            ng-click="updateStatusDistrict(400, district._id, $index )">
+                                                                            {{Translate.Distributor.Distributors.W065}}
+                                                                        </a></li>
+                                                                    <li class="status-Active"><a href="javascript:;"
+                                                                            data-value="Active"
+                                                                            ng-click="updateStatusDistrict( 200, district._id, $index)">
+                                                                            {{Translate.Distributor.Distributors.W066}}</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="boxs-footer dvd dvd-top" ng-style="myStyle">
+                                            <div class="row" ng-if="paginationDistricts.show">
+                                                <div class="col-sm-4 text-left">
+                                                    <small class="text-muted">
+                                                        Hiển thị <span
+                                                            ng-bind="paginationDistricts.skip + '-' + paginationDistricts.toSkip + '/' + paginationDistricts.total"></span>mục
+                                                    </small>
+                                                </div>
+                                                <div class="col-sm-8 text-right">
+                                                    <ul class="pagination m-0">
+                                                        <li>
+                                                            <a ng-click="firstPageDistricts()">
+                                                                <i class="fas fa-angle-double-left"></i>
+                                                                <div class="ripple-container"></div>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a ng-click="prevPageDistricts()">
+                                                                <i class="fa fa-chevron-left"></i>
+                                                                <div class="ripple-container"></div>
+                                                            </a>
+                                                        </li>
+                                                        <li ng-repeat="page in paginationDistricts.pages"
+                                                            style="cursor: pointer"
+                                                            ng-class="{active:paginationDistricts.page === page}">
+                                                            <a ng-click="setPageDistricts(page)" ng-bind="page"></a>
+                                                        </li>
+                                                        <li>
+                                                            <a ng-click="nextPageDistricts()">
+                                                                <i class="fa fa-chevron-right"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a ng-click="endPageDistricts()">
+                                                                <i class="fas fa-angle-double-right"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="portlet light" id="place-list">
+                                    <div class="portlet-title">
+                                        <div class="caption font-blue-oleo">
+                                            <i class="fas fa-list"></i>Danh sách phường xã
+                                        </div>
+                                        <div class="actions pull-left">
+                                            <a class="btn btn-circle btn-success" ng-click="changeCss();"
+                                                data-toggle="modal" href="#create_ward">
+                                                <i class="fa fa-plus"></i> Thêm mới
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="form-group row">
+                                            <div class="col-md-7">
+                                                <div class="col-md-12 flex-box">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5"
+                                                style="padding-right:0; padding-left: 0; margin-top: 5px;">
+                                                <div class="col-md-12">
+                                                    <div class="form-search pull-right">
+                                                        <div class="input-icon right">
+                                                            <i class="fas fa-search"></i>
+                                                            <input type="text" ng-model="paginateWard.Search"
+                                                                name="bar_code" class="form-control"
+                                                                ng-change="searchWard()"
+                                                                placeholder="Tìm kiếm">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="table-scrollable wrapper-table-update">
+                                            <table class="table table-hover table-light">
+                                                <thead>
+                                                    <tr class="">
+                                                        <th class="rowno"> STT </th>
+                                                        <th class="title"> Mã phường xã </th>
+                                                        <th class="title"> Tên phường xã </th>
+                                                        <th class="title"> Quận/Huyện </th>
+                                                        <th class="title"> Tỉnh/TP</th>
+                                                        <th class="th-size-update"> Trạng thái </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="ward in wards" id="tbody-\{{$index}}"
+                                                        data-ng-init="ward.index = $index + countWards"
+                                                        ng-class="{selected: ward.index === selectedRowWard}">
+                                                        <td class="rowno" ng-bind="$index + countDistricts"> </td>
+
+                                                        <td class="click-cell">
+                                                            <span class="text-primary" data-toggle="modal"
+                                                                ng-bind="ward.WardCode"
+                                                                ng-click="infoWard(ward, ward.index)"
+                                                                data-target="#update_ward">
+                                                            </span>
+                                                        </td>
+                                                        <td class="click-cell">
+                                                            <span class="text-primary" data-toggle="modal"
+                                                                ng-bind="ward.WardName"
+                                                                ng-click="infoWard(ward, ward.index)"
+                                                                data-target="#update_ward">
+                                                            </span>
+                                                        </td>
+                                                        <td ng-bind="ward.DistrictObjectId.DistrictName"></td>
+                                                        <td ng-bind="ward.DistrictObjectId.ProvinceObjectId.ProvinceName"></td>
+                                                        <td class="status th-size-update">
+                                                            <div class="btn-group status dropup" data-id="3">
+                                                                <label class="btn btn-sm btn-status"
+                                                                    ng-class="ward.Status | filterStatusToClass"
+                                                                    ng-bind="ward.Status | filterStatusToText">
+                                                                </label>
+                                                                <button type="button"
+                                                                    class="btn btn-sm btn-info dropdown-toggle"
+                                                                    data-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="fa fa-angle-up"></i>
+                                                                </button>
+                                                                <ul class="dropdown-menu status pull-right" role="menu">
+                                                                    <li class="status-Remove"><a href="javascript:;"
+                                                                            data-value="Remove"
+                                                                            ng-click="deleteWard(ward._id)">
+                                                                            {{Translate.Distributor.Distributors.W064}}
+                                                                        </a></li>
+                                                                    <li class="status-Inactive"><a href="javascript:;"
+                                                                            data-value="Inactive"
+                                                                            ng-click="updateStatusWard(400, ward._id, $index )">
+                                                                            {{Translate.Distributor.Distributors.W065}}
+                                                                        </a></li>
+                                                                    <li class="status-Active"><a href="javascript:;"
+                                                                            data-value="Active"
+                                                                            ng-click="updateStatusWard( 200, ward._id, $index)">
+                                                                            {{Translate.Distributor.Distributors.W066}}</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="boxs-footer dvd dvd-top" ng-style="myStyle">
+                                            <div class="row" ng-if="paginationWard.show">
+                                                <div class="col-sm-4 text-left">
+                                                    <small class="text-muted">
+                                                        {{Translate.Company.Province.W967}} <span
+                                                            ng-bind="paginationWard.skip + '-' + paginationWard.toSkip + '/' + paginationWard.total"></span>{{Translate.Company.Province.W968}}
+                                                    </small>
+                                                </div>
+                                                <div class="col-sm-8 text-right">
+                                                    <ul class="pagination m-0">
+                                                        <li>
+                                                            <a ng-click="firstPageWard()">
+                                                                <i class="fas fa-angle-double-left"></i>
+                                                                <div class="ripple-container"></div>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a ng-click="prevPageWard()">
+                                                                <i class="fa fa-chevron-left"></i>
+                                                                <div class="ripple-container"></div>
+                                                            </a>
+                                                        </li>
+                                                        <li ng-repeat="page in paginationWard.pages"
+                                                            style="cursor: pointer"
+                                                            ng-class="{active:paginationWard.page === page}">
+                                                            <a ng-click="setPageWard(page)" ng-bind="page"></a>
+                                                        </li>
+                                                        <li>
+                                                            <a ng-click="nextPageWard()">
+                                                                <i class="fa fa-chevron-right"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a ng-click="endPageWard()">
+                                                                <i class="fas fa-angle-double-right"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- END PAGE CONTENT -->
+
+    <!-- modal creare province -->
+    <div id="create_province" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="icon-puzzle"></i> {{Translate.Company.Province.W969}} </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" name="formCreateProvince" ng-validate="validator" role="form">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}">\{{alertMsg}}</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-left">{{Translate.Company.Province.W970}}<span
+                                        class="required">(*)</span></label>
+                                <div class="col-md-9">
+                                    <input type="text" ng-model="createProvince.ProvinceCode" name="ProvinceCode"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-left">{{Translate.Company.Province.W971}}<span
+                                        class="required">(*)</span></label>
+                                <div class="col-md-9">
+                                    <input type="text" ng-model="createProvince.ProvinceName" name="ProvinceName"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="provinceCreate(formCreateProvince)">
+                        {{Translate.Company.Province.W972}}</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        {{Translate.Company.Province.W973}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end create province-->
+    <!-- modal update province -->
+    <div id="update_province" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="icon-puzzle"></i> {{Translate.Company.Province.W969}} </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" name="formUpdateProvince" ng-validate="validator" role="form">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}">\{{alertMsg}}</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-left">{{Translate.Company.Province.W970}}<span
+                                        class="required">(*)</span> </label>
+                                <div class="col-md-9">
+                                    <input type="text" ng-model="updateProvince.ProvinceCode" name="ProvinceCode"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-left">{{Translate.Company.Province.W971}}<span
+                                        class="required">(*)</span> </label>
+                                <div class="col-md-9">
+                                    <input type="text" ng-model="updateProvince.ProvinceName" name="ProvinceName"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="provinceUpdate(formUpdateProvince)">
+                        {{Translate.Company.Province.W972}}</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        {{Translate.Company.Province.W973}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end update Province-->
+    <!-- modal creare district -->
+    <div id="create_district" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="icon-puzzle"></i> {{Translate.Company.District.W974}}</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" name="formCreateDistrict" ng-validate="validator" role="form">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}">\{{alertMsg}}</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">{{Translate.Company.District.W975}}<span
+                                        class="required">(*)</span> </label>
+                                <div class="col-md-8">
+                                    <select class="selectpicker form-control" ng-model="createDistrict.ProvinceObjectId"
+                                        name="Province" data-title="Chọn tỉnh/thành phố" required
+                                        ng-options="province._id as province.ProvinceName for province in provincesArray"
+                                        data-live-search="true" data-size="5">
+                                        <option value="" ng-if="hideOptions">
+                                            Select...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">{{Translate.Company.District.W976}}<span
+                                        class="required">(*)</span></label>
+                                <div class="col-md-8">
+                                    <input type="text" ng-model="createDistrict.DistrictCode" name="DistrictCode"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">{{Translate.Company.District.W977}}<span
+                                        class="required">(*)</span></label>
+                                <div class="col-md-8">
+                                    <input type="text" ng-model="createDistrict.DistrictName" name="DistrictName"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="districtCreate(formCreateDistrict)">
+                        {{Translate.Company.District.W978}}</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        {{Translate.Company.District.W979}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end create district-->
+    <!-- modal update district -->
+    <div id="update_district" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="icon-puzzle"></i> {{Translate.Company.District.W974}} </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" name="formUpdateDistrict" ng-validate="validator" role="form">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}">\{{alertMsg}}</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">{{Translate.Company.District.W975}}<span
+                                        class="required">(*)</span> </label>
+                                <div class="col-md-8">
+                                    <select class="selectpicker form-control" ng-model="updateDistrict.ProvinceObjectId"
+                                        name="Province" data-title="Select..." required
+                                        ng-options="province._id as province.ProvinceName for province in provincesArray"
+                                        data-live-search="true" data-size="5">
+                                        <option value="" ng-if="hideOptions">
+                                            Select...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    class="col-md-4 control-label text-left">{{Translate.Company.District.W976}}</label>
+                                <div class="col-md-8">
+                                    <input type="text" ng-model="updateDistrict.DistrictCode" name="DistrictCode"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">{{Translate.Company.District.W977}}<span
+                                        class="required">(*)</span></label>
+                                <div class="col-md-8">
+                                    <input type="text" ng-model="updateDistrict.DistrictName" name="DistrictName"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="districtUpdate(formUpdateDistrict)">
+                        {{Translate.Company.District.W978}}</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        {{Translate.Company.District.W979}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- modal ward -->
+    <div id="create_ward" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="icon-puzzle"></i> Thông tin phường xã</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" name="f_CreateWard" ng-validate="validator" role="form">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}">\{{alertMsg}}</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">Tỉnh/Tp<span
+                                        class="required">(*)</span> </label>
+                                <div class="col-md-8">
+                                    <select class="selectpicker form-control" ng-model="formCreateWard.ProvinceObjectId"
+                                        name="ProvinceObjectId" data-title="Chọn tỉnh/tp" required
+                                        ng-options="province._id as province.ProvinceName for province in provincesArray"
+                                        data-live-search="true" data-size="5" 
+                                        ng-change="listDistrictByProvince(formCreateWard.ProvinceObjectId)">
+                                        <option value="" ng-if="hideOptions">
+                                            Select...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">Quận/Huyện<span
+                                        class="required">(*)</span> </label>
+                                <div class="col-md-8">
+                                    <select class="selectpicker form-control" ng-model="formCreateWard.DistrictObjectId"
+                                        name="DistrictObjectId" data-title="Chọn quận/huyện" required
+                                        ng-options="district._id as district.DistrictName for district in districtsActive"
+                                        data-live-search="true" data-size="5">
+                                        <option value="" ng-if="hideOptions">
+                                            Select...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">Mã phường/xã<span
+                                        class="required">(*)</span></label>
+                                <div class="col-md-8">
+                                    <input type="text" ng-model="formCreateWard.WardCode" name="WardCode"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">Tên phường/xã<span
+                                        class="required">(*)</span></label>
+                                <div class="col-md-8">
+                                    <input type="text" ng-model="formCreateWard.WardName" name="WardName"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="createWard(f_CreateWard)">Thêm mới</button>
+                    <button type="button" data-dismiss="modal" class="btn default">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="update_ward" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="icon-puzzle"></i> Thông tin phường xã</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" name="f_UpdateWard" ng-validate="validator" role="form">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}">\{{alertMsg}}</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">Tỉnh/Tp<span
+                                        class="required">(*)</span> </label>
+                                <div class="col-md-8">
+                                    <select class="selectpicker form-control" ng-model="formUpdateWard.ProvinceObjectId"
+                                        name="ProvinceObjectId" data-title="Chọn tỉnh/tp" required
+                                        ng-options="province._id as province.ProvinceName for province in provincesArray"
+                                        data-live-search="true" data-size="5"
+                                         ng-change="listDistrictByProvince(formUpdateWard.ProvinceObjectId)">
+                                        <option value="" ng-if="hideOptions">
+                                            Select...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">Quận/Huyện<span
+                                        class="required">(*)</span> </label>
+                                <div class="col-md-8">
+                                    <select class="selectpicker form-control" ng-model="formUpdateWard.DistrictObjectId"
+                                        name="DistrictObjectId" data-title="Chọn quận/huyện" required
+                                        ng-options="district._id as district.DistrictName for district in districtsActive"
+                                        data-live-search="true" data-size="5">
+                                        <option value="" ng-if="hideOptions">
+                                            Select...
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">Mã phường/xã<span
+                                        class="required">(*)</span></label>
+                                <div class="col-md-8">
+                                    <input type="text" ng-model="formUpdateWard.WardCode" name="WardCode"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label text-left">Tên phường/xã<span
+                                        class="required">(*)</span></label>
+                                <div class="col-md-8">
+                                    <input type="text" ng-model="formUpdateWard.WardName" name="WardName"
+                                        class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="updateWard(f_UpdateWard)">Cập nhật</button>
+                    <button type="button" data-dismiss="modal" class="btn default">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end ward-->
+    <!-- modal import_file -->
+    <div class="modal fade in" id="import_file" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="fab fa-product-hunt"></i> {{Translate.Company.Province.W1220}}
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row" ng-show="typeImport=='province'">
+                        <div class="col-md-5">
+                        </div>
+                        <div class="col-md-7">
+                            <div class="actions pull-right">
+                                <a href="/admin/provinces/downloadSampleExcel" class="btn green">
+                                    <i class="fa fa-download"></i>
+                                    {{Translate.Distributor.Import.W117}}</a>
+                                <button href="javascript:;" class="btn btn-success btn-file-upload"><i
+                                        class="fas fa-file-excel"></i>
+                                    <span class="file-title">{{Translate.Distributor.Import.W118}}</span>
+                                    <span>
+                                        <input type="file" class="input-file-upload"
+                                            data-width="180" data-height="180" name="file" multiple
+                                            accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                            file-upload="files" title="Xuất file excel" />
+                                    </span>
+                                </button>
+                                <button ng-if="files.name" type="button" data-dismiss=""
+                                    class="btn green" ng-click="importFileProvince()">
+                                    {{Translate.Distributor.Import.W119}} </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-show="typeImport=='district'">
+                        <div class="col-md-5">
+                        </div>
+                        <div class="col-md-7">
+                            <div class="actions pull-right">
+                                <a href="/admin/districts/downloadSampleExcel" class="btn green">
+                                    <i class="fa fa-download"></i>
+                                    {{Translate.Distributor.Import.W117}}</a>
+                                <button href="javascript:;" class="btn btn-success btn-file-upload"><i
+                                        class="fas fa-file-excel"></i>
+                                    <span class="file-title">{{Translate.Distributor.Import.W118}}</span>
+                                    <span>
+                                        <input type="file" class="input-file-upload"
+                                            data-width="180" data-height="180" name="file" multiple
+                                            accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                            file-upload="files" title="Xuất file excel" />
+                                    </span>
+                                </button>
+                                <button ng-if="files.name" type="button" data-dismiss=""
+                                    class="btn green" ng-click="importFileDistrict()">
+                                    {{Translate.Distributor.Import.W119}} </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-show="typeImport=='ward'">
+                         <div class="col-md-5">
+                        </div>
+                        <div class="col-md-7">
+                            <div class="actions pull-right">
+                                <a href="/admin/wards/downloadSampleExcel" class="btn green">
+                                    <i class="fa fa-download"></i>
+                                    {{Translate.Distributor.Import.W117}}</a>
+                                <button href="javascript:;" class="btn btn-success btn-file-upload"><i
+                                        class="fas fa-file-excel"></i>
+                                    <span class="file-title">{{Translate.Distributor.Import.W118}}</span>
+                                    <span>
+                                        <input type="file" class="input-file-upload"
+                                            data-width="180" data-height="180" name="file" multiple
+                                            accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                            file-upload="files" title="Xuất file excel" />
+                                    </span>
+                                </button>
+                                <button ng-if="files.name" type="button" data-dismiss=""
+                                    class="btn green" ng-click="importFileWard()">
+                                    {{Translate.Distributor.Import.W119}} </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="files.name">
+                        <i class="icon-check"></i>
+                        <span ng-bind="files.name" class="text-center"></span>
+                    </div>
+                    <!--end form -->
+                    <div class="loading-wrapper" id="loading_add">
+                        <div>
+                            <img src="/images/pictures/loading.gif" alt="loading">
+                        </div>
+                        <div class="title">
+                            {{Translate.Common.Common.W1035}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

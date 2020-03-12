@@ -1,0 +1,161 @@
+    /*
+    Flaticon icon font: Flaticon
+    Creation date: 24/08/2018 05:53
+    */
+
+    @font-face {
+  font-family: "Flaticon";
+  src: url("./Flaticon.eot");
+  src: url("./Flaticon.eot?#iefix") format("embedded-opentype"),
+       url("./Flaticon.woff") format("woff"),
+       url("./Flaticon.ttf") format("truetype"),
+       url("./Flaticon.svg#Flaticon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("./Flaticon.svg#Flaticon") format("svg");
+  }
+}
+
+    .fi:before{
+        display: inline-block;
+  font-family: "Flaticon";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+    }
+
+    .flaticon-invoice:before { content: "\f100"; }
+.flaticon-invoice-1:before { content: "\f101"; }
+.flaticon-invoice-2:before { content: "\f102"; }
+.flaticon-invoice-3:before { content: "\f103"; }
+.flaticon-ribbon:before { content: "\f104"; }
+.flaticon-quality:before { content: "\f105"; }
+.flaticon-signs:before { content: "\f106"; }
+.flaticon-medal:before { content: "\f107"; }
+.flaticon-people:before { content: "\f108"; }
+.flaticon-group:before { content: "\f109"; }
+.flaticon-boss:before { content: "\f10a"; }
+.flaticon-businessman:before { content: "\f10b"; }
+.flaticon-businessman-1:before { content: "\f10c"; }
+.flaticon-growth:before { content: "\f10d"; }
+.flaticon-growth-1:before { content: "\f10e"; }
+.flaticon-list:before { content: "\f10f"; }
+.flaticon-list-1:before { content: "\f110"; }
+.flaticon-graph:before { content: "\f111"; }
+.flaticon-graph-1:before { content: "\f112"; }
+.flaticon-chart:before { content: "\f113"; }
+.flaticon-graph-2:before { content: "\f114"; }
+.flaticon-graph-3:before { content: "\f115"; }
+.flaticon-analytics:before { content: "\f116"; }
+.flaticon-laptop:before { content: "\f117"; }
+.flaticon-route:before { content: "\f118"; }
+.flaticon-gps-10:before { content: "\f119"; }
+.flaticon-gps-11:before { content: "\f11a"; }
+.flaticon-gps-12:before { content: "\f11b"; }
+.flaticon-maps-and-location:before { content: "\f11c"; }
+.flaticon-maps-and-location-2:before { content: "\f11d"; }
+.flaticon-maps-and-location-3:before { content: "\f11e"; }
+.flaticon-info-1:before { content: "\f11f"; }
+.flaticon-info:before { content: "\f120"; }
+.flaticon-gps-3:before { content: "\f121"; }
+.flaticon-gps:before { content: "\f122"; }
+.flaticon-maps-and-location-1:before { content: "\f123"; }
+.flaticon-search-1:before { content: "\f124"; }
+.flaticon-search:before { content: "\f125"; }
+.flaticon-time-1:before { content: "\f126"; }
+.flaticon-time:before { content: "\f127"; }
+.flaticon-target:before { content: "\f128"; }
+.flaticon-target-1:before { content: "\f129"; }
+.flaticon-gps-5:before { content: "\f12a"; }
+.flaticon-gps-7:before { content: "\f12b"; }
+.flaticon-gps-4:before { content: "\f12c"; }
+.flaticon-pin-1:before { content: "\f12d"; }
+.flaticon-pin:before { content: "\f12e"; }
+.flaticon-gps-2:before { content: "\f12f"; }
+.flaticon-gps-1:before { content: "\f130"; }
+.flaticon-gps-8:before { content: "\f131"; }
+.flaticon-gps-9:before { content: "\f132"; }
+.flaticon-pin-2:before { content: "\f133"; }
+.flaticon-pin-3:before { content: "\f134"; }
+.flaticon-pin-4:before { content: "\f135"; }
+.flaticon-map-pointer:before { content: "\f136"; }
+.flaticon-map-pointer-1:before { content: "\f137"; }
+.flaticon-pin-5:before { content: "\f138"; }
+.flaticon-pin-6:before { content: "\f139"; }
+.flaticon-gps-13:before { content: "\f13a"; }
+.flaticon-gps-14:before { content: "\f13b"; }
+.flaticon-pin-7:before { content: "\f13c"; }
+    
+    $font-Flaticon-invoice: "\f100";
+    $font-Flaticon-invoice-1: "\f101";
+    $font-Flaticon-invoice-2: "\f102";
+    $font-Flaticon-invoice-3: "\f103";
+    $font-Flaticon-ribbon: "\f104";
+    $font-Flaticon-quality: "\f105";
+    $font-Flaticon-signs: "\f106";
+    $font-Flaticon-medal: "\f107";
+    $font-Flaticon-people: "\f108";
+    $font-Flaticon-group: "\f109";
+    $font-Flaticon-boss: "\f10a";
+    $font-Flaticon-businessman: "\f10b";
+    $font-Flaticon-businessman-1: "\f10c";
+    $font-Flaticon-growth: "\f10d";
+    $font-Flaticon-growth-1: "\f10e";
+    $font-Flaticon-list: "\f10f";
+    $font-Flaticon-list-1: "\f110";
+    $font-Flaticon-graph: "\f111";
+    $font-Flaticon-graph-1: "\f112";
+    $font-Flaticon-chart: "\f113";
+    $font-Flaticon-graph-2: "\f114";
+    $font-Flaticon-graph-3: "\f115";
+    $font-Flaticon-analytics: "\f116";
+    $font-Flaticon-laptop: "\f117";
+    $font-Flaticon-route: "\f118";
+    $font-Flaticon-gps-10: "\f119";
+    $font-Flaticon-gps-11: "\f11a";
+    $font-Flaticon-gps-12: "\f11b";
+    $font-Flaticon-maps-and-location: "\f11c";
+    $font-Flaticon-maps-and-location-2: "\f11d";
+    $font-Flaticon-maps-and-location-3: "\f11e";
+    $font-Flaticon-info-1: "\f11f";
+    $font-Flaticon-info: "\f120";
+    $font-Flaticon-gps-3: "\f121";
+    $font-Flaticon-gps: "\f122";
+    $font-Flaticon-maps-and-location-1: "\f123";
+    $font-Flaticon-search-1: "\f124";
+    $font-Flaticon-search: "\f125";
+    $font-Flaticon-time-1: "\f126";
+    $font-Flaticon-time: "\f127";
+    $font-Flaticon-target: "\f128";
+    $font-Flaticon-target-1: "\f129";
+    $font-Flaticon-gps-5: "\f12a";
+    $font-Flaticon-gps-7: "\f12b";
+    $font-Flaticon-gps-4: "\f12c";
+    $font-Flaticon-pin-1: "\f12d";
+    $font-Flaticon-pin: "\f12e";
+    $font-Flaticon-gps-2: "\f12f";
+    $font-Flaticon-gps-1: "\f130";
+    $font-Flaticon-gps-8: "\f131";
+    $font-Flaticon-gps-9: "\f132";
+    $font-Flaticon-pin-2: "\f133";
+    $font-Flaticon-pin-3: "\f134";
+    $font-Flaticon-pin-4: "\f135";
+    $font-Flaticon-map-pointer: "\f136";
+    $font-Flaticon-map-pointer-1: "\f137";
+    $font-Flaticon-pin-5: "\f138";
+    $font-Flaticon-pin-6: "\f139";
+    $font-Flaticon-gps-13: "\f13a";
+    $font-Flaticon-gps-14: "\f13b";
+    $font-Flaticon-pin-7: "\f13c";

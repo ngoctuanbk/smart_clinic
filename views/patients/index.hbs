@@ -1,0 +1,488 @@
+<div class="page-content-wrapper" ng-controller="PatientsController">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fab fa-accessible-icon"></i>
+                            <span class="caption-subject sbold uppercase"> Danh sách bệnh nhân</span>
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"> </a>
+                            <a href="javascript:;" ng-click="reset();" class="reload"> </a>
+                            <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                        </div>
+
+                        <div class="actions pull-left">
+                            <a href="#create_patient" class="btn btn-circle btn-success" data-toggle="modal"><i class="fa fa-plus"></i>
+                                Thêm mới
+                            </a>
+                            <button href="#export" class="btn btn-success btn-circle" data-toggle="modal"><i
+                                    class="fas fa-file-excel"></i>
+                                <span class="file-title">Export</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="col-md-12 flex-box">
+                                    <div class="input-group" style="z-index: 1000 !important;">
+                                        <div class="input-group-control input-group-control-update">
+                                            <select style="width: 100px; display: none !important"
+                                                class="selectpicker form-control limit-data" ng-model="paginate.Limit"
+                                                ng-change="paginate.Page = 1; list();"
+                                                ng-options="v as v for (k,v) in limitData">
+                                                <option value="" ng-if="hideOptions"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="input-group" style="z-index: 1000 !important;">
+                                        <div class="input-group-control input-group-control-update">
+                                            <select class="selectpicker form-control pull-left"
+                                                ng-model="paginate.RoleObjectId" multiple
+                                                ng-change="filter()"
+                                                data-selected-text-format="count > 2" name="branch"
+                                                data-live-search="true" title="Tất cả quyền" style="display:none !important;"
+                                                data-size="4" ng-options="role._id as role.RoleName for role in roles">
+                                                <option value="" ng-if="hideOptions"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="input-group" style="max-width: 400px;">
+                                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                                            <div class="btn-group mr-2" role="group">
+                                                <button type="button" class="btn btn-status status-Active"
+                                                    ng-click="paginate.Page=1;filterStatus(200)">
+                                                    Hoạt động (<span
+                                                        ng-bind="CountActive ? CountActive : 0"></span>)
+                                                </button>
+                                            </div>
+                                            <div class="btn-group mr-2" role="group">
+                                                <button type="button" class="btn btn-status status-New"
+                                                    ng-click="paginate.Page=1;filterStatus(100)">
+                                                    Mới (<span
+                                                        ng-bind="CountWaitingAccepted ? CountWaitingAccepted : 0"></span>)
+                                                </button>
+                                            </div>
+                                            <div class="btn-group mr-2" role="group">
+                                                <button type="button" ng-click="paginate.Page=1;filterStatus(400)"
+                                                    class="btn btn-status status-Inactive">
+                                                    Ngừng (<span
+                                                        ng-bind="CountInactive ? CountInactive : 0"></span>)
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 box-search-wrapper">
+                                <div class="col-md-12">
+                                    <div class="form-search pull-right">
+                                        <div class="input-icon right">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" ng-model="paginate.Search" name="bar_code"
+                                                class="form-control" ng-change="paginate.Page = 1; list()"
+                                                placeholder="Tìm kiếm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-scrollable">
+                            <table class="table table-light table-hover" >
+                                <thead>
+                                    <tr class="">
+                                        <th class="rowno"> STT </th>
+                                        <th class="title"> Mã bệnh nhân</th>
+                                        <th class="title"> Họ tên</th>
+                                        <th class="title"> Giới tính</th>
+                                        <th class="title"> Ngày sinh</th>
+                                        <th class="title"> Tuổi</th>
+                                        <th class="title"> Số điện thoại</th>
+                                        <th class="title"> Địa chỉ</th>
+                                        <th class="title"> Phường/xã</th>
+                                        <th class="title"> Quận/huyện</th>
+                                        <th class="title"> Tỉnh/thành phố</th>
+                                        <th class="title"> Nghề nghiệp</th>
+                                        <th class="title"> Bác sĩ chăm sóc</th>
+                                        <th class="title"> Ngày nhập viện</th>
+                                        <th class="_status th-size-update">
+                                            Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody ng-repeat="patient in patients">
+                                    <tr class='click-row'>
+                                        <td class="rowno" ng-bind="$index + count"> </td>
+                                        <td class="title link" ng-click="viewInfo(user._id)"
+                                            ng-bind="patient.PatientID" title="Xem chi tiết"></td>
+                                        <td class="title" ng-bind="patient.FullName"></td>
+                                        <td class="title" ng-bind="patient.Sex ==='Male' ? 'Nam' : patient.Sex === 'Female' ? 'Nữ' : 'Khác'"></td>
+                                        <td class="title" ng-bind="patient.DateOfBirth |formatDateToDMY"></td>
+                                        <td class="title" ng-bind="patient.Age"></td>
+                                        <td class="title" ng-bind="patient.Mobile"></td>
+                                        <td class="title" ng-bind="patient.Address.Street"></td>
+                                        <td class="title" ng-bind="patient.Address.WardObjectId.WardName"></td>
+                                        <td class="title" ng-bind="patient.Address.DistrictObjectId.DistrictName"></td>
+                                        <td class="title" ng-bind="patient.Address.ProvinceObjectId.ProvinceName"></td>
+                                        <td class="title" ng-bind="patient.Career"></td>
+                                        <td class="title" ng-bind="patient.DoctorObjectId.Info.FullName"></td>
+                                        <td class="title" ng-bind="patient.CreatedDate |formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
+                                        <td class="status th-size-update _status" id="status_table">
+                                            <div class="btn-group status dropup th-size-update" data-id="3">
+                                                <label class="btn btn-sm btn-status"
+                                                    ng-class="patient.Status | filterStatusToClass"
+                                                    ng-bind="patient.Status | filterStatusToText">
+                                                </label>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-info dropdown-toggle btn-update"
+                                                    data-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fa fa-angle-up"></i>
+                                                </button>
+                                                <ul class="dropdown-menu status pull-right" role="menu">
+                                                    <li class="status-Remove">
+                                                        <a href="javascript:;" data-value="Remove"
+                                                            ng-click="delete(user._id, user.Info.FullName)">
+                                                            Xóa </a>
+                                                    </li>
+                                                    <li class="status-Active">
+                                                        <a href="javascript:;" data-value="Active"
+                                                            ng-click="updateStatus(200, user._id, $index)">Hoạt
+                                                            động</a>
+                                                    </li>
+                                                    <li class="status-Inactive">
+                                                        <a href="javascript:;" data-value="Inactive"
+                                                            ng-click="updateStatus(400, user._id, $index)">Ngừng
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="boxs-footer dvd dvd-top">
+                            <div class="row" ng-if="pagination.show">
+                                <div class="col-sm-3 text-left">
+                                    <small class="text-muted"><span
+                                            ng-bind="'Hiển thị ' + pagination.skip + '-' + pagination.toSkip + '/' + pagination.total + ' mục'"></span>
+                                    </small>
+                                </div>
+                                <div class="col-sm-2 hidden-xs">
+                                </div>
+                                <div ng-if="pagination.show" class="col-sm-7 text-right">
+                                    <ul class="pagination m-0">
+                                        <li>
+                                            <a ng-click="firstPage()">
+                                                <i class="fas fa-angle-double-left"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="prevPage()">
+                                                <i class="fa fa-chevron-left"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        <li ng-repeat="page in pagination.pages" style="cursor: pointer"
+                                            ng-class="{active:pagination.page === page}">
+                                            <a ng-click="setPage(page)" ng-bind="page"></a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="nextPage()">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="endPage()">
+                                                <i class="fas fa-angle-double-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Export -->
+        <div class="modal fade in" id="export" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title"> <i class="fas fa-filter"></i> Lọc điều kiện xuất dữ liệu </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Chọn chi nhánh</label>
+                                        <div class="col-md-9">
+                                            <select class="bs-select form-control pull-left"
+                                                ng-model="export.Branches" multiple
+                                                data-selected-text-format="count > 2" name="branch"
+                                                data-live-search="true" title="Tất cả chi nhánh" style="display:none !important;"
+                                                data-size="4">
+                                                <option ng-model="a" ng-repeat="branch in branches"
+                                                    ng-value="branch._id" ng-bind="branch.BranchName"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="col-md-3 control-label">Chọn quyền</label>
+                                        <div class="col-md-9">
+                                            <select class="bs-select form-control pull-left"
+                                                ng-model="export.Roles" multiple
+                                                data-selected-text-format="count > 2" name="branch"
+                                                data-live-search="true" title="Tất cả quyền" style="display:none !important;"
+                                                data-size="4">
+                                                <option ng-model="a" ng-repeat="role in roles"
+                                                    ng-value="role._id" ng-bind="role.Info[0].Name"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <!--end form -->
+                    </div>
+                    <div class="modal-footer">
+                        <a ng-click="exportFile()" class="btn green">Tải xuống</a>
+                        <button type="button" id="cancelBtn" data-dismiss="modal" class="btn btn-ok default"> Huỷ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END Export -->
+        <div id="create_patient" class="modal fade bs-modal-lg" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title="">
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="fab fa-accessible-icon"></i>
+                        Thông tin bệnh nhân
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" name="f_CreatePatient" ng-validate="ValidationPatient">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}" ng-bind="alertMsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Họ tên bệnh nhân<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="fullname"
+                                        ng-model="formCreate.FullName" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Số điện thoại<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-9">
+                                    <input type="text" required class="form-control" name="mobile" ng-model="formCreate.Mobile">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Giới tính<span class="required">(*)</span>:</label>
+                                <div class="col-md-9">
+                                    <select  type="text" class="selectpicker form-control"  required ng-model="formCreate.Sex" name="sex" title="{{Translate.Place.Places.W1358}}">
+                                        <option ng-repeat="type in Sex" ng-bind="type" ng-value="type"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    class="col-md-3 control-label vertical">Ngày sinh<span class="required">(*)</span>:</label>
+                                <div class="col-md-9">
+                                    <div class="input-group date date-picker"
+                                        data-date-format="dd-mm-yyyy"
+                                        data-date-viewmode="years"
+                                        data-date-today-highlight="true">
+                                        <input type="text" required
+                                            class="form-control dashed-border"
+                                            ng-model="formCreate.DateOfBirth"
+                                            name="date_of_birth"
+                                            placeholder="Ngày sinh">
+                                        <div class="form-control-focus">
+                                        </div>
+                                        <span class="input-group-addon"><i
+                                                class="far fa-calendar-alt font-blue"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Nghề nghiệp:</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="brand_code"
+                                        ng-model="formCreate.Career">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Tỉnh/TP:</label>
+                                <div class="col-md-9">
+                                    <select class="bs-select form-control" name="province"
+                                        ng-model="formCreate.Address.ProvinceObjectId"
+                                        ng-change="listDistrictByProvince(formCreate.Address.ProvinceObjectId);"
+                                        ng-options="province._id as province.ProvinceName for province in provinces"
+                                        data-live-search="true" data-size="5" title="Chọn tỉnh/thành phố">
+                                        <option value="" ng-if="hideOptions"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Quận/huyện:</label>
+                                <div class="col-md-9">
+                                    <select class="bs-select form-control" name="district"
+                                        ng-model="formCreate.Address.DistrictObjectId"
+                                        ng-change="listWardByDistrict(formCreate.Address.DistrictObjectId);"
+                                        ng-options="district._id as district.DistrictName for district in districts"
+                                        data-live-search="true" data-size="5" title="Chọn quận/huyện">
+                                        <option value="" ng-if="hideOptions"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Phường/xã:</label>
+                                <div class="col-md-9">
+                                    <select class="bs-select form-control" name="ward"
+                                        ng-model="formCreate.Address.WardObjectId"
+                                        ng-options="ward._id as ward.WardName for ward in wards"
+                                        data-live-search="true" data-size="5" title="Chọn phường/xã">
+                                        <option value="" ng-if="hideOptions"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Địa chỉ<span class="required"></span>:</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="street" ng-model="formCreate.Address.Street">
+                                </div>
+                            </div>
+                            <div class="portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <span class="caption-subject uppercase">
+                                            Thông tin liên hệ </span>
+                                    </div>
+                                    <div class="actions">
+                                        <a href="javascript:;" class="btn green pull-right"
+                                            ng-click="addContactDetail()"><i class="fas fa-plus"></i>
+                                            Thêm liên hệ
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-bordered table-hover">
+                                                <thead>
+                                                    <tr class="table-header">
+                                                        <th class="rowno" style="width: 60px;">
+                                                            STT </th>
+                                                        <th class="title">
+                                                            Họ tên
+                                                        </th>
+                                                        <th class="title">
+                                                            Quan hệ với bệnh nhân
+                                                        </th>
+                                                        <th class="title">
+                                                            Số điện thoại
+                                                        </th>
+                                                        <th class="title">
+                                                            Địa chỉ
+                                                        </th>
+                                                        <th class="title">
+                                                            Thao tác
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="item in ContactDetails">
+                                                        <td ng-bind="$index + 1"></td>
+                                                        <td>
+                                                            <span ng-bind="item.FullName"
+                                                                ng-if="!item.showEdit"></span>
+                                                            <div class="form-group" ng-if="item.showEdit">
+                                                                <input type="text" ng-model="item.FullName" 
+                                                                    class="form-control">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <span ng-bind="item.Realtionship"
+                                                                ng-if="!item.showEdit"></span>
+                                                            <div class="form-group" ng-if="item.showEdit">
+                                                                <input type="text" ng-model="item.Realtionship" 
+                                                                    class="form-control">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <span ng-bind="item.Mobile"
+                                                                ng-if="!item.showEdit"></span>
+                                                            <div class="form-group" ng-if="item.showEdit">
+                                                                <input type="text" ng-model="item.Mobile" 
+                                                                    class="form-control">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <span ng-bind="item.Address"
+                                                                ng-if="!item.showEdit"></span>
+                                                            <div class="form-group" ng-if="item.showEdit">
+                                                                <input type="text" ng-model="item.Address" 
+                                                                    class="form-control">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <div class="btn-group btn-group-sm" role="group"
+                                                                    aria-label="Small button group">
+                                                                    <button type="button" class="btn blue"
+                                                                        ng-if="!item.showEdit"
+                                                                        ng-click="openEditDetailOrder($index)">
+                                                                        <i class="fas fa-pen"></i>
+                                                                    </button>
+                                                                    <button type="button" class="btn green"
+                                                                        ng-if="item.showEdit"
+                                                                        ng-click="saveDetailOrder(item, $index)">
+                                                                        <i class="fas fa-check"></i>
+                                                                    </button>
+                                                                    <button type="button" class="btn red"
+                                                                        ng-click="deleteOrderDetail($index)">
+                                                                        <i class="fas fa-times">
+                                                                        </i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="create(f_CreatePatient)">
+                        Lưu</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        Hủy</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

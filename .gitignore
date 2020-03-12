@@ -1,0 +1,14 @@
+/.idea
+/node_modules
+/.vscode
+/public/data
+/package-lock.json
+/bin/www
+/configs/constants
+/public/angular/core/constants.js
+/configs/constants.js
+/gulpfile.js
+/yarn.lock
+/public/uploads
+/settings/setting_development.js
+

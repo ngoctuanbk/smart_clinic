@@ -1,0 +1,17 @@
+{"message":"2020-02-07 23:12:50: {}","level":"error"}
+{"message":"2020-02-07 23:13:59: {}","level":"error"}
+{"message":"2020-02-07 23:15:07: {}","level":"error"}
+{"message":"2020-02-07 23:19:05: {}","level":"error"}
+{"message":"2020-02-07 23:29:26: {}","level":"error"}
+{"message":"2020-02-07 23:29:28: {}","level":"error"}
+{"message":"2020-02-07 23:30:08: {}","level":"error"}
+{"message":"2020-02-09 22:18:08: {}","level":"error"}
+{"message":"2020-02-09 22:22:28: {}","level":"error"}
+{"message":"2020-02-09 22:39:23: {}","level":"error"}
+{"message":"2020-02-09 22:40:41: {}","level":"error"}
+{"message":"2020-02-09 23:06:20: {}","level":"error"}
+{"message":"2020-02-09 23:09:54: {}","level":"error"}
+{"message":"2020-02-09 23:16:33: {}","level":"error"}
+{"message":"2020-02-09 23:17:47: {\"errors\":{\"RoleName\":{\"message\":\"Error, expected `RoleName` to be unique. Value: `Bác sĩ`\",\"name\":\"ValidatorError\",\"properties\":{\"message\":\"Error, expected `RoleName` to be unique. Value: `Bác sĩ`\",\"type\":\"unique\",\"path\":\"RoleName\",\"value\":\"Bác sĩ\"},\"kind\":\"unique\",\"path\":\"RoleName\",\"value\":\"Bác sĩ\"},\"RoleCode\":{\"message\":\"Error, expected `RoleCode` to be unique. Value: `Doctor`\",\"name\":\"ValidatorError\",\"properties\":{\"message\":\"Error, expected `RoleCode` to be unique. Value: `Doctor`\",\"type\":\"unique\",\"path\":\"RoleCode\",\"value\":\"Doctor\"},\"kind\":\"unique\",\"path\":\"RoleCode\",\"value\":\"Doctor\"}},\"_message\":\"roles validation failed\",\"message\":\"roles validation failed: RoleName: Error, expected `RoleName` to be unique. Value: `Bác sĩ`, RoleCode: Error, expected `RoleCode` to be unique. Value: `Doctor`\",\"name\":\"ValidationError\"}","level":"error"}
+{"message":"2020-02-09 23:24:15: {}","level":"error"}
+{"message":"2020-02-09 23:26:11: {\"errors\":{\"RoleCode\":{\"message\":\"Error, expected `RoleCode` to be unique. Value: `Nurse`\",\"name\":\"ValidatorError\",\"properties\":{\"message\":\"Error, expected `RoleCode` to be unique. Value: `Nurse`\",\"type\":\"unique\",\"path\":\"RoleCode\",\"value\":\"Nurse\"},\"kind\":\"unique\",\"path\":\"RoleCode\",\"value\":\"Nurse\"},\"RoleName\":{\"message\":\"Error, expected `RoleName` to be unique. Value: `Y tá`\",\"name\":\"ValidatorError\",\"properties\":{\"message\":\"Error, expected `RoleName` to be unique. Value: `Y tá`\",\"type\":\"unique\",\"path\":\"RoleName\",\"value\":\"Y tá\"},\"kind\":\"unique\",\"path\":\"RoleName\",\"value\":\"Y tá\"}},\"_message\":\"roles validation failed\",\"message\":\"roles validation failed: RoleCode: Error, expected `RoleCode` to be unique. Value: `Nurse`, RoleName: Error, expected `RoleName` to be unique. Value: `Y tá`\",\"name\":\"ValidationError\"}","level":"error"}
