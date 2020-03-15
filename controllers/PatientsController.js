@@ -35,4 +35,12 @@ module.exports = {
             return res.status(500).json(responseError(1001, err));
         }
     },
+    updateStatus: async (req, res) => {
+        try {
+            const result = await sendBodyToAPI('PUT', 'api/patients/updateStatus', getHeaders(req), req.body, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
 };

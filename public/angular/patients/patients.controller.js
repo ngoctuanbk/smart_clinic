@@ -6,6 +6,9 @@
         PatientsController.$inject = ['$scope', 'PatientsService', 'PaginationFactory', 'logger', '$timeout', 'limitData', 'SharedService', 'ValidatorPatient'];
 
     function PatientsController($scope, PatientsService, PaginationFactory, logger, $timeout, limitData, SharedService, ValidatorPatient) {
+        const {
+            deleteItem,
+        } = SharedService;
         $scope.ValidationPatient = ValidatorPatient.validationOptions();
         $scope.formCreate = {};
         $scope.formCreate.Address = {};
@@ -18,6 +21,7 @@
         $scope.paginate.Limit = $scope.limitData[0];
         $scope.paginate.SortKey = 'CreatedDate';
         $scope.paginate.SortOrder = -1;
+        $scope.paginate.Search = '';
         $scope.count = 1;
         $scope.Sex = ['Male', 'Female', 'Other'];
 
@@ -32,9 +36,9 @@
                     console.log(response);
                     if (response.Success) {
                         $scope.patients = response.Data.docs;
-                        $scope.CountActive = response.Data.CountActive;
+                        $scope.CountInProcess = response.Data.CountInProcess;
                         $scope.CountWaitingAccepted = response.Data.CountWaitingAccepted;
-                        $scope.CountInactive = response.Data.CountInactive;
+                        $scope.CountDone = response.Data.CountDone;
                         $scope.count = response.Data.page === 1 ? 1 : response.Data.limit * (response.Data.page - 1) + 1;
                         $scope.pagination = PaginationFactory.paginations($scope.paginate.Page, response.Data);
                     }
@@ -102,26 +106,58 @@
         $scope.ContactDetails = [];
         $scope.addContactDetail = () => {
             const newField = {
-                FullName: null,
-                Mobile: null,
-                Relationship: null,
-                Address: null,
+                Name: '',
+                Phone: '',
+                Relationship: '',
+                Home: '',
                 showEdit: true,
             };
             $scope.ContactDetails.push(newField);
-            refreshSelectPicker();
         };
+        $scope.openEditContactDetail = (idx) => {
+            $scope.ContactDetails[idx].showEdit = true;
+        };
+        $scope.saveContactDetail = (item, idxItem) => {  
+            $scope.ContactDetails[idxItem].Name = $scope.formCreate.Name;
+            $scope.ContactDetails[idxItem].Phone = $scope.formCreate.Phone;
+            $scope.ContactDetails[idxItem].Relationship = $scope.formCreate.Relationship || '';
+            $scope.ContactDetails[idxItem].Home = $scope.formCreate.Home || '';
+            console.log($scope.ContactDetails)
+            if (isEmpty(item.Name)) {
+                return logger.error('Hãy chọn họ tên người thân');
+            }
+            if (isEmpty(item.Phone)) {
+                return logger.error('Hãy chọn số điện thoại');
+            }
+            $scope.ContactDetails[idxItem].showEdit = false;
+            resetContact();
+                return;
+        };
+        $scope.deleteContactDetail = (idx) => {
+                $scope.ContactDetails.splice(idx, 1);
+        };
+        function resetContact() {
+            $scope.formCreate.Name = '';
+            $scope.formCreate.Phone = '';
+            $scope.formCreate.Relationship = '';
+            $scope.formCreate.Home = '';
+        }
         $scope.create = (form) => {
-            $scope.formCreate.Age = getAge($scope.formCreate.DateOfBirth);
-            console.log($scope.formCreate.DateOfBirth);
-            console.log($scope.formCreate.Age);
+            if ($scope.formCreate.DateOfBirth){
+                $scope.formCreate.Age = getAge($scope.formCreate.DateOfBirth);
+            }
+            if (!isEmpty($scope.ContactDetails)) {
+                $scope.formCreate.Contact = $scope.ContactDetails;
+            }
             if (form.validate()) {
+                console.log($scope.formCreate)
                 PatientsService.create($scope.formCreate)
                     .then((response) => {
                         console.log(response);
                         if (response.Success) {
                             $scope.list();
                             $scope.formCreate = {};
+                            $scope.ContactDetails = [];
                             changeCss();
                             alertMessage('success', 'Thêm bệnh nhân thành công', true);
                             $timeout(() => {
@@ -134,6 +170,21 @@
             } else {
                 alertMessage('danger', SharedService.checkFormInvalid(form), true);
             }
+        };
+        $scope.updateStatus = (Status, PatientObjectId) => {
+            const formUpdate = {
+                Status,
+                PatientObjectId,
+            };
+            PatientsService.updateStatus(formUpdate)
+                .then((response) => {
+                    if (response.Success) {
+                        $scope.list();
+                        logger.success('Cập nhật trạng thái thành công');
+                    } else {
+                        logger.error('Có lỗi xảy ra, Vui lòng thử lại.');
+                    }
+                });
         };
 
         function changeCss() {

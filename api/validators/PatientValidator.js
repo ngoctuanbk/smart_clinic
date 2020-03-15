@@ -62,12 +62,21 @@ const addressValidator = {
         },
     },
 };
-
+const PatientObjectIdValidator = {
+    PatientObjectId: {
+        notEmpty: true,
+        custom: {
+            options: value => isObjectId(value),
+        },
+    },
+};
 
 const createValidator = Object.assign({}, FullName, Mobile, addressValidator, Sex);
 const listValidator = Object.assign({}, paginate);
+const updateStatusValidator = Object.assign({}, PatientObjectIdValidator, StatusValidator);
 
 module.exports = {
     createValidator,
     listValidator,
+    updateStatusValidator,
 };

@@ -8,6 +8,8 @@ exports.STATUS = {
     100: 'WaitingAccepted',
     200: 'Active',
     400: 'Inactive',
+    500: 'InProcess',
+    600: 'Done',
 };
 exports.DELETE_FLAG = {
     200: 'NO',

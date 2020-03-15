@@ -33,6 +33,10 @@ exports.CODES_SUCCESS = {
     /* patient start from 10140 */
     10140: 'Create patient success',
     10141: 'List patient success',
+    10142: 'Update status patient success',
+    /* schedule start from 10150 */
+    10150: 'Create schedule success',
+    10151: 'List schedule success',
 };
 
 exports.CODES_ERROR = {
@@ -69,4 +73,8 @@ exports.CODES_ERROR = {
     /* patient error */ 
     40130: 'Create patient error',
     40131: 'Patient has exsit already',
+    40132: 'Update status patient error',
+    /* schedule error */ 
+    40140: 'Create schedule error',
+    40141: 'Schedule has exsit already',
 };

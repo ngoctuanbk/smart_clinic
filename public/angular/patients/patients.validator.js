@@ -24,6 +24,9 @@
                         sex: {
                             required: true,
                         },
+                        reason: {
+                            required: true,
+                        },
                         date_of_birth: {
                             required: true,
                         },

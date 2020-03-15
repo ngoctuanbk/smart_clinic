@@ -1,0 +1,149 @@
+<div class="page-content-wrapper" ng-controller="ScheduleController">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span class="caption-subject bold uppercase"> Lịch khám chữa bệnh </span>
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"> </a>
+                            <a href="javascript:;" class="reload" ng-click="paginate.Page = 1; reload();"> </a>
+                            <a href="javascript:;" class="fullscreen"> </a>
+                        </div>
+                        <div class="actions pull-left">
+                            <a href="javascript:;" ng-click="showModal('#create_schedule')" class="btn btn-circle btn-success"><i class="fa fa-plus"></i>
+                                Thêm mới </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="col-md-12 flex-box">
+                                    <div class="input-group z-i-1000">
+                                        <div class="input-group-control input-group-control-update">
+                                            <select style="width: 100px; display:none !important"
+                                                class="selectpicker form-control limit-data pull-left" data-title="" ng-model="paginate.Limit"
+                                                ng-change="filterSchedule();" ng-options="v as v for (k,v) in limitData">
+                                                <option value="" ng-if="hideOptions"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="input-group-control">
+                                            <select style="width: 100px; display:none !important"
+                                                data-title="Chọn tháng"
+                                                class="selectpicker form-control pull-left"
+                                                ng-change="changeMonth();" ng-model="paginate.Month"
+                                                data-size="5">
+                                                <option value="">Chọn tháng
+                                                </option>
+                                                <option ng-repeat="month in listMonths" ng-value="month.key" ng-bind="month.value"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 box-search-wrapper">
+                                <div class="col-md-12">
+                                    <div class="form-search pull-right">
+                                        <div class="input-icon right">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" class="form-control" placeholder="Tìm kiếm"
+                                                ng-model="paginate.Search" ng-change="paginate.Page = 1; list()">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-scrollable table-schedule">
+                        
+                            <table class="table table-hover table-light" id="list_schedules_pg">
+                                <thead>
+                                    <tr class="">
+                                        <th rowspan="2"> STT </th>
+                                        <th rowspan="2"> Họ tên bác sĩ</th>
+                                        <th rowspan="2"> Mã nhân viên</th>
+                                        <th style="border-right: 1px solid #F2F5F8;" rowspan="2"> 
+                                            Ngày
+                                        </th>
+                                        <th style="text-align: center; border-left: 1px solid #F2F5F8;" ng-repeat="day in daysInMonth">
+                                            <div style="width: 100px; text-align: center;"  ng-bind="day.day">  </div>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align: center; border-left: 1px solid #F2F5F8;" ng-repeat="day in daysInMonth" ng-bind="day.fullDate | getDayOfWeek">
+                                            <div style="width: 100px; text-align: center;"  ng-bind="day.fullDate | getDayOfWeek">  </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="schedule in schedules" 
+                                        style="border-bottom: 1px solid #F2F5F8;" id="tbody-\{{$index}}" >
+                                        <td class="rowno" ng-bind="$index + numerical"></td>
+                                        <td class="place-info">
+                                            <span ng-bind="schedule.FullName"></span>
+                                            {{!-- <a href="/admin/member?id=\{{schedule.UserObjectId}}&role=\{{schedule.UserRole}}" title=""
+                                                data-toggle="modal" ng-bind="schedule.FullName"></a> --}}
+                                        </td>
+                                        <td>
+                                            <span ng-bind="schedule.UserName"></span>
+                                        </td>
+                                        <td></td>
+                                        <td ng-repeat="day in daysInMonth" style="border-left: 1px solid #F2F5F8; text-align: center;">
+                                            <div custom-bind-html
+                                                ng-bind-html="schedule.Schedules | filterScheduleAll : day.fullDate">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="boxs-footer dvd dvd-top" ng-style="myStyle">
+                            <div class="row" ng-if="pagination.show">
+                                <div class="col-sm-5 text-left">
+                                    <small class="text-muted">Hiển thị
+                                        <span ng-bind="pagination.skip + '-' + pagination.toSkip"></span>/
+                                        <span ng-bind="pagination.total"></span>
+                                        mục
+                                    </small>
+                                </div>
+                                <div class="col-sm-7 text-right">
+                                    <ul class="pagination m-0">
+                                        <li>
+                                            <a ng-click="firstPage()">
+                                                <i class="fas fa-angle-double-left"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="prevPage()">
+                                                <i class="fa fa-chevron-left"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        <li ng-repeat="page in pagination.pages" style="cursor: pointer"
+                                            ng-class="{active:pagination.page === page}">
+                                            <a ng-click="setPage(page)" ng-bind="page"></a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="nextPage()">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="endPage()">
+                                                <i class="fas fa-angle-double-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>

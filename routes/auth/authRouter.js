@@ -19,6 +19,8 @@ require('./BrandsRoute')(authRouter);
 require('./ProvincesRoute')(authRouter);
 /* patients */
 require('./PatientsRoute')(authRouter);
+/* schedules */
+require('./SchedulesRoute')(authRouter);
 
 
 

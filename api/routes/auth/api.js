@@ -25,5 +25,7 @@ require('./DistrictsRoute')(apiRouter);
 require('./WardsRoute')(apiRouter);
 /* patients */
 require('./PatientsRoute')(apiRouter);
+/* schedules */
+require('./SchedulesRoute')(apiRouter);
 
 module.exports = apiRouter;

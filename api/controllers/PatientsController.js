@@ -3,6 +3,7 @@ const PatientsService = require('../services/PatientsService');
 const {
     createValidator,
     listValidator,
+    updateStatusValidator,
 } = require('../validators/PatientValidator');
 
 const {
@@ -41,8 +42,8 @@ module.exports = {
             if (errors) {
                 return res.json(responseError(40003, errors));
             }
-            const existTarget = await PatientsService.checkPatientExist(req.body);
-            if (existTarget) {
+            const existPatient = await PatientsService.checkPatientExist(req.body);
+            if (existPatient) {
                 return res.json(responseError(40131));
             }
             const result = await PatientsService.create(req.body);
@@ -64,13 +65,37 @@ module.exports = {
             }
             const result = await PatientsService.list(req.query);
             const statuses = await PatientsService.getStatuses(req.query);
-            result.CountInactive = statuses.Inactive;
-            result.CountActive = statuses.Active;
+            result.CountDone = statuses.Done;
+            result.CountInProcess = statuses.InProcess;
             result.CountWaitingAccepted = statuses.WaitingAccepted;
             return res.json(responseSuccess(10141, result));
         } catch (errors) {
-            console.log(errors)
             return resJsonError(res, errors, 'patient');
+        }
+    },
+    updateStatus: async (req, res) => {
+        try {
+            req.checkBody(updateStatusValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.body.UpdatedBy = req.decoded.UserObjectId;
+            const result = await PatientsService.updateStatus(req.body);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10142));
+            }
+            return res.json(responseError(40132));
+        } catch (errors) {
+            return resJsonError(res, errors, 'patient');
+        }
+    },
+    listActive: async (req, res) => {
+        try {
+            const result = await PatientsService.listActive(req.query);
+            return res.json(responseSuccess(10141, result));
+        } catch (errors) {
+            return resJsonError(res, errors, 'user');
         }
     },
 };

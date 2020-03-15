@@ -291,26 +291,26 @@ module.exports = {
         return '';
     },
     trimValue: value => String(value || '').trim(),
-    // filterStatus: (status = '') => {
-    //     const { trimValue } = module.exports;
-    //     if (trimValue(status).toLowerCase() === 'hoạt động') {
-    //         return 'Active';
-    //     }
-    //     if (trimValue(status).toLowerCase() === 'mới') {
-    //         return 'WaitingAccepted';
-    //     }
-    //     if (trimValue(status).toLowerCase() === 'ngừng'
-    //             || trimValue(status).toLowerCase() === 'ngưng'
-    //             || trimValue(status).toLowerCase() === 'hủy') {
-    //         return 'Inactive';
-    //     }
-    //     return '';
-    // },
-    // deduplicateArray: (array) => {
-    //     const set = new Set(array);
-    //     const it = set.values();
-    //     return Array.from(it);
-    // },
+    filterStatus: (status = '') => {
+        const { trimValue } = module.exports;
+        if (trimValue(status).toLowerCase() === 'hoạt động') {
+            return 'Active';
+        }
+        if (trimValue(status).toLowerCase() === 'mới') {
+            return 'WaitingAccepted';
+        }
+        if (trimValue(status).toLowerCase() === 'ngừng'
+                || trimValue(status).toLowerCase() === 'ngưng'
+                || trimValue(status).toLowerCase() === 'hủy') {
+            return 'Inactive';
+        }
+        return '';
+    },
+    deduplicateArray: (array) => {
+        const set = new Set(array);
+        const it = set.values();
+        return Array.from(it);
+    },
     padNumber: (number) => {
         const lenNumber = String(number).length;
         return lenNumber < 6 ? (new Array(7 - lenNumber).join('0') + number) : number;
@@ -340,88 +340,88 @@ module.exports = {
     //     .replace(/[\u0300-\u036f]/g, '')
     //     .replace(/đ/g, 'd')
     //     .replace(/Đ/g, 'D'),
-    // strDateTimeFormat: [
-    //     'DD-MM-YYYY',
-    //     'DD-M-YYYY',
-    //     'D-M-YYYY',
-    //     'MM-DD-YYYY',
-    //     'YYYY-MM-DD',
-    //     'YYYY-M-D',
-    //     'YYYY-DD-MM',
-    //     'MM-YYYY-DD',
-    //     'DD-YYYY-MM',
-    //     'DD.MM.YYYY',
-    //     'MM.DD.YYYY',
-    //     'YYYY.MM.DD',
-    //     'YYYY.DD.MM',
-    //     'DD.YYYY.MM',
-    //     'MM.YYYY.DD',
-    //     'DD/MM/YYYY',
-    //     'MM/DD/YYYY',
-    //     'YYYY/MM/DD',
-    //     'YYYY/DD/MM',
-    //     'MM/YYYY/DD',
-    //     'DD/YYYY/MM',
-    //     'YYYY-MM-DD HH:mm:ss',
-    //     'DD-MM-YYYY HH:mm:ss',
-    //     'DD/MM/YYYY HH:mm:ss',
-    //     'D/M/YY',
-    //     'MM/YYYY',
-    //     'MM/YY',
-    //     'MM-YY',
-    //     'MM-YYYY',
-    //     'YYYY-MM',
-    //     'YYYY-M',
-    // ],
-    // isValidDate: (date) => {
-    //     const { strDateTimeFormat } = module.exports;
-    //     const isValidDate = moment(date, strDateTimeFormat, true).isValid();
-    //     return isValidDate;
-    // },
-    // strMonthTimeFormat: [
-    //     'YYYY-MM',
-    //     'YYYY-M',
-    //     'MM/YYYY',
-    //     'MM/YY',
-    //     'MM-YY',
-    //     'MM-YYYY',
-    // ],
-    // isValidMonth: (month) => {
-    //     const { strMonthTimeFormat } = module.exports;
-    //     const isValidDate = moment(month, strMonthTimeFormat, true).isValid();
-    //     return isValidDate;
-    // },
-    // isValidYear: (year) => {
-    //     const isValidYear = moment(year, 'YYYY', true).isValid();
-    //     return isValidYear;
-    // },
-    // TimeFormat: ['HH:mm', 'H:m'],
-    // isValidTime: (time) => {
-    //     const { TimeFormat } = module.exports;
-    //     const isValidTime = moment(time, TimeFormat, true).isValid();
-    //     return isValidTime;
-    // },
-    // MonthFormat: ['YYYY-MM'],
-    // isValidMonthYear: (month) => {
-    //     const { MonthFormat } = module.exports;
-    //     const isValidMonthYear = moment(month, MonthFormat, true).isValid();
-    //     return isValidMonthYear;
-    // },
-    // DayFormat: ['YYYY-MM-DD'],
-    // isValidDay: (month) => {
-    //     const { DayFormat } = module.exports;
-    //     const isValidDay = moment(month, DayFormat, true).isValid();
-    //     return isValidDay;
-    // },
-    // formatDateTo: (date, typeFormat = 'YYYY-MM-DD') => {
-    //     const { strDateTimeFormat } = module.exports;
-    //     const _isValidDayYMDHms = moment(date, strDateTimeFormat, true).isValid();
-    //     if (_isValidDayYMDHms) {
-    //         const newDate = moment(date.toString(), strDateTimeFormat).format(typeFormat);
-    //         return newDate;
-    //     }
-    //     return '';
-    // },
+    strDateTimeFormat: [
+        'DD-MM-YYYY',
+        'DD-M-YYYY',
+        'D-M-YYYY',
+        'MM-DD-YYYY',
+        'YYYY-MM-DD',
+        'YYYY-M-D',
+        'YYYY-DD-MM',
+        'MM-YYYY-DD',
+        'DD-YYYY-MM',
+        'DD.MM.YYYY',
+        'MM.DD.YYYY',
+        'YYYY.MM.DD',
+        'YYYY.DD.MM',
+        'DD.YYYY.MM',
+        'MM.YYYY.DD',
+        'DD/MM/YYYY',
+        'MM/DD/YYYY',
+        'YYYY/MM/DD',
+        'YYYY/DD/MM',
+        'MM/YYYY/DD',
+        'DD/YYYY/MM',
+        'YYYY-MM-DD HH:mm:ss',
+        'DD-MM-YYYY HH:mm:ss',
+        'DD/MM/YYYY HH:mm:ss',
+        'D/M/YY',
+        'MM/YYYY',
+        'MM/YY',
+        'MM-YY',
+        'MM-YYYY',
+        'YYYY-MM',
+        'YYYY-M',
+    ],
+    isValidDate: (date) => {
+        const { strDateTimeFormat } = module.exports;
+        const isValidDate = moment(date, strDateTimeFormat, true).isValid();
+        return isValidDate;
+    },
+    strMonthTimeFormat: [
+        'YYYY-MM',
+        'YYYY-M',
+        'MM/YYYY',
+        'MM/YY',
+        'MM-YY',
+        'MM-YYYY',
+    ],
+    isValidMonth: (month) => {
+        const { strMonthTimeFormat } = module.exports;
+        const isValidDate = moment(month, strMonthTimeFormat, true).isValid();
+        return isValidDate;
+    },
+    isValidYear: (year) => {
+        const isValidYear = moment(year, 'YYYY', true).isValid();
+        return isValidYear;
+    },
+    TimeFormat: ['HH:mm', 'H:m'],
+    isValidTime: (time) => {
+        const { TimeFormat } = module.exports;
+        const isValidTime = moment(time, TimeFormat, true).isValid();
+        return isValidTime;
+    },
+    MonthFormat: ['YYYY-MM'],
+    isValidMonthYear: (month) => {
+        const { MonthFormat } = module.exports;
+        const isValidMonthYear = moment(month, MonthFormat, true).isValid();
+        return isValidMonthYear;
+    },
+    DayFormat: ['YYYY-MM-DD'],
+    isValidDay: (month) => {
+        const { DayFormat } = module.exports;
+        const isValidDay = moment(month, DayFormat, true).isValid();
+        return isValidDay;
+    },
+    formatDateTo: (date, typeFormat = 'YYYY-MM-DD') => {
+        const { strDateTimeFormat } = module.exports;
+        const _isValidDayYMDHms = moment(date, strDateTimeFormat, true).isValid();
+        if (_isValidDayYMDHms) {
+            const newDate = moment(date.toString(), strDateTimeFormat).format(typeFormat);
+            return newDate;
+        }
+        return '';
+    },
     formatDateToYMD: (date) => {
         const { strDateTimeFormat } = module.exports;
         const _isValidDayYMDHms = moment(date, strDateTimeFormat, true).isValid();
@@ -431,111 +431,111 @@ module.exports = {
         }
         return '';
     },
-    // formatDateToMY: (date, formatType = 'MM-YYYY') => {
-    //     const { strDateTimeFormat, strMonthTimeFormat } = module.exports;
-    //     const formatMonths = [...strDateTimeFormat, ...strMonthTimeFormat];
-    //     const _isValidMY = moment(date, formatMonths, true).isValid();
-    //     if (_isValidMY) {
-    //         const newDate = moment(date.toString(), formatMonths).format(formatType);
-    //         return newDate;
-    //     }
-    //     return '';
-    // },
-    // getYear: async (date) => {
-    //     const {strDateTimeFormat} = module.exports;
-    //     const _isValidMY = moment(date, strDateTimeFormat, true).isValid();
-    //     if (_isValidMY) {
-    //         const newDate = moment(date, strDateTimeFormat).format('YYYY');
-    //         return newDate;
-    //     }
-    //     return '';
-    // },
-    // formatTimeToHHmm: (time) => {
-    //     const { isValidTime, TimeFormat } = module.exports;
-    //     if (isValidTime(time)) {
-    //         const newDate = moment(time, TimeFormat).format('HH:mm');
-    //         return newDate;
-    //     }
-    //     return '';
-    // },
-    // formatDateToYM: (date) => {
-    //     const { strDateTimeFormat } = module.exports;
-    //     const _isValidDate = moment(date, strDateTimeFormat, true).isValid();
-    //     if (_isValidDate) {
-    //         const newDate = moment(date, strDateTimeFormat).format('YYYY-MM');
-    //         return newDate;
-    //     }
-    //     return '';
-    // },
-    // getYMCurrent: moment().format('YYYY-MM'),
-    // convertToTime: (time, str) => {
-    //     if (time) {
-    //         let obj;
-    //         const { strDateTimeFormat } = module.exports;
-    //         const isValidDate = moment(time, strDateTimeFormat, true).isValid();
-    //         if (isValidDate) {
-    //             if (str === 'from') {
-    //                 obj = moment(time, strDateTimeFormat, true).format('YYYY-MM-DD 00:00:00');
-    //             }
-    //             if (str === 'to') {
-    //                 obj = moment(time, strDateTimeFormat, true).format('YYYY-MM-DD 23:59:59');
-    //             }
-    //             return obj.toString();
-    //         }
-    //         return false;
-    //     }
-    // },
-    // nextDay: (number = 0, formatDate = 'YYYY-MM-DD') => {
-    //     const { getDateYMDCurrent } = module.exports;
-    //     return moment(getDateYMDCurrent()).add(number, 'days').format(formatDate);
-    // },
-    // preDay: (number = 0, formatDate = 'YYYY-MM-DD') => {
-    //     const { getDateYMDCurrent } = module.exports;
-    //     return moment(getDateYMDCurrent()).subtract(number, 'days').format(formatDate);
-    // },
-    // preMonth: (number = 0, formatDate = 'YYYY-MM-DD', position = 'firstDay') => {
-    //     // position value in  [firstDay, today, endDay];
-    //     const { getTimeCurrent, endDayOfMonth, formatDateTo} = module.exports;
-    //     let month = +(getTimeCurrent('MM'));
-    //     let year = +(getTimeCurrent('YYYY'));
-    //     const day = getTimeCurrent('DD');
-    //     for (let i = number; i >= 1; i--) {
-    //         month -= 1;
-    //         if (month === 0) {
-    //             month = 12;
-    //             year -= 1;
-    //         }
-    //     }
+    formatDateToMY: (date, formatType = 'MM-YYYY') => {
+        const { strDateTimeFormat, strMonthTimeFormat } = module.exports;
+        const formatMonths = [...strDateTimeFormat, ...strMonthTimeFormat];
+        const _isValidMY = moment(date, formatMonths, true).isValid();
+        if (_isValidMY) {
+            const newDate = moment(date.toString(), formatMonths).format(formatType);
+            return newDate;
+        }
+        return '';
+    },
+    getYear: async (date) => {
+        const {strDateTimeFormat} = module.exports;
+        const _isValidMY = moment(date, strDateTimeFormat, true).isValid();
+        if (_isValidMY) {
+            const newDate = moment(date, strDateTimeFormat).format('YYYY');
+            return newDate;
+        }
+        return '';
+    },
+    formatTimeToHHmm: (time) => {
+        const { isValidTime, TimeFormat } = module.exports;
+        if (isValidTime(time)) {
+            const newDate = moment(time, TimeFormat).format('HH:mm');
+            return newDate;
+        }
+        return '';
+    },
+    formatDateToYM: (date) => {
+        const { strDateTimeFormat } = module.exports;
+        const _isValidDate = moment(date, strDateTimeFormat, true).isValid();
+        if (_isValidDate) {
+            const newDate = moment(date, strDateTimeFormat).format('YYYY-MM');
+            return newDate;
+        }
+        return '';
+    },
+    getYMCurrent: moment().format('YYYY-MM'),
+    convertToTime: (time, str) => {
+        if (time) {
+            let obj;
+            const { strDateTimeFormat } = module.exports;
+            const isValidDate = moment(time, strDateTimeFormat, true).isValid();
+            if (isValidDate) {
+                if (str === 'from') {
+                    obj = moment(time, strDateTimeFormat, true).format('YYYY-MM-DD 00:00:00');
+                }
+                if (str === 'to') {
+                    obj = moment(time, strDateTimeFormat, true).format('YYYY-MM-DD 23:59:59');
+                }
+                return obj.toString();
+            }
+            return false;
+        }
+    },
+    nextDay: (number = 0, formatDate = 'YYYY-MM-DD') => {
+        const { getDateYMDCurrent } = module.exports;
+        return moment(getDateYMDCurrent()).add(number, 'days').format(formatDate);
+    },
+    preDay: (number = 0, formatDate = 'YYYY-MM-DD') => {
+        const { getDateYMDCurrent } = module.exports;
+        return moment(getDateYMDCurrent()).subtract(number, 'days').format(formatDate);
+    },
+    preMonth: (number = 0, formatDate = 'YYYY-MM-DD', position = 'firstDay') => {
+        // position value in  [firstDay, today, endDay];
+        const { getTimeCurrent, endDayOfMonth, formatDateTo} = module.exports;
+        let month = +(getTimeCurrent('MM'));
+        let year = +(getTimeCurrent('YYYY'));
+        const day = getTimeCurrent('DD');
+        for (let i = number; i >= 1; i--) {
+            month -= 1;
+            if (month === 0) {
+                month = 12;
+                year -= 1;
+            }
+        }
 
-    //     if (position === 'firstDay') {
-    //         const date = `${year}-${month}-01`;
-    //         return formatDateTo(date, formatDate);
-    //     }
-    //     if (position === 'today') {
-    //         const date = `${year}-${month}-${day}`;
-    //         return formatDateTo(date, formatDate);
-    //     }
-    //     if (position === 'endDay') {
-    //         const date = `${year}-${month}-01`;
-    //         return endDayOfMonth(date, formatDate);
-    //     }
-    // },
-    // firstDayOfMonth: (date, dateFormat = 'YYYY-MM-DD HH:mm:ss') => moment(date)
-    //     .startOf('month')
-    //     .format(dateFormat),
-    // endDayOfMonth: (date, dateFormat = 'YYYY-MM-DD HH:mm:ss') => moment(date)
-    //     .endOf('month')
-    //     .format(dateFormat),
-    // TimeUnix: (date, typeDateFormat = 'YYYY-MM-DD') => moment(date, typeDateFormat).unix(),
-    // TimeUnixToTime: (value, typeFormat = 'YYYY-MM-DD') => moment.unix(value).format(typeFormat),
-    // getDateYMDCurrent: () => moment().format('YYYY-MM-DD'),
-    // getYearCurrent: moment().format('YYYY'),
-    // getMonthCurrent: moment().format('MM'),
-    // totalDaysInMonth: (year, month) => {
-    //     year = year || (new Date()).getFullYear();
-    //     month = month || (new Date()).getMonth() + 1;
-    //     return new Date(year, month, 0).getDate();
-    // },
+        if (position === 'firstDay') {
+            const date = `${year}-${month}-01`;
+            return formatDateTo(date, formatDate);
+        }
+        if (position === 'today') {
+            const date = `${year}-${month}-${day}`;
+            return formatDateTo(date, formatDate);
+        }
+        if (position === 'endDay') {
+            const date = `${year}-${month}-01`;
+            return endDayOfMonth(date, formatDate);
+        }
+    },
+    firstDayOfMonth: (date, dateFormat = 'YYYY-MM-DD HH:mm:ss') => moment(date)
+        .startOf('month')
+        .format(dateFormat),
+    endDayOfMonth: (date, dateFormat = 'YYYY-MM-DD HH:mm:ss') => moment(date)
+        .endOf('month')
+        .format(dateFormat),
+    TimeUnix: (date, typeDateFormat = 'YYYY-MM-DD') => moment(date, typeDateFormat).unix(),
+    TimeUnixToTime: (value, typeFormat = 'YYYY-MM-DD') => moment.unix(value).format(typeFormat),
+    getDateYMDCurrent: () => moment().format('YYYY-MM-DD'),
+    getYearCurrent: moment().format('YYYY'),
+    getMonthCurrent: moment().format('MM'),
+    totalDaysInMonth: (year, month) => {
+        year = year || (new Date()).getFullYear();
+        month = month || (new Date()).getMonth() + 1;
+        return new Date(year, month, 0).getDate();
+    },
     getParamsWriteLog: (LogName, Model, Data, Action, Decoded, RefObjectId = null) => ({
         LogName,
         Model,
@@ -652,11 +652,11 @@ module.exports = {
     //         },
     //     };
     // },
-    // RegExpSearch: (string = '') => {
-    //     const { escapeRegExp } = module.exports;
-    //     const regex = new RegExp(escapeRegExp(string), 'i');
-    //     return regex;
-    // },
+    RegExpSearch: (string = '') => {
+        const { escapeRegExp } = module.exports;
+        const regex = new RegExp(escapeRegExp(string), 'i');
+        return regex;
+    },
     // isValidLat: (lat) => {
     //     const regex = /^(-?[1-8]?\d(?:\.\d{1,18})?|90(?:\.0{1,18})?)$/;
     //     const validLat = regex.test(lat);

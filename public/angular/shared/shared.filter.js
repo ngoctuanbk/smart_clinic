@@ -119,6 +119,10 @@
                 return 'Ngừng';
             } if (status === 'Deleted') {
                 return 'Bị xóa';
+            } if (status === 'InProcess') {
+                return 'Đang khám';
+            } if (status === 'Done') {
+                return 'Đã khám';
             }
         }
         return filterStatus;
@@ -134,6 +138,10 @@
                 return 'Hủy';
             } if (status === 'Deleted') {
                 return 'Bị xóa';
+            } if (status === 'InProcess') {
+                return 'Đang khám';
+            } if (status === 'Done') {
+                return 'Đã khám';
             }
         }
         return filterStatus;
@@ -141,11 +149,11 @@
 
     function filterStatusToClass() {
         function filterStatus(status) {
-            if (status === 'Active') {
+            if (status === 'Active'  || status === 200 || status === 'InProcess' || status === 500) {
                 return 'status-Active';
             } if (status === 'WaitingAccepted') {
                 return 'status-New';
-            } if (status === 'Inactive') {
+            } if (status === 'Inactive' || status === 300 || status === 'InProcess' || status === 500) {
                 return 'status-Inactive';
             } if (status === 'Deleted') {
                 return 'status-Remove';

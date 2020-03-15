@@ -101,4 +101,13 @@ module.exports = {
             return resJsonError(res, errors, 'user');
         }
     },
+    listDoctorActive: async (req, res) => {
+        try {
+            const result = await UserService.listDoctorActive(req.query);
+            return res.json(responseSuccess(10111, result));
+        } catch (errors) {
+            console.log(errors)
+            return resJsonError(res, errors, 'user');
+        }
+    },
 }

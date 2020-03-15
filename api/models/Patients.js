@@ -22,6 +22,15 @@ const PatientSchema = new mongoose.Schema({
     DateOfBirth: {type: String, required: true},
     Career: {type: String},
     Order: {type: Number, default: 255},
+    Contact: [
+        {
+        Name: {type: String},
+        Relationship: {type: String},
+        Phone: {type: String},
+        Home: {type: String},
+    },
+    ],
+    Reason: {type: String},
     Status: {type: String, default: STATUS[100]},
     CreatedDate: {type: String, default: generatorTime},
     CreatedBy: {type: mongoose.Schema.Types.ObjectId},
