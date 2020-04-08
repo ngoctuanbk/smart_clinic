@@ -12,11 +12,8 @@
 
     function SharedService($http, exception, moment, $timeout, listMonths, $filter) {
         const _listMonths = listMonths();
-        this.numberDaysInMonth = function (year, month) {
-            return new Date(year, month, 0).getDate();
-        };
-        this.getDayOfWeek = function (date) {
-            const DaysOfWeek = [{
+        const DAY_OF_WEEK = [
+            {
                 number: 0,
                 key: 'Sun',
                 value: 'Chủ nhật',
@@ -46,13 +43,26 @@
                 key: 'Sat',
                 value: 'Thứ bảy',
             },
-            ];
+        ];
+        this.numberDaysInMonth = function (year, month) {
+            return new Date(year, month, 0).getDate();
+        };
+        this.daysOfWeek = DAY_OF_WEEK;
+        this.getDayOfWeek = function (date) {
+            const DaysOfWeek = DAY_OF_WEEK;
             const momentdate = moment(date);
             const day = new Date(momentdate);
             const dayNumber = day.getDay();
             const _day = DaysOfWeek.filter(d => d.number === dayNumber);
             return _day[0].key;
         };
+        this.timeUnix = (date, formatDate = 'YYYY-MM-DD') => moment(date, formatDate).unix();
+        this.dateCurrent = (formatDate = 'YYYY-MM-DD') => moment().format(formatDate);
+        this.nextDate = (date, number = 0, formatDate = 'YYYY-MM-DD') => {
+            const inputDate = date || this.dateCurrent(formatDate);
+            return moment(inputDate).add(number, 'days').format(formatDate);
+        };
+
         this.convertTimeMoment = function (time) {
             const isValidDate = moment(time, 'YYYY-MM-DD HH:mm:ss', true).isValid();
             const formatTime = isValidDate ? moment(time, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY HH:mm:ss') : '';
@@ -143,21 +153,27 @@
         this.getDaysInMonth = (year, month) => {
             year = year || new Date().getFullYear();
             month = month || new Date().getMonth() + 1;
+            const _month = convertNumber(month);
             const daysInMonth = new Date(year, month, 0).getDate();
             let arrDaysInMonth = [];
             for (let i = 1; i <= daysInMonth; i++) {
+                const day = convertNumber(i);
                 const date = {
-                    day: i,
-                    month,
+                    day,
+                    month: _month,
                     year,
-                    fullDate: `${year}-${month}-${i}`,
+                    fullDate: `${year}-${_month}-${day}`,
                 };
                 arrDaysInMonth = [...arrDaysInMonth, date];
             }
             return arrDaysInMonth;
         };
 
-        this.convertMonth = month => (month.toString().length === 1 ? `0${month}` : month);
+        function convertNumber(number) {
+            return String(number).length === 1 ? `0${number}` : number;
+        }
+
+        this.convertMonth = month => convertNumber(month);
 
         this.changeCss = () => {
             angular.element('.form-group').removeClass('has-error');

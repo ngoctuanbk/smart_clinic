@@ -1,7 +1,7 @@
 /* eslint-disable no-const-assign */
 (function () {
     angular
-        .module('app.core')
+        .module('SmartClinic')
         .filter('filterScheduleAll', filterScheduleAll)
     function renderElem(value, status, scheduleObjectId) {
         // eslint-disable-next-line no-nested-ternary
@@ -17,7 +17,7 @@
             if (!isEmpty(hasDate)) {
                 let template = '';
                 hasDate.map((item) => {
-                    template += renderElem(`${item.Patient}`,
+                    template += renderElem(`${item.Patient} (${item.PatientID})`,
                         item.Status, item.ScheduleObjectId);
                 });
                 return $sce.trustAsHtml(template);
@@ -27,3 +27,4 @@
         return input;
     }
 }());
+ 

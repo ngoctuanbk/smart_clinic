@@ -39,6 +39,17 @@ module.exports = {
             Info,
         });
     },
+    edit: async (req, res) => {
+        const UserObjectId = req.query.id ? req.query.id : '';
+        const Info = getInfoUserSession(req);
+        return res.render('users/edit', {
+            layout: 'user_edit',
+            title: TITLE_ADMIN,
+            activity: 'Users',
+            Info,
+            UserObjectId,
+        });
+    },
     create: async (req, res) => {
         try {
             beforeUpload(req, res, async () => {
@@ -62,6 +73,25 @@ module.exports = {
     list: async (req, res) => {
         try {
             const result = await sendQueryToAPI('GET', 'api/users/list', getHeaders(req), req.query, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
+    getInfo: async (req) => {
+        try {
+            const result = await sendQueryToAPI('GET', 'api/users/getInfo', getHeaders(req), req.query, true);
+            if (result.Success) {
+                return result.Data;
+            }
+            return {};
+        } catch (err) {
+            return {};
+        }
+    },
+    listDoctorActive: async (req, res) => {
+        try {
+            const result = await sendQueryToAPI('GET', 'api/users/listDoctorActive', getHeaders(req), req.query, true);
             return sendDataToClient(req, res, result);
         } catch (err) {
             return res.status(500).json(responseError(1001, err));

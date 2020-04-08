@@ -1,5 +1,5 @@
 (function () {
-    angular.module('SaleFieApp')
+    angular.module('SmartClinic')
         .service('DashboardsService', DashboardsService);
 
         DashboardsService.$inject = ['$http', 'exception'];

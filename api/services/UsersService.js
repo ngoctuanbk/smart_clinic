@@ -125,7 +125,7 @@ module.exports = {
                     $in: convertToArrayObjectId(data.RoleObjectId),
                 };
             }
-            const fieldsSelect = 'UserName Info.FullName Mobile Email Status';
+            const fieldsSelect = 'UserName Info.FullName Mobile Email Status Avatar';
             const populate = [{
                 path: 'RoleObjectId',
                 select: '-_id RoleName',
@@ -217,6 +217,22 @@ module.exports = {
                 return obj;
             }, {Active: 0, WaitingAccepted: 0, Inactive: 0});
             return promiseResolve(response);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    info: async (data) => {
+        try {
+            const conditions = {
+                _id: data.UserObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const fieldsSelected = `_id UserName Email Mobile RoleObjectId Avatar Info JoinDate Status DateOfBirth`;
+            const populate = [
+                { path: 'RoleObjectId', select: '_id RoleCode RoleName', match: { DeleteFlag: DELETE_FLAG[200] } },
+            ];
+            const result = await UserModel.findOne(conditions).select(fieldsSelected).populate(populate);
+            return promiseResolve(result);
         } catch (err) {
             return promiseReject(err);
         }

@@ -6,7 +6,7 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="fas fa-calendar-alt"></i>
-                            <span class="caption-subject bold uppercase"> Lịch khám chữa bệnh </span>
+                            <span class="caption-subject bold uppercase"> Danh sách khám chữa bệnh </span>
                         </div>
                         <div class="tools">
                             <a href="javascript:;" class="collapse"> </a>
@@ -14,7 +14,7 @@
                             <a href="javascript:;" class="fullscreen"> </a>
                         </div>
                         <div class="actions pull-left">
-                            <a href="javascript:;" ng-click="showModal('#create_schedule')" class="btn btn-circle btn-success"><i class="fa fa-plus"></i>
+                            <a href="#create_schedule" class="btn btn-circle btn-success" data-toggle="modal"><i class="fa fa-plus"></i>
                                 Thêm mới </a>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                                         <div class="input-group-control input-group-control-update">
                                             <select style="width: 100px; display:none !important"
                                                 class="selectpicker form-control limit-data pull-left" data-title="" ng-model="paginate.Limit"
-                                                ng-change="filterSchedule();" ng-options="v as v for (k,v) in limitData">
+                                                ng-change="paginate.Page = 1; list()" ng-options="v as v for (k,v) in limitData">
                                                 <option value="" ng-if="hideOptions"></option>
                                             </select>
                                         </div>
@@ -146,4 +146,185 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div id="create_schedule" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title="">
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="fas fa-calendar-alt"></i>
+                        Thông tin khám bệnh
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" name="f_CreateSchedule" ng-validate="validator">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}" ng-bind="alertMsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Chọn bệnh nhân <span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-9">
+                                    <select class="bs-select form-control" name="patient" ng-model="formCreate.PatientObjectId"
+                                        ng-options="patient._id as '(' + patient.PatientID + ') '+ patient.FullName for patient in patients"
+                                        data-live-search="true" required data-size="5" title=" ">
+                                        <option ng-if="hideOptions"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Chọn bác sĩ <span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-9">
+                                    <select class="bs-select form-control" name="doctor" ng-model="formCreate.UserObjectId"
+                                        ng-options="doctor._id as '(' + doctor.UserName + ') '+ doctor.Info.FullName for doctor in doctors"
+                                        data-live-search="true" required data-size="5" title=" ">
+                                        <option ng-if="hideOptions"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Thời gian bắt đầu:</label>
+                                <div class="col-md-9">
+                                    <div class="input-group time-picker">
+                                        <input id="from_time" type="text" name="from_time" format-timepicker
+                                            ng-model="formCreate.TimeWorkStart"
+                                            class="form-control timepicker timepicker-24" value="">
+                                        <span class="input-group-addon"><i class="fa fa-clock font-blue"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Thời gian kết thúc:</label>
+                                <div class="col-md-9">
+                                    <div class="input-group time-picker">
+                                        <input id="to_time" type="text" name="to_time" format-timepicker
+                                            ng-model="formCreate.TimeWorkEnd" class="form-control timepicker timepicker-24"
+                                            value="">
+                                        <span class="input-group-addon"><i class="fa fa-clock font-blue"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Ngày khám<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-9">
+                                    <div class="input-group date date-picker" data-date-format="dd-mm-yyyy">
+                                        <input type="text" class="form-control dashed-border" id="work_date"
+                                            ng-model="formCreate.Date" name="date"
+                                            placeholder="Chọn ngày khám">
+                                        <div class="form-control-focus"> </div>
+                                        <span class="input-group-addon"><i class="far fa-calendar-alt font-blue"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    class="col-md-3 control-label">Ghi chú:</label>
+                                <div class="col-md-9">
+                                    <textarea name="description" ng-model="formCreate.Note" class="form-control"
+                                        rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="create(f_CreateSchedule)">
+                        Lưu</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        Hủy</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="detail_schedule" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title="">
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="fas fa-calendar-alt"></i>
+                        Thông tin danh sách khám bệnh
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow" id="alert-msg">
+                                <div class="alert alert-\{{alertClass}}" ng-bind="alertMsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">  Ngày khám bệnh:</label>
+                                <div class="col-md-8">
+                                    <input type="text" readonly class="form-control" ng-value="infoSchedule.Date | formatDateToDMY">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"> Bác sĩ khám:</label>
+                                <div class="col-md-8">
+                                    <input type="text" readonly class="form-control" ng-value="infoSchedule.UserObjectId.Info.FullName">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label"> Bệnh nhân:</label>
+                                <div class="col-md-8">
+                                    <input type="text" readonly class="form-control" ng-value="infoSchedule.PatientObjectId.FullName">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                            <label class="col-md-4 control-label"> Trạng thái:</label> {{!Trạng thái}}
+                            <div class="col-md-8">
+                                <div class="btn-group status dropup">
+                                    <label style="width: unset;" class="btn btn-sm btn-status" 
+                                        ng-bind="infoSchedule.Status | filterStatusScheduleToText"
+                                        ng-class="infoSchedule.Status | filterStatusToClass">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="form-group" >
+                                <label class="col-md-4 control-label"> Thời gian khám bệnh:</label>
+                                <div class="col-md-8 pd-l-0">
+                                    <div class=" col-md-6 pd-l-0">
+                                        <label class="col-md-4 control-label text-left"> Từ:</label> {{!Từ}}
+                                        <div class="col-md-8 pd-l-0">
+                                            <input type="text" readonly class="form-control" ng-value="infoSchedule.TimeWorkStart">
+                                        </div>
+                                    </div>
+                                    <div class=" col-md-6">
+                                        <label class="col-md-4 control-label"> Đến:</label>{{!Đến}}
+                                        <div class="col-md-8">
+                                            <input type="text" readonly class="form-control" ng-value="infoSchedule.TimeWorkEnd">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    class="col-md-4 control-label">Ghi chú:</label>
+                                <div class="col-md-8">
+                                    <textarea class="form-control" readonly ng-value="infoSchedule.Note"
+                                        placeholder="Ghi chú về lịch khám"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-if="infoSchedule.Status === 'WaitingAccepted'" ng-click="updateStatus(200, infoSchedule._id)">
+                        Duyệt</button>
+                    <button type="button" class="btn btn-danger" ng-if="infoSchedule.Status === 'WaitingAccepted'" ng-click="updateStatus(400, infoSchedule._id)">
+                        Hủy</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>   
 </div>

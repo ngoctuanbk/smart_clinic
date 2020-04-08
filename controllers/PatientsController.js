@@ -27,6 +27,14 @@ module.exports = {
             return res.status(500).json(responseError(1001, err));
         }
     },
+    listActive: async (req, res) => {
+        try {
+            const result = await sendQueryToAPI('GET', 'api/patients/listActive', getHeaders(req), req.query, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
     create: async (req, res) => {
         try {
             const result = await sendBodyToAPI('POST', 'api/patients/create', getHeaders(req), req.body, true);
@@ -38,6 +46,14 @@ module.exports = {
     updateStatus: async (req, res) => {
         try {
             const result = await sendBodyToAPI('PUT', 'api/patients/updateStatus', getHeaders(req), req.body, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
+    update: async (req, res) => {
+        try {
+            const result = await sendBodyToAPI('PUT', 'api/patients/update', getHeaders(req), req.body, true);
             return sendDataToClient(req, res, result);
         } catch (err) {
             return res.status(500).json(responseError(1001, err));

@@ -84,7 +84,13 @@
                 };
             }
         };
-
+        function resetData() {
+            delete $scope.user;
+            delete $scope.Role;
+            angular.element('span.fileinput-exists, a.fileinput-exists').css('display', 'none');
+            angular.element('span.fileinput-new').css('display', 'block');
+            refreshSelectPicker();
+        }
 
     
     }

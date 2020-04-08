@@ -183,11 +183,5 @@
                 resetDataCreate();
             });
         });
-
-        function alertMessage(alertClass = '', alertMsg = '', alertShow = false) {
-            $scope.alertShow = alertShow;
-            $scope.alertClass = alertClass;
-            $scope.alertMsg = alertMsg;
-        }
     }
 }());

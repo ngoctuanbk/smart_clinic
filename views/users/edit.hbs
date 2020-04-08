@@ -1,0 +1,99 @@
+<div class="page-content-wrapper" ng-controller="UsersEditController" data-ng-init="info = {{data}}; RoleCode = '{{Info.Role}}'; 
+    RoleObjectId = '{{Info.RoleObjectId}}'; 
+    UserObjectId = '{{Info.UserObjectId}}';
+    UserId = '{{UserObjectId}}';
+    init();">
+    <!-- BEGIN CONTENT BODY -->
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="flaticon-pin-staff portlet-title-icon"></i>
+                            <span class="caption-subject bold uppercase"> Thông tin nhân viên</span>
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+                            <a href="javascript:;" ng-click="reloadTab();" class="reload"> </a>
+                            <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body setting">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-3 col-xs-2 page-menu">
+                                <div>
+                                    <div class="flex-box justify-content-center mb-20">
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail size-img-profile wrapper-img-profile">
+                                                <img src="" alt="" />
+                                            </div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail size-img-profile">
+                                            </div>
+                                            <div>
+                                                <span class="btn default btn-file">
+                                                    <span class="fileinput-new">
+                                                        Chọn ảnh
+                                                    </span>
+                                                    <span class="fileinput-exists">
+                                                        Thay đổi ảnh
+                                                    </span>
+                                                    <input type="file" file-model ng-model="image" name="...">
+                                                </span>
+                                                <a href="javascript:;" ng-click="updateAvatar()"
+                                                    class="btn green fileinput-exists">
+                                                    Lưu
+                                                </a>
+                                                <a href="javascript:;" class="btn red fileinput-exists" ng-click="deleteImage()">
+                                                    Xóa
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="nav nav-tabs tabs-left">
+                                    <li class="default active" ng-click="loadTab('info')">
+                                        <a href="#tab_info" data-toggle="tab"> Thông tin 
+                                            <span class="pull-right"><i class = "fa fa-angle-right pull-right"></i></span>
+                                        </a>
+                                    </li>
+                                    <li class="default" ng-click="loadTab('schedule')">
+                                        <a href="#tab_schedule" data-toggle="tab"> Lịch khám chữa bệnh
+                                            <span class="pull-right"><i class = "fa fa-angle-right pull-right"></i></span>
+                                        </a>
+                                    </li>
+                                    <li class="default" ng-click="loadTab('target')">
+                                        <a href="#tab_target" data-toggle="tab"> Danh sách bệnh nhân
+                                            <span class="pull-right"><i class = "fa fa-angle-right pull-right"></i></span>
+                                        </a>
+                                    </li>
+                                    <li class="default" ng-click="loadTab('pushProduct')">
+                                        <a href="#tab_push_product" data-toggle="tab"> Thuốc
+                                            <span class="pull-right"><i class = "fa fa-angle-right pull-right"></i></span>
+                                        </a>
+                                    </li>
+                                    <li class="default" ng-click="loadTab('branchAgency')">
+                                        <a href="#tab_branch_agency" data-toggle="tab"> Hoạt động nhân viên
+                                            <span class="pull-right"><i class = "fa fa-angle-right pull-right"></i></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-9 col-sm-9 col-xs-10">
+                                <div class="tab-content">
+                                    {{>users/info}}
+                                    {{!-- {{>users/schedule}}
+                                    {{>users/target}}
+                                    {{>users/push_product}}
+                                    {{>users/branch_agency}}
+                                    {{>users/place}} --}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTENT BODY -->
+</div>

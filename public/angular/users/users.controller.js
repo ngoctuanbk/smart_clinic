@@ -104,6 +104,9 @@
             $scope.paginate.Page = 1;
             $scope.list();
         };
+        $scope.viewInfo = (UserObjectId) => {
+            window.location.href = `/admin/users/edit?id=${UserObjectId}`;
+        };
 
         // $scope.updateStatus = (Status, UserObjectId) => {
         //     const formUpdate = {

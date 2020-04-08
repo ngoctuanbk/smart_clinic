@@ -74,9 +74,11 @@ const PatientObjectIdValidator = {
 const createValidator = Object.assign({}, FullName, Mobile, addressValidator, Sex);
 const listValidator = Object.assign({}, paginate);
 const updateStatusValidator = Object.assign({}, PatientObjectIdValidator, StatusValidator);
+const updateValidator = Object.assign({}, PatientObjectIdValidator, FullName, Mobile, addressValidator, Sex);
 
 module.exports = {
     createValidator,
     listValidator,
     updateStatusValidator,
+    updateValidator,
 };

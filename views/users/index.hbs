@@ -100,11 +100,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <table class="table" id="list_users">
+                        <div class="table-scrollable">
+                            <table class="table table-light table-hover" id="list_users">
                                 <thead>
                                     <tr class="">
-                                        <th class="rowno"> # </th>
+                                        <th class="rowno"> STT </th>
+                                        <th class="title"> Avatar </th>
                                         <th class="title" ng-click="sort('Info.FullName')">
                                             Tên nhân viên</th>
                                         <th class="title" ng-click="sort('UserName')">
@@ -121,6 +122,9 @@
                                 <tbody ng-repeat="user in users">
                                     <tr class='click-row'>
                                         <td class="rowno" ng-bind="$index + count"> </td>
+                                        <td class="title">
+                                            <img ng-src="\{{(user.Avatar | filterImageFromApi) || 'http://localhost:8000/images/avatar.jpg'}}" width="80" height="80" alt="">
+                                        </td>
                                         <td class="title link" ng-click="viewInfo(user._id)"
                                             ng-bind="user.Info.FullName" title="Xem chi tiết"></td>
                                         <td class="title" ng-bind="user.UserName"></td>
@@ -129,8 +133,8 @@
                                         <td class="title" ng-bind="user.Email">
                                         </td>
                                         <td class="title" ng-bind="user.RoleObjectId.RoleName"></td>
-                                        <td class="status th-size-update _status" id="status_table">
-                                            <div class="btn-group status dropup th-size-update" data-id="3">
+                                        <td class="th-size-update">
+                                            <div class="btn-group status dropup _status" data-id="3">
                                                 <label class="btn btn-sm btn-status"
                                                     ng-class="user.Status | filterStatusToClass"
                                                     ng-bind="user.Status | filterStatusToText">

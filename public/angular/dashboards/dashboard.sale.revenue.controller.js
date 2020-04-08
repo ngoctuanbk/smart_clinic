@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-    angular.module('SaleFieApp')
+    angular.module('SmartClinic')
         .controller('DashboardSaleRevenueController', DashboardSaleRevenueController)
         DashboardSaleRevenueController.$inject = ['$scope', 'DashboardsService', 'SharedService', 'logger', '$timeout'];
 

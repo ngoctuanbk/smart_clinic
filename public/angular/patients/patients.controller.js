@@ -186,7 +186,46 @@
                     }
                 });
         };
+        $scope.info = (item, idx) => {
+            $scope.selectedPatient = idx;
+            $scope.formUpdate.PatientObjectId = item._id;
+            $scope.formUpdate.FullName = item.FullName;
+            $scope.formUpdate.Mobile = item.Mobile;
+            $scope.formUpdate.Sex = item.Sex;
+            $scope.formUpdate.DateOfBirth = item.DateOfBirth;
+            $scope.formUpdate.Career = item.Career;
+            $scope.formUpdate.Reason = item.Reason;
+            $scope.formUpdate.Address.ProvinceObjectId = item.Address.ProvinceObjectId._id;
+            $scope.formUpdate.Address.DistrictObjectId = item.Address.DistrictObjectId._id;
+            $scope.formUpdate.Address.WardObjectId = item.Address.WardObjectId._id;
+            $scope.formUpdate.Address.Street = item.Address.Street;
+            $scope.ContactDetailsUpdate = item.Contact;
+            // refreshSelectPicker();
+            $scope.listDistrictByProvince($scope.formUpdate.Address.ProvinceObjectId);
+            $scope.listWardByDistrict($scope.formUpdate.Address.DistrictObjectId);
+        };
 
+        $scope.update = (form) => {
+            if ($scope.formUpdate.DateOfBirth){
+                $scope.formUpdate.Age = getAge($scope.formUpdate.DateOfBirth);
+            }
+            if (form.validate()) {
+                PatientsService.update($scope.formUpdate)
+                    .then((response) => {
+                        if (response.Success) {
+                            alertMessage('success', 'Cập nhật thông tin bệnh nhân thành công', true);
+                            $timeout(() => {
+                                angular.element('#update_patient').modal('hide');
+                            }, 2000);
+                            $scope.list();
+                        } else {
+                            alertMessage('danger', 'Có lỗi xảy ra. Vui lòng thử lại!', true);
+                        }
+                    });
+            } else {
+                alertMessage('danger', SharedService.checkFormInvalid(form), true);
+            }
+        };
         function changeCss() {
             SharedService.changeCss();
         }

@@ -19,11 +19,25 @@ const UserObjectIdValidator = {
         },
     },
 };
+const ScheduleObjectIdValidator = {
+    ScheduleObjectId: {
+        notEmpty: true,
+        custom: {
+            options: value => isObjectId(value),
+            errorMessage: 'ScheduleObjectId must is ObjectId',
+        },
+        errorMessage: 'ScheduleObjectId is required',
+    },
+};
 
 const createValidator = Object.assign({}, PatientObjectIdValidator, UserObjectIdValidator);
 const listValidator = Object.assign({});
+const infoValidator = Object.assign({}, ScheduleObjectIdValidator);
+const updateStatusValidator = Object.assign({}, ScheduleObjectIdValidator, StatusValidator);
 
 module.exports = {
     createValidator,
     listValidator,
+    infoValidator,
+    updateStatusValidator,
 };

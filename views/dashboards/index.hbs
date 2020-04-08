@@ -1,7 +1,23 @@
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content dashboard-content">
-        <h1 class="page-title font-red-haze"> What is going on ? </h1>
+        {{!-- <h1 class="page-title font-red-haze"> What is going on ? </h1> --}}
+        <!--tab count user -->
+        {{>dashboards/count_user}}
+        <!--tab count patient -->
+        {{>dashboards/count_patient}}
+        {{!-- <!--tab top_revenue -->
+        {{>dashboards/top_revenue}}
+        <!--tab top_agency -->
+        {{>dashboards/top_agency}}
+        <!--tab chanel_rate -->
+        {{>dashboards/rate}}
+        <div class="row">
+            <!--tab yearly_revenue -->
+            {{>dashboards/yearly_revenue}}
+            <!--tab leader_board -->
+            <!--dashboards/leader_board-->
+        </div> --}}
     </div>
 
     <!-- END CONTENT BODY -->

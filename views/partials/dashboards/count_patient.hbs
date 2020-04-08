@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-lg-12 col-md-12 col-sm-12" ng-controller="DashboardSaleRevenueController">
+      <!-- BEGIN PORTLET-->
+      <div class="portlet light bordered">
+          <div class="portlet-title">
+              <div class="caption">
+                  <i class="fas fa-chart-bar font-green"></i>
+                  <span class="caption-subject bold uppercase"> Biểu đồ bệnh nhân thăm khám </span>
+              </div>
+              <div class="tools">
+                  <div class="btn-group" id="sale-monthpicker">
+                      <a class="btn btn-sm font-blue sbold uppercase dropdown-toggle " href="javascript:;"
+                          data-toggle="dropdown" aria-expanded="false">
+                          <i class="icon-calendar"></i>&nbsp;
+                          <span class="sbold uppercase hidden-xs" id="sale-choice-date">Chọn tháng</span>&nbsp;
+                          <i class="fa fa-angle-down"></i>
+                      </a>
+                  </div>
+                  <a href="javascript:;" class="collapse"> </a>
+                  <a href="javascript:;" class="fullscreen"> </a>
+              </div>
+          </div>
+          <div class="portlet-body">
+              <!-- graph -->
+              <div id="sales_chart"  class="chart"></div>
+          </div>
+      </div>
+  </div>
+</div>

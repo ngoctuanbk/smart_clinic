@@ -13,6 +13,7 @@ const {
     isEmpty,
     escapeRegExp,
     convertToTime,
+    convertToObjectId,
 } = require('../libs/shared');
 
 module.exports = {
@@ -26,6 +27,7 @@ module.exports = {
                 TimeWorkEnd: data.TimeWorkEnd || '',
                 CreatedBy: data.CreatedBy,
                 CreatedDate: generatorTime(),
+                Note: data.Note || '',
             };
             const result = await ScheduleModel.create(set);
             return promiseResolve(result);
@@ -104,6 +106,7 @@ module.exports = {
                 pipeline.push({ $lookup: lookup });
                 pipeline.push({ $unwind: unwind });
                 fieldsPushed.Patient = '$Patient.FullName';
+                fieldsPushed.PatientID = '$Patient.PatientID';
                 const group = {
                     _id: '$UserObjectId',
                     Schedules: {
@@ -157,6 +160,46 @@ module.exports = {
                 return promiseResolve(true);
             }
             return promiseResolve(false);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    info: async (data) => {
+        try {
+            const conditions = {
+                DeleteFlag: DELETE_FLAG[200],
+                _id: convertToObjectId(data.ScheduleObjectId),
+            };
+            const fields = {
+                Date: 1,
+                TimeWorkStart: 1,
+                TimeWorkEnd: 1,
+                UserObjectId: 1,
+                PatientObjectId: 1,
+                Note: 1,
+                Status: 1,
+            };
+            const populate = [
+                {path: 'PatientObjectId', select: '-_id FullName PatientID'},
+                {path: 'UserObjectId', select: '-_id UserName Info'}];
+            const result = ScheduleModel.findOne(conditions, fields).populate(populate);
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    updateStatus: async (data) => {
+        try {
+            const conditions = {
+                _id: data.ScheduleObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {};
+            set.Status = STATUS[+data.Status];
+            set.UpdatedDate = generatorTime();
+            set.UpdatedBy = data.UpdatedBy;
+            const result = await ScheduleModel.findOneAndUpdate(conditions, set, { new: true });
+            return promiseResolve(result);
         } catch (err) {
             return promiseReject(err);
         }

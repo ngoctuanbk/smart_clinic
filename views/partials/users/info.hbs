@@ -1,0 +1,166 @@
+<div class="tab-pane active" id="tab_info">
+	<!-- BEGIN CONTENT BODY -->
+			<div class="portlet light bordered">
+				<div class="portlet-title">
+					<div class="actions">
+						<a href="javascript:;" ng-if="disabledElement" ng-click="openToUpdate()" class="btn btn-circle green">
+							<i class="fa fa-pen"></i>Sửa </a>
+						<a href="javascript:;" ng-if="!disabledElement" ng-click="update(f_UpdateUser)" class="btn btn-circle green">
+							<i class="fa fa-save"></i>Lưu</a>
+					</div>
+				</div>
+				<div class="porlet-body form">
+					<form role="form" class="form-horizontal" name="f_UpdateUser" ng-validate="validator">
+						<div class="form-body">
+							<div class="row mb-10">
+								<div class="col-md-12">
+									<div class="col-md-12">
+										<div class="row">
+											<div class="col-md-6 col-s-6">
+												<div class="note note-info note-title">
+													<div class="caption">
+														<span class="caption-subject">Thông tin nhân viên</span>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-12 control-label vertical text-left">ID/Tên đăng nhập<span class="required">(*)</span>:</label>
+													<div class="col-md-12">
+														<div class="input-group">
+															<input type="text" readonly class="form-control" required ng-model="formUpdate.UserName" autocomplete="off">
+															<div class="input-group-btn" id="member-status">
+																<label class="btn btn-status status-\{{filterStatus(formUpdate.Status).class}}"
+																	ng-bind="filterStatus(formUpdate.Status).text">
+																</label>
+																<button type="button" class="btn green dropdown-toggle" data-toggle="dropdown" tabindex="-1">
+																	<i class="fa fa-angle-down"></i>
+																</button>
+																<ul class="dropdown-menu status pull-right" role="menu">
+																	<li class="status-Inactive"><a href="javascript:;" data-value="Inactive" ng-click="selectStatus(400)">
+																			Ngừng </a></li>
+																	<li class="status-Active"><a href="javascript:;" data-value="Active" ng-click="selectStatus(200)">
+																			Hoạt động </a></li>
+																</ul>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-12 control-label vertical text-left">Họ tên<span class="required">(*)</span>:</label>
+													<div class="col-md-12">
+														<input type="text" ng-disabled="disabledElement" required class="form-control" ng-model="formUpdate.Info.FullName" name="name" placeholder="">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-12 control-label text-left">Giới tính<span
+															class="required">(*)</span>:</label>
+													<div class="col-md-12">
+														<select class="selectpicker form-control" ng-disabled="disabledElement"
+															name="sex" ng-model="formUpdate.Sex" data-live-search="true" 
+															ng-options="sex.key as sex.name for sex in Sex"
+															data-title="Chọn giới tính">
+															<option value="" ng-if="hideOption"></option>
+														</select>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-12 control-label vertical text-left">Số CMND/Căn cước{{!--Số CMND/Căn cước   --}}:</label>
+													<div class="col-md-12">
+														<input type="text" ng-disabled="disabledElement" class="form-control" ng-model="formUpdate.Info.Passport" name="passport" placeholder="">
+													</div>
+												</div>
+												<div class="form-group">
+													<label
+														class="col-md-12 control-label vertical text-left">Ngày sinh<span
+															class="required">(*)</span>:</label>
+													<div class="col-md-12">
+														<div class="input-group date date-picker"
+															data-date-format="dd-mm-yyyy"
+															data-date-viewmode="years"
+															data-date-today-highlight="true">
+															<input type="text" ng-disabled="disabledElement"
+																class="form-control dashed-border"
+																id="join_date" ng-model="formUpdate.JoinDate" name="join_date"
+																placeholder="Ngày sinh">
+															<div class="form-control-focus">
+															</div>
+															<span class="input-group-addon"><i
+																	class="far fa-calendar-alt font-blue"></i></span>
+														</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<label
+														class="col-md-12 control-label vertical text-left">Ngày gia nhập:</label>
+													<div class="col-md-12">
+														<div class="input-group date date-picker"
+															data-date-format="dd-mm-yyyy"
+															data-date-viewmode="years"
+															data-date-today-highlight="true">
+															<input type="text" ng-disabled="disabledElement"
+																class="form-control dashed-border"
+																id="join_date" ng-model="formUpdate.JoinDate" name="join_date"
+																placeholder="Ngày gia nhập">
+															<div class="form-control-focus">
+															</div>
+															<span class="input-group-addon"><i
+																	class="far fa-calendar-alt font-blue"></i></span>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-6 col-s-6">
+												<div class="note note-info note-title">
+													<div class="caption">
+														<span class="caption-subject">Thông tin liên hệ</span>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-12 control-label vertical text-left">Số điện thoại<span class="required">(*)</span>{{!--Phone   --}}:</label>
+													<div class="col-md-12">
+														<input type="text"  ng-disabled="disabledElement" class="form-control" id="mobile" ng-model="formUpdate.Mobile" name="mobile"
+														placeholder="">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-12 control-label vertical text-left">Email{{!<span class="required">(*)</span>--}}{{!--Email   --}}:</label>
+													<div class="col-md-12">
+														<input type="email"  ng-disabled="disabledElement" class="form-control" ng-model="formUpdate.Email" name="email" placeholder="">
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-12 control-label vertical text-left">Địa chỉ{{!--Địa chỉ:   --}}:</label>
+													<div class="col-md-12">
+														<input type="text" ng-disabled="disabledElement" class="form-control" ng-model="formUpdate.Info.Address" name="address" placeholder="">
+													</div>
+												</div>
+												<div class="form-group">
+												</div>
+												<div class="note note-info note-title">
+													<div class="caption">
+														<span class="caption-subject">Thông tin quản lý</span>
+													</div>
+												</div>
+												<div class="form-group">
+													<label class="col-md-12 control-label text-left">Vai trò</label>
+													<div class="col-md-12">
+														<select class="selectpicker form-control" name="role" ng-model="Role"
+															ng-change="loadSelectByRole(Role); " required  ng-disabled="disabledElement"
+															ng-options="role as role.RoleName for role in roles"
+															data-live-search="true" data-size="5" data-title="">
+															<option value="" ng-show="hideOptions">
+															</option>
+														</select>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--form body -->
+					</form>			
+				</div>
+			</div>
+</div>
+<!-- END CONTENT -->

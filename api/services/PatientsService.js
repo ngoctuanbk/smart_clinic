@@ -40,6 +40,35 @@ module.exports = {
             return promiseReject(err);
         }
     },
+    update: async (data) => {
+        try {
+            const conditions = {
+                _id: data.PatientObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                FullName: data.FullName,
+                Mobile: data.Mobile,
+                Sex: data.Sex,
+                Address: {
+                    ProvinceObjectId: data.Address.ProvinceObjectId,
+                    DistrictObjectId: data.Address.DistrictObjectId,
+                    WardObjectId: data.Address.WardObjectId,
+                    Street: data.Address.Street || '',
+                },
+                Age: data.Age,
+                DateOfBirth: data.DateOfBirth,
+                Career: data.Career,
+                Reason: data.Reason,
+                UpdatedBy: data.UpdatedBy,
+                UpdatedDate: generatorTime(),
+            };
+            const result = await PatientModel.findOneAndUpdate(conditions, set, { new: true});
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
     list: async (data) => {
         try {
             const page = +data.Page || 1;
@@ -75,7 +104,7 @@ module.exports = {
             if (data.DistrictObjectId) {
                 conditions['Address.DistrictObjectId'] = {$in: convertToArrayObjectId(data.DistrictObjectId)};
             }
-            const fieldsSelect = '_id PatientID FullName Mobile Sex Age DateOfBirth Career Address.Street CreatedBy CreatedDate Status';
+            const fieldsSelect = '_id PatientID FullName Mobile Sex Age DateOfBirth Career Address.Street CreatedBy CreatedDate Status Reason Contact';
             const populate = [{
                 path: 'Address.ProvinceObjectId',
                 select: '_id ProvinceName',
@@ -92,7 +121,7 @@ module.exports = {
             }, 
             {
                 path: 'Address.WardObjectId',
-                select: '-_id WardName',
+                select: '_id WardName',
                 match: {
                     DeleteFlag: DELETE_FLAG[200],
                 },

@@ -5,6 +5,7 @@ function PatientsRoute(apiRouter) {
     apiRouter.route('/patients/list').get(PatientsController.list);
     apiRouter.route('/patients/updateStatus').put(PatientsController.updateStatus);
     apiRouter.route('/patients/listActive').get(PatientsController.listActive);
+    apiRouter.route('/patients/update').put(PatientsController.update);
 }
 
 module.exports = PatientsRoute;

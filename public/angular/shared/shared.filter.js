@@ -13,6 +13,7 @@
         .filter('formatDateToDMY', formatDateToDMY)
         .filter('filterStatusToText', filterStatusToText)
         .filter('filterStatusOrderToText', filterStatusOrderToText)
+        .filter('filterStatusScheduleToText', filterStatusScheduleToText)
         .filter('filterStatusToClass', filterStatusToClass)
         .filter('filterStatusToLabelClass', filterStatusToLabelClass)
         .filter('filterDaysOfWeek', filterDaysOfWeek)
@@ -24,7 +25,8 @@
         .filter('filterChannelName', filterChannelName)
         .filter('filterAgencyName', filterAgencyName)
         .filter('currencyFormat', currencyFormat)
-        .filter('convertArrayObjectToString', convertArrayObjectToString);
+        .filter('convertArrayObjectToString', convertArrayObjectToString)
+        .filter('filterImageFromApi', filterImageFromApi);
 
     diffTimeFilter.$inject = ['moment'];
 
@@ -146,6 +148,20 @@
         }
         return filterStatus;
     }
+    function filterStatusScheduleToText() {
+        function filterStatus(status) {
+            if (status === 'Active' || +status === 200) {
+                return 'Đã duyệt'; // 'Đã duyệt',
+            } if (status === 'WaitingAccepted' || +status === 100) {
+                return 'Chờ duyệt'; // 'Chờ duyệt'
+            } if (status === 'Inactive' || +status === 400) {
+                return 'Hủy'; // 'Hủy'
+            } if (status === 'Deleted') {
+                return 'Đã xóa'; // 'Bị xóa'
+            }
+        }
+        return filterStatus;
+    }
 
     function filterStatusToClass() {
         function filterStatus(status) {
@@ -221,31 +237,31 @@
             const DaysOfWeek = [{
                 number: 0,
                 key: 'Sun',
-                value: 'CN',
+                value: 'Chủ nhật',
             }, {
                 number: 1,
                 key: 'Mon',
-                value: 'T2',
+                value: 'Thứ 2',
             }, {
                 number: 2,
                 key: 'Tue',
-                value: 'T3',
+                value: 'Thứ 3',
             }, {
                 number: 3,
                 key: 'Wed',
-                value: 'T4',
+                value: 'Thứ 4',
             }, {
                 number: 4,
                 key: 'Thu',
-                value: 'T5',
+                value: 'Thứ 5',
             }, {
                 number: 5,
                 key: 'Fri',
-                value: 'T6',
+                value: 'Thứ 6',
             }, {
                 number: 6,
                 key: 'Sat',
-                value: 'T7',
+                value: 'Thứ 7',
             }];
             const momentdate = moment(date);
             const day = new Date(momentdate);
@@ -363,6 +379,12 @@
             });
             str = removeCommaLast(str);
             return str;
+        }
+        return input;
+    }
+    function filterImageFromApi(getUrlApi) {
+        function input(urlImage) {
+            return urlImage ? `${getUrlApi()}${urlImage}` : '';
         }
         return input;
     }

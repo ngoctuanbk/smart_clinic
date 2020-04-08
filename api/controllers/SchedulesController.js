@@ -3,6 +3,8 @@ const SchedulesService = require('../services/SchedulesService');
 const {
     createValidator,
     listValidator,
+    infoValidator,
+    updateStatusValidator,
 } = require('../validators/ScheduleValidator');
 
 const {
@@ -49,6 +51,39 @@ module.exports = {
             return res.json(responseSuccess(10151, result));
         } catch (errors) {
             console.log(errors);
+            return resJsonError(res, errors, 'schedule');
+        }
+    },
+    info: async (req, res) => {
+        try {
+            req.query.Database = req.decoded.Database;
+            req.checkQuery(infoValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            const result = await SchedulesService.info(req.query);
+            return res.json(responseSuccess(10152, result));
+        } catch (errors) {
+            return resJsonError(res, errors, 'schedule');
+        }
+    },
+    updateStatus: async (req, res) => {
+        try {
+            req.checkBody(updateStatusValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.body.Database = req.decoded.Database;
+            req.body.UpdatedBy = req.decoded.UserObjectId;
+            const result = await SchedulesService.updateStatus(req.body);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10153, result));
+            }
+            return res.json(responseError(40142));
+        } catch (errors) {
+            console.log(errors)
             return resJsonError(res, errors, 'schedule');
         }
     },

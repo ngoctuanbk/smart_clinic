@@ -17,6 +17,7 @@ exports.CODES_SUCCESS = {
 /* user start from 10110 */
     10110: 'Create user success',
     10111: 'List user success',
+    10112: 'Get info user success',
 /* brand start from 10120 */
     10120: 'Create brand success',
     10121: 'List brand success',
@@ -34,9 +35,12 @@ exports.CODES_SUCCESS = {
     10140: 'Create patient success',
     10141: 'List patient success',
     10142: 'Update status patient success',
+    10143: 'Update patient success',
     /* schedule start from 10150 */
     10150: 'Create schedule success',
     10151: 'List schedule success',
+    10152: 'Get info schedule success',
+    10153: 'Update status schedule success',
 };
 
 exports.CODES_ERROR = {
@@ -55,6 +59,7 @@ exports.CODES_ERROR = {
     40100: 'Create user error',
     40101: 'UserName has exsit already',
     40102: 'UserCode has exsit already',
+    40103: 'Get info user error',
     /* brand error */ 
     40110: 'Create brand error',
     40111: 'BrandCode has exsit already',
@@ -74,7 +79,9 @@ exports.CODES_ERROR = {
     40130: 'Create patient error',
     40131: 'Patient has exsit already',
     40132: 'Update status patient error',
+    40133: 'Update patient error',
     /* schedule error */ 
     40140: 'Create schedule error',
     40141: 'Schedule has exsit already',
+    40142: 'Update status schedule error',
 };

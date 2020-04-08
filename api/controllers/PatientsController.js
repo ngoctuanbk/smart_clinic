@@ -4,6 +4,7 @@ const {
     createValidator,
     listValidator,
     updateStatusValidator,
+    updateValidator,
 } = require('../validators/PatientValidator');
 
 const {
@@ -56,6 +57,23 @@ module.exports = {
             return resJsonError(res, errors, 'patient');
         }
     },
+    update: async (req, res) => {
+        try {
+            req.checkBody(updateValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.body.UpdatedBy = req.decoded.UserObjectId;
+            const result = await PatientsService.update(req.body);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10143));
+            }
+            return res.json(responseError(40133));
+        } catch (errors) {
+            return resJsonError(res, errors, 'patient');
+        }
+    },
     list: async (req, res) => {
         try {
             req.checkQuery(listValidator);
@@ -95,7 +113,7 @@ module.exports = {
             const result = await PatientsService.listActive(req.query);
             return res.json(responseSuccess(10141, result));
         } catch (errors) {
-            return resJsonError(res, errors, 'user');
+            return resJsonError(res, errors, 'patient');
         }
     },
 };

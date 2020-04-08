@@ -21,6 +21,7 @@ const {
 const {
     createValidator,
     listValidator,
+    UserObjectIdValidator,
 } = require('../validators/UsersValidator');
 
 const uploadImage = uploadFile(storage('users', 'images'), fileFilterImage, 'Image');
@@ -107,6 +108,36 @@ module.exports = {
             return res.json(responseSuccess(10111, result));
         } catch (errors) {
             console.log(errors)
+            return resJsonError(res, errors, 'user');
+        }
+    },
+    getInfo: async (req, res) => {
+        try {
+            req.checkQuery(UserObjectIdValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.query.Database = req.decoded.Database;
+            const result = await UserService.info(req.query);
+            if (!isEmpty(result)) {
+                const response = {};
+                response.UserCode = result.UserCode;
+                response.Info = result.Info;
+                response.Status = result.Status;
+                response.UserName = result.UserName;
+                response.Email = result.Email;
+                response.Mobile = result.Mobile;
+                response._id = result._id;
+                response.Avatar = result.Avatar;
+                response.JoinDate = result.JoinDate;
+                response.RoleObjectId = result.RoleObjectId._id;
+                response.RoleCode = result.RoleObjectId.RoleCode;
+                response.RoleName = result.RoleObjectId.RoleName;
+                return res.json(responseSuccess(10112, response));
+            }
+            return res.json(responseError(40103));
+        } catch (errors) {
             return resJsonError(res, errors, 'user');
         }
     },

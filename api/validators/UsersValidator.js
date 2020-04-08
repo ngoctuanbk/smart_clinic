@@ -118,7 +118,7 @@ const listValidator = Object.assign({}, paginate);
 module.exports = {
     createValidator,
     listValidator,
-    // UserObjectIdValidator,
+    UserObjectIdValidator,
     // updateStatusValidator,
     // listByRoleValidator,
     // updateValidator,

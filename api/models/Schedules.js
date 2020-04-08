@@ -21,6 +21,7 @@ const ScheduleSchema = new mongoose.Schema({
     Date: {
         type: String, required: true, trim: true, index: true,
     },
+    Note: {type: String},
     Order: {type: Number, default: 255},
     Status: {type: String, default: STATUS[100], index: true},
     CreatedDate: {type: String, default: generatorTime()},
