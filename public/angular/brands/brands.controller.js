@@ -86,6 +86,7 @@
                 $scope.formCreate = filterObject($scope.formCreate);
                 BrandsService.create($scope.formCreate)
                     .then((response) => {
+                        console.log(response)
                         if (response.Success) {
                             $scope.list();
                             $scope.formCreate = {};

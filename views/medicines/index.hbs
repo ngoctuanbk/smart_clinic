@@ -1,0 +1,417 @@
+<div class="page-content-wrapper" ng-controller="MedicinesController">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fas fa-pills"></i>
+                            <span class="caption-subject sbold uppercase"> Danh sách thuốc</span>
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"> </a>
+                            <a href="javascript:;" ng-click="paginate.Page = 1; reload();" class="reload"> </a>
+                            <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                        </div>
+                        <div class="actions pull-left">
+                            <a href="#create_medicine" class="btn btn-circle btn-success" data-toggle="modal"><i
+                                    class="fa fa-plus"></i>
+                                Thêm mới </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="col-md-12 flex-box">
+                                    <div class="input-group" style="z-index: 1000 !important;">
+                                        <div class="input-group-control">
+                                            <select style="width: 100px;"
+                                                class="bs-select form-control limit-data pull-left"
+                                                ng-model="paginate.Limit" ng-change="paginate.Page = 1; list();"
+                                                ng-options="v as v for (k,v) in limitData">
+                                                <option value="" ng-if="hideOptions"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <select class="bs-select" data-size="5" data-live-search="true"
+                                            ng-change="paginate.Page = 1; list()" data-selected-text-format="count > 2"
+                                            data-title="Chọn thương hiệu" multiple
+                                            ng-options="brand._id as brand.BrandName + '(' + brand.BrandCode + ')' for brand in brands"
+                                            ng-model="paginate.BrandObjectId">
+                                            <option value="" ng-if="hideOption"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 box-search-wrapper">
+                                <div class="col-md-12">
+                                    <div class="form-search pull-right">
+                                        <div class="input-icon right">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" ng-model="paginate.Search" name="bar_code"
+                                                class="form-control" ng-change="paginate.Page = 1; list()"
+                                                placeholder="Tìm kiếm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-scrollable">
+                            <table class="table table-light table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="rowno"> STT </a> </th>
+                                        <th class="title"> Mã thuốc</th>
+                                        <th class="title"> Tên thuốc </th>
+                                        <th class="title"> Thương hiệu </a></th>
+                                        <th class="title"> Giá </th>
+                                        <th class="title"> Số lượng </th>
+                                        <th class="title"> Đơn vị tính </th>
+                                        <th class="title"> Số lô </th>
+                                        <th class="title"> Ngày sản xuất </a></th>
+                                        <th class="title"> Hạn sử dụng </a></th>
+                                        <th class="title"> Ngày nhập </a></th>
+                                        <th class="th-size-update"> Trạng thái</a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in medicines" id="tbody-\{{$index}}">
+                                        <td ng-bind="$index + count"></td>
+                                        <td>
+                                            <a href="#update_medicine" ng-click="info(item)" ng-bind="item.MedicineCode"
+                                                data-toggle="modal"></a>
+                                        </td>
+                                        <td>
+                                            <a href="#update_medicine" ng-click="info(item)" ng-bind="item.MedicineName"
+                                                data-toggle="modal"></a>
+                                        </td>
+                                        <td ng-bind="item.BrandObjectId.BrandName"></td>
+                                        <td ng-bind="item.Price"></td>
+                                        <td ng-bind="item.Quantity"></td>
+                                        <td ng-bind="item.Unit"></td>
+                                        <td ng-bind="item.LotNumber"></td>
+                                        <td ng-bind="item.MFG | formatDateToDMY"></td>
+                                        <td ng-bind="item.EXP | formatDateToDMY"></td>
+                                        <td ng-bind="item.CreatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
+                                        <td class="th-size-update">
+                                            <div class="btn-group status dropup _status">
+                                                <label class="btn btn-sm btn-status"
+                                                    ng-class="item.Status | filterStatusToClass"
+                                                    ng-bind="item.Status | filterStatusToText">
+                                                </label>
+                                                <button type="button" class="btn btn-sm btn-info dropdown-toggle"
+                                                    data-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fa fa-angle-up"></i>
+                                                </button>
+                                                <ul class="dropdown-menu status pull-right" role="menu">
+                                                    <li class="status-Remove"><a href="javascript:;" data-value="Remove"
+                                                            ng-click="delete(item._id, item.BrandName)">
+                                                            Xóa </a></li>
+                                                    <li class="status-Active"><a href="javascript:;" data-value="Active"
+                                                            ng-click="updateStatus(200, item._id, $index)">
+                                                            Hoạt động
+                                                        </a>
+                                                    </li>
+                                                    <li class="status-Inactive"><a href="javascript:;"
+                                                            data-value="Inactive"
+                                                            ng-click="updateStatus(400, item._id, $index)">
+                                                            Ngừng </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="boxs-footer dvd dvd-top">
+                            <div class="row" ng-if="pagination.show">
+                                <div class="col-sm-3 text-left">
+                                    <small class="text-muted"
+                                        ng-bind="'Hiển thị ' + pagination.skip + '-' + pagination.toSkip + '/' + pagination.total + ' mục'">
+                                    </small>
+                                </div>
+                                <div class="col-sm-3 hidden-xs">
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <ul class="pagination m-0">
+                                        <li>
+                                            <a ng-click="firstPage()">
+                                                <i class="fas fa-angle-double-left"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="prevPage()">
+                                                <i class="fa fa-chevron-left"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        <li ng-repeat="page in pagination.pages" style="cursor: pointer"
+                                            ng-class="{active:pagination.page === page}">
+                                            <a ng-click="setPage(page)" ng-bind="page"></a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="nextPage()">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="endPage()">
+                                                <i class="fas fa-angle-double-right"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="create_medicine" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title="">
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="fas fa-pills"></i>
+                        Thông tin thuốc
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" name="f_CreateMedicine" ng-validate="validator">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}" ng-bind="alertMsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Mã thuốc<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="medicine_code"
+                                        ng-model="formCreate.MedicineCode" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Tên thuốc<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="medicine_name"
+                                        ng-model="formCreate.MedicineName" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Thương hiệu<span class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <select class="bs-select form-control" name="brand"
+                                        ng-model="formCreate.BrandObjectId"
+                                        ng-options="item._id as item.BrandName + '(' + item.BrandCode + ')' for item in brands"
+                                        data-live-search="true" data-size="5" title="Chọn thương hiệu">
+                                        <option value="" ng-if="hideOptions"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Giá<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="price"
+                                        ng-model="formCreate.Price" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Số lượng<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="quantity"
+                                        ng-model="formCreate.Quantity" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Đơn vị tính<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="price"
+                                        ng-model="formCreate.Unit" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Số lô<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="lot"
+                                        ng-model="formCreate.LotNumber" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    class="col-md-4 control-label vertical">Ngày sản xuất:</label>
+                                <div class="col-md-8">
+                                    <div class="input-group date date-picker"
+                                        data-date-format="dd-mm-yyyy"
+                                        data-date-viewmode="years"
+                                        data-date-today-highlight="true">
+                                        <input type="text"
+                                            class="form-control dashed-border"
+                                            ng-model="formCreate.MFG"
+                                            name="mfg"
+                                            placeholder="Ngày sản xuất">
+                                        <div class="form-control-focus">
+                                        </div>
+                                        <span class="input-group-addon"><i
+                                                class="far fa-calendar-alt font-blue"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    class="col-md-4 control-label vertical">Hạn sử dụng:</label>
+                                <div class="col-md-8">
+                                    <div class="input-group date date-picker"
+                                        data-date-format="dd-mm-yyyy"
+                                        data-date-viewmode="years"
+                                        data-date-today-highlight="true">
+                                        <input type="text"
+                                            class="form-control dashed-border"
+                                            ng-model="formCreate.EXP"
+                                            name="exp"
+                                            placeholder="Ngày sản xuất">
+                                        <div class="form-control-focus">
+                                        </div>
+                                        <span class="input-group-addon"><i
+                                                class="far fa-calendar-alt font-blue"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="create(f_CreateMedicine)">
+                        Lưu</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        Hủy</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="update_medicine" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title="">
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="fas fa-vial"></i>
+                       Thông tin thuốc
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" name="f_UpdateMedicine" ng-validate="validator">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}" ng-bind="alertMsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Mã thuốc<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="medicine_code"
+                                        ng-model="formUpdate.MedicineCode" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Tên thuốc<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="medicine_name"
+                                        ng-model="formUpdate.MedicineName" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Thương hiệu<span class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <select class="bs-select form-control" name="brand"
+                                        ng-model="formUpdate.BrandObjectId"
+                                        ng-options="item._id as item.BrandName + '(' + item.BrandCode + ')' for item in brands"
+                                        data-live-search="true" data-size="5" title="Chọn thương hiệu">
+                                        <option value="" ng-if="hideOptions"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Giá<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="price"
+                                        ng-model="formUpdate.Price" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Đơn vị tính<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="price"
+                                        ng-model="formUpdate.Unit" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    class="col-md-4 control-label vertical">Ngày sản xuất:</label>
+                                <div class="col-md-8">
+                                    <div class="input-group date date-picker"
+                                        data-date-format="dd-mm-yyyy"
+                                        data-date-viewmode="years"
+                                        data-date-today-highlight="true">
+                                        <input type="text"
+                                            class="form-control dashed-border"
+                                            ng-model="formUpdate.MFG"
+                                            name="mfg"
+                                            placeholder="Ngày sản xuất">
+                                        <div class="form-control-focus">
+                                        </div>
+                                        <span class="input-group-addon"><i
+                                                class="far fa-calendar-alt font-blue"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    class="col-md-4 control-label vertical">Hạn sử dụng:</label>
+                                <div class="col-md-8">
+                                    <div class="input-group date date-picker"
+                                        data-date-format="dd-mm-yyyy"
+                                        data-date-viewmode="years"
+                                        data-date-today-highlight="true">
+                                        <input type="text"
+                                            class="form-control dashed-border"
+                                            ng-model="formUpdate.EXP"
+                                            name="exp"
+                                            placeholder="Ngày sản xuất">
+                                        <div class="form-control-focus">
+                                        </div>
+                                        <span class="input-group-addon"><i
+                                                class="far fa-calendar-alt font-blue"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="update(f_UpdateMedicine)">
+                        Lưu</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        Hủy</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -8,6 +8,8 @@ function UsersRoute(authRouter) {
     authRouter.route('/users/create').post(UsersController.create);
     authRouter.route('/users/list').get(UsersController.list);
     authRouter.route('/users/listDoctorActive').get(UsersController.listDoctorActive);
+    authRouter.route('/users/update').put(UsersController.update);
+    authRouter.route('/users/getUser').get(UsersController.getUser);
 }
 
 module.exports = UsersRoute;

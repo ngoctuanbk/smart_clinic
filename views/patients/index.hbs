@@ -49,10 +49,10 @@
                                     </div>
                                     <div class="input-group">
                                         <select class="bs-select" multiple data-size="5" data-live-search="true"
-                                            ng-change="listDistrictByProvince(paginate.ProvinceObjectId);" data-selected-text-format="count > 1"
+                                            ng-change="paginate.Page = 1; list()" data-selected-text-format="count > 1"
                                             data-title="Chọn quận/huyện"
                                             ng-options="district._id as district.DistrictName for district in districts"
-                                            ng-model="paginate.DistrictObjectId">
+                                            ng-model="paginate.Districts">
                                             <option value="" ng-if="hideOption"></option>
                                         </select>
                                     </div>
@@ -144,7 +144,8 @@
                                             <a href="#update_patient" ng-click="info(patient, $index);" ng-bind="patient.PatientID"
                                                 data-toggle="modal"></a>
                                         </td>
-                                        <td class="title" ng-bind="patient.FullName"></td>
+                                        <td class="title"> <a href="/admin/patients/info?id=\{{patient._id}}"
+                                                ng-bind="patient.FullName" title="Xem chi tiết"> </a></td>
                                         <td class="title" ng-bind="patient.Sex ==='Male' ? 'Nam' : patient.Sex === 'Female' ? 'Nữ' : 'Khác'"></td>
                                         <td class="title" ng-bind="patient.DateOfBirth |formatDateToDMY"></td>
                                         <td class="title" ng-bind="patient.Age"></td>

@@ -1,0 +1,35 @@
+<div class="tab-pane" id="diagnose">
+    <div class="portlet-body">
+        <form role="form" class="form-horizontal" name="healthStatus" ng-validate="validator">
+            <div class="portlet light demo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <span class="caption-subject uppercase">
+                            Chuẩn đoán </span>
+                    </div>
+                    <div class="actions">
+                        <a href="javascript:;" class="btn blue pull-right"
+                            ng-click="updateDiagnose()"><i class="fas fa-plus"></i>
+                            Cập nhật
+                        </a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="solid-block">
+                                <div class="form-group">
+                                    <label
+                                        class="col-md-3 control-label text-left">Chuẩn đoán</label>
+                                    <div class="col-md-9">
+                                        <textarea class="form-control" cols="3" rows="2" ng-model="formUpdate.Diagnose"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </form>
+    </div>
+</div>

@@ -28,6 +28,7 @@ module.exports = {
                 CreatedBy: data.CreatedBy,
                 CreatedDate: generatorTime(),
                 Note: data.Note || '',
+                Status: STATUS[200],
             };
             const result = await ScheduleModel.create(set);
             return promiseResolve(result);

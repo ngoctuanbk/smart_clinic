@@ -1,0 +1,112 @@
+<div class="tab-pane" id="history">
+    <div class="portlet-body">
+        <div class="form-group row">
+            <div class="col-md-10">
+                <div class="col-md-12 flex-box">
+                    <div class="input-group" style="z-index: 1000 !important;">
+                        <div class="input-group-control">
+                            <select style="width: 100px;"
+                                class="selectpicker form-control limit-data pull-left"
+                                ng-model="paginateAc.Limit" ng-change="paginateAc.Page = 1; listActivity();"
+                                ng-options="v as v for (k,v) in limitData">
+                                <option value="" ng-if="hideOptions"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group date date-picker" data-date-format="dd-mm-yyyy"
+                        data-date-viewmode="years" data-date-today-highlight="true">
+                        <input type="text" class="form-control dashed-border" id="from_date"
+                            ng-model="paginateAc.FromDate" name="from_date" readonly
+                            ng-change="paginateAc.Page = 1; listActivity()" placeholder="Từ ngày">
+                        <div class="form-control-focus"> </div>
+                        <span class="input-group-addon"><i
+                                class="far fa-calendar-alt font-blue"></i></span>
+                    </div>
+                    <div class="input-group date date-picker" data-date-format="dd-mm-yyyy"
+                        data-date-viewmode="years" data-date-today-highlight="true">
+                        <input type="text" class="form-control dashed-border" readonly id="from_date"
+                            ng-model="paginateAc.ToDate" name="from_date"
+                            ng-change="paginateAc.Page = 1; listActivity()" placeholder="Đến ngày">
+                        <div class="form-control-focus"> </div>
+                        <span class="input-group-addon"><i
+                                class="far fa-calendar-alt font-blue"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box-search-wrapper">
+                <div class="col-md-12">
+                    <div class="form-search pull-right">
+                        <div class="input-icon right">
+                            <i class="fas fa-search"></i>
+                            <input type="text" ng-model="paginateAc.Search" name="bar_code"
+                                class="form-control" ng-change="paginateAc.Page = 1; listActivity()"
+                                placeholder="Tìm kiếm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-scrollable wrapper-table-update">
+            <table class="table table-light table-hover">
+                <thead>
+                    <tr>
+                        <th class="rowno"> STT </a> </th>
+                        <th class="title"> Hoạt động </th>
+                        <th class="title"> Bác sĩ/Điều dưỡng </th>
+                        <th class="title"> Thời gian </a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in activities" id="tbody-\{{$index}}">
+                        <td ng-bind="$index + number"></td>
+                        <td ng-bind="item.ActivityName"></td>
+                        <td ng-bind="item.UserObjectId.Info.FullName"></td>
+                        <td ng-bind="item.CreatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="boxs-footer dvd dvd-top">
+            <div class="row" ng-if="pagination.show">
+                <div class="col-sm-3 text-left">
+                    <small class="text-muted"
+                        ng-bind="'Hiển thị ' + pagination.skip + '-' + pagination.toSkip + '/' + pagination.total + ' mục'">
+                    </small>
+                </div>
+                <div class="col-sm-3 hidden-xs">
+                </div>
+                <div class="col-sm-6 text-right">
+                    <ul class="pagination m-0">
+                        <li>
+                            <a ng-click="firstPage()">
+                                <i class="fas fa-angle-double-left"></i>
+                                <div class="ripple-container"></div>
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="prevPage()">
+                                <i class="fa fa-chevron-left"></i>
+                                <div class="ripple-container"></div>
+                            </a>
+                        </li>
+                        <li ng-repeat="page in pagination.pages" style="cursor: pointer"
+                            ng-class="{active:pagination.page === page}">
+                            <a ng-click="setPage(page)" ng-bind="page"></a>
+                        </li>
+                        <li>
+                            <a ng-click="nextPage()">
+                                <i class="fa fa-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="endPage()">
+                                <i class="fas fa-angle-double-right"></i>
+                                <div class="ripple-container"></div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

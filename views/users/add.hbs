@@ -207,8 +207,8 @@
 																		trò: </label>
 																	<div class="col-md-9">
 																		<select class="bs-select form-control"
-																			name="role" ng-model="formCreate.RoleObjectId"	required
-																			ng-options="role._id as role.RoleName for role in roles"
+																			name="role" ng-model="Role"	required
+																			ng-options="role as role.RoleName for role in roles"
 																			data-live-search="true" data-size="5"
 																			data-title="Chọn vai trò">
 																			<option value="" ng-if="hideOption">

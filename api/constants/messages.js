@@ -18,6 +18,7 @@ exports.CODES_SUCCESS = {
     10110: 'Create user success',
     10111: 'List user success',
     10112: 'Get info user success',
+    10113: 'Update user success',
 /* brand start from 10120 */
     10120: 'Create brand success',
     10121: 'List brand success',
@@ -36,11 +37,24 @@ exports.CODES_SUCCESS = {
     10141: 'List patient success',
     10142: 'Update status patient success',
     10143: 'Update patient success',
+    10144: 'Get info patient success',
     /* schedule start from 10150 */
     10150: 'Create schedule success',
     10151: 'List schedule success',
     10152: 'Get info schedule success',
     10153: 'Update status schedule success',
+    /* lab start from 10140 */
+    10160: 'Create lab success',
+    10161: 'List lab success',
+    10162: 'Update lab success',
+    10163: 'List activity success',
+    /* medicine start from 10170 */
+    10170: 'Create medicine success',
+    10171: 'List medicine success',
+    10172: 'Update medicine success',
+    /* medicine start from 10180 */
+    10180: 'Create prescription success',
+    10181: 'List prescription success',
 };
 
 exports.CODES_ERROR = {
@@ -60,6 +74,7 @@ exports.CODES_ERROR = {
     40101: 'UserName has exsit already',
     40102: 'UserCode has exsit already',
     40103: 'Get info user error',
+    40104: 'Update user error',
     /* brand error */ 
     40110: 'Create brand error',
     40111: 'BrandCode has exsit already',
@@ -80,8 +95,21 @@ exports.CODES_ERROR = {
     40131: 'Patient has exsit already',
     40132: 'Update status patient error',
     40133: 'Update patient error',
+    40134: 'Get info patient error',
     /* schedule error */ 
     40140: 'Create schedule error',
     40141: 'Schedule has exsit already',
     40142: 'Update status schedule error',
+    /* lab error */ 
+    40150: 'Create lab error',
+    40151: 'Lab has exsit already',
+    40152: 'Create lab error',
+    40153: 'Create activity error',
+    /* medicine error */ 
+    40160: 'Create medicine error',
+    40161: 'MedicineCode has exsit already',
+    40162: 'MedicineCode has exsit already',
+    40163: 'Update medicine error',
+    /* prescription error */ 
+    40170: 'Create prescription error',
 };

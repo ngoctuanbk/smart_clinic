@@ -39,6 +39,8 @@
             refreshSelectPicker();
         });
         $scope.create = (form) => {
+            $scope.formCreate.RoleObjectId = $scope.Role._id;
+            $scope.formCreate.RoleCode = $scope.Role.RoleCode;
             if (form.validate()) {
                 // chi check image co gia tri la false thi hinh anh khong hop le
                 if ($scope.image === false) {
@@ -53,6 +55,7 @@
                 )
                     .then((response) => {
                         console.log(response);
+                        console.log($scope.formCreate)
                         if (response.Success) {
                             logger.success('Thêm mới nhân viên thành công');
                             resetData();

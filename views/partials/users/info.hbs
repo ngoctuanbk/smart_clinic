@@ -54,7 +54,7 @@
 													<label class="col-md-12 control-label text-left">Giới tính<span
 															class="required">(*)</span>:</label>
 													<div class="col-md-12">
-														<select class="selectpicker form-control" ng-disabled="disabledElement"
+														<select class="bs-select form-control" ng-disabled="disabledElement"
 															name="sex" ng-model="formUpdate.Sex" data-live-search="true" 
 															ng-options="sex.key as sex.name for sex in Sex"
 															data-title="Chọn giới tính">
@@ -79,7 +79,7 @@
 															data-date-today-highlight="true">
 															<input type="text" ng-disabled="disabledElement"
 																class="form-control dashed-border"
-																id="join_date" ng-model="formUpdate.JoinDate" name="join_date"
+																id="join_date" ng-model="formUpdate.DateOfBirth" name="join_date"
 																placeholder="Ngày sinh">
 															<div class="form-control-focus">
 															</div>
@@ -143,9 +143,8 @@
 												<div class="form-group">
 													<label class="col-md-12 control-label text-left">Vai trò</label>
 													<div class="col-md-12">
-														<select class="selectpicker form-control" name="role" ng-model="Role"
-															ng-change="loadSelectByRole(Role); " required  ng-disabled="disabledElement"
-															ng-options="role as role.RoleName for role in roles"
+														<select class="bs-select form-control" name="role" ng-model="formUpdate.RoleObjectId" required  ng-disabled="disabledElement"
+															ng-options="role._id as role.RoleName for role in roles"
 															data-live-search="true" data-size="5" data-title="">
 															<option value="" ng-show="hideOptions">
 															</option>

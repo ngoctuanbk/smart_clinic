@@ -25,7 +25,7 @@
                                     <div class="input-group z-i-1000">
                                         <div class="input-group-control input-group-control-update">
                                             <select style="width: 100px; display:none !important"
-                                                class="selectpicker form-control limit-data pull-left" data-title="" ng-model="paginate.Limit"
+                                                class="bs-select form-control limit-data pull-left" data-title="" ng-model="paginate.Limit"
                                                 ng-change="paginate.Page = 1; list()" ng-options="v as v for (k,v) in limitData">
                                                 <option value="" ng-if="hideOptions"></option>
                                             </select>
@@ -35,7 +35,7 @@
                                         <div class="input-group-control">
                                             <select style="width: 100px; display:none !important"
                                                 data-title="Chọn tháng"
-                                                class="selectpicker form-control pull-left"
+                                                class="bs-select form-control pull-left"
                                                 ng-change="changeMonth();" ng-model="paginate.Month"
                                                 data-size="5">
                                                 <option value="">Chọn tháng

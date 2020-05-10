@@ -25,6 +25,7 @@ module.exports = {
                 Password: data.Password,
                 Info: data.Info,
                 RoleObjectId: convertToObjectId(data.RoleObjectId),
+                RoleCode: data.RoleCode,
                 Avatar: data.Avatar || '',
                 Email: data.Email || '',
                 Mobile: data.Mobile || '',
@@ -227,12 +228,72 @@ module.exports = {
                 _id: data.UserObjectId,
                 DeleteFlag: DELETE_FLAG[200],
             };
-            const fieldsSelected = `_id UserName Email Mobile RoleObjectId Avatar Info JoinDate Status DateOfBirth`;
+            const fieldsSelected = `_id UserName Email Mobile RoleObjectId Avatar Info JoinDate Status DateOfBirth Sex`;
             const populate = [
                 { path: 'RoleObjectId', select: '_id RoleCode RoleName', match: { DeleteFlag: DELETE_FLAG[200] } },
             ];
             const result = await UserModel.findOne(conditions).select(fieldsSelected).populate(populate);
             return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    update: async (data) => {
+        try {
+            const conditions = {
+                _id: data.UserObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                UserName: data.UserName,
+                Info: data.Info,
+                RoleObjectId: convertToObjectId(data.RoleObjectId),
+                Email: data.Email || '',
+                Mobile: data.Mobile || '',
+                Sex: data.Sex,
+                DateOfBirth: formatDateToYMD(data.DateOfBirth) || '',
+                JoinDate: formatDateToYMD(data.JoinDate) || '',
+                Status: data.Status ? STATUS[+data.Status] : STATUS[100],
+                UpdatedBy: data.UpdatedBy,
+                UpdatedDate: generatorTime(),
+            };
+            if (data.Avatar) {
+                set.Avatar = data.Avatar;
+            }
+            const result = await UserModel.findOneAndUpdate(conditions, set, {
+                new: true,
+            });
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    getUser: async (data) => {
+        try {
+            const match = {
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const group = {
+                _id: '$RoleCode',
+                total: { $sum: 1 },
+            };
+            const project = {
+                _id: 0,
+                RoleCode: '$_id',
+                total: 1,
+            };
+            const pipeline = [
+                { $match: match },
+                { $group: group },
+                { $project: project },
+            ];
+            const result = await UserModel.aggregate(pipeline) || [];
+            console.log(result)
+            const response = result.reduce((obj, item) => {
+                obj[item.RoleCode] += item.total;
+                return obj;
+            }, {AdminSystem: 0, Doctor: 0, Nurse: 0, Pharmasist: 0});
+            return promiseResolve(response);
         } catch (err) {
             return promiseReject(err);
         }

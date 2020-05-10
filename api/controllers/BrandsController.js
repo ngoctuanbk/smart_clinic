@@ -29,15 +29,14 @@ module.exports = {
             return resJsonError(res, errors, 'brand');
         }
     },
-    // listActive: async (req, res) => {
-    //     try {
-    //         req.query.Database = req.decoded.Database;
-    //         const result = await BrandsService.listActive(req.query);
-    //         return res.json(responseSuccess(10771, result));
-    //     } catch (errors) {
-    //         return resJsonError(res, errors, 'brand');
-    //     }
-    // },
+    listActive: async (req, res) => {
+        try {
+            const result = await BrandsService.listActive(req.query);
+            return res.json(responseSuccess(10121, result));
+        } catch (errors) {
+            return resJsonError(res, errors, 'brand');
+        }
+    },
     create: async (req, res) => {
         try {
             req.checkBody(createValidator);

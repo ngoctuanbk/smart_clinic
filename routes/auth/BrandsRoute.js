@@ -4,7 +4,7 @@ const BrandsController = require('../../controllers/BrandsController');
 function BrandsRoute(authRouter) {
     authRouter.route('/brands').get(BrandsController.index);
     authRouter.route('/brands/list').get(BrandsController.list);
-    // authRouter.route('/brands/listActive').get(BrandsController.listActive);
+    authRouter.route('/brands/listActive').get(BrandsController.listActive);
     authRouter.route('/brands/create').post(BrandsController.create);
     authRouter.route('/brands/update').put(BrandsController.update);
     authRouter.route('/brands/updateStatus').put(BrandsController.updateStatus);

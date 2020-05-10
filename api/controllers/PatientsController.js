@@ -5,6 +5,7 @@ const {
     listValidator,
     updateStatusValidator,
     updateValidator,
+    PatientObjectIdValidator,
 } = require('../validators/PatientValidator');
 
 const {
@@ -111,6 +112,66 @@ module.exports = {
     listActive: async (req, res) => {
         try {
             const result = await PatientsService.listActive(req.query);
+            return res.json(responseSuccess(10141, result));
+        } catch (errors) {
+            return resJsonError(res, errors, 'patient');
+        }
+    },
+    info: async (req, res) => {
+        try {
+            req.checkQuery(PatientObjectIdValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            const result = await PatientsService.info(req.query);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10144, result));
+            }
+            return res.json(responseError(40134));
+        } catch (errors) {
+            console.log(errors)
+            return resJsonError(res, errors, 'patient');
+        }
+    },
+    updateHealthStatus: async (req, res) => {
+        try {
+            req.checkBody(PatientObjectIdValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.body.UpdatedBy = req.decoded.UserObjectId;
+            const result = await PatientsService.updateHealthStatus(req.body);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10143));
+            }
+            return res.json(responseError(40133));
+        } catch (errors) {
+            return resJsonError(res, errors, 'patient');
+        }
+    },
+    updateDiagnose: async (req, res) => {
+        try {
+            req.checkBody(PatientObjectIdValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.body.UpdatedBy = req.decoded.UserObjectId;
+            const result = await PatientsService.updateDiagnose(req.body);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10143));
+            }
+            return res.json(responseError(40133));
+        } catch (errors) {
+            console.log(errors)
+            return resJsonError(res, errors, 'patient');
+        }
+    },
+    countPatient: async (req, res) => {
+        try {
+            const result = await PatientsService.countPatient(req.query);
             return res.json(responseSuccess(10141, result));
         } catch (errors) {
             return resJsonError(res, errors, 'patient');

@@ -12206,8 +12206,13 @@ Portlets
 /* Light Portlet */
 
 .portlet.light {
-    padding: 12px 10px 15px 10px;
+    padding: 12px 10px 10px 10px;
     background-color: #fff;
+}
+.portlet.light .demo{
+    padding: 12px 10px 0px 10px;
+    background-color: #fff;
+    margin-bottom: 10px;
 }
 
 .portlet.light.bordered {

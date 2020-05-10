@@ -100,6 +100,7 @@
                             $scope.list();
                             $scope.formCreate = {};
                             changeCss();
+                            refreshSelectPicker();
                             alertMessage('success', 'Thêm danh sách khám bệnh thành công', true);
                             $timeout(() => {
                                 alertMessage();

@@ -58,16 +58,33 @@
                     <span class="arrow"></span>
                 </a>
                 <ul class="sub-menu">
-                    <li class="nav-item {{#active 'class' activity 'Products'}}  {{/active}}">
-                        <a href="/admin/products" class="nav-link ">
-                            <i class="icon-drawer"></i>
-                            <span class="title">Sản phẩm</span>
+                    <li class="nav-item {{#active 'class' activity 'Medicines'}}  {{/active}}">
+                        <a href="/admin/medicines" class="nav-link ">
+                            <i class="fas fa-pills"></i>
+                            <span class="title">Thuốc</span>
                         </a>
                     </li>
-                    <li class="nav-item {{#active 'class' activity 'Prices'}}  {{/active}}">
-                        <a href="/admin/prices" class="nav-link ">
+                </ul>
+            </li>
+            {{/isAcceptedScreen}}
+            {{#isAcceptedScreen Info.Role 'Labs'}} 
+            <li class="nav-item {{#active 'class' activity 'Labs'}}  {{/active}}">
+                <a href="" class="nav-link nav-toggle">
+                    <i class="fas fa-vial"></i>
+                    <span class="title">Quản lý xét nghiệm</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item {{#active 'class' activity 'Labs'}}  {{/active}}">
+                        <a href="/admin/labs" class="nav-link ">
+                            <i class="fas fa-vial"></i>
+                            <span class="title">Xét nghiệm</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {{#active 'class' activity 'LabResults'}}  {{/active}}">
+                        <a href="/admin/lab_result" class="nav-link ">
                             <i class="fas fa-dollar-sign"></i>
-                            <span class="title">Bảng giá</span>
+                            <span class="title">Kết quả xét nghiệm</span>
                         </a>
                     </li>
                 </ul>

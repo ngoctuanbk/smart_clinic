@@ -30,6 +30,7 @@ const UserSchema = new mongoose.Schema({
         type: String, trim: true, enum: SEX, required: true, index: true,
     },
     RoleObjectId: {required: true, type: mongoose.Schema.Types.ObjectId, ref: 'roles'},
+    RoleCode: {type: String},
     Avatar: {type: String},
     JoinDate: {type: String},
     DateOfBirth: {type: String},

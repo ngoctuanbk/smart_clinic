@@ -110,7 +110,7 @@ const RoleObjectIdValidator = {
 //     },
 // };
 const createValidator = Object.assign({}, UserName, Password, Info, Email, Mobile, RoleObjectIdValidator);
-// const updateValidator = Object.assign({}, UserObjectIdValidator, ManagerType, Info, RoleObjectIdValidator);
+const updateValidator = Object.assign({}, UserObjectIdValidator, Info, Email, Mobile, RoleObjectIdValidator);
 // const updateMobileValidator = Object.assign({}, UserObjectIdValidator, Info);
 const listValidator = Object.assign({}, paginate);
 // const updateStatusValidator = Object.assign({}, UserObjectIdValidator, StatusValidator);

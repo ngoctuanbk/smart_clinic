@@ -22,6 +22,7 @@ const {
     createValidator,
     listValidator,
     UserObjectIdValidator,
+    updateValidator,
 } = require('../validators/UsersValidator');
 
 const uploadImage = uploadFile(storage('users', 'images'), fileFilterImage, 'Image');
@@ -122,7 +123,7 @@ module.exports = {
             const result = await UserService.info(req.query);
             if (!isEmpty(result)) {
                 const response = {};
-                response.UserCode = result.UserCode;
+                response.Sex = result.Sex;
                 response.Info = result.Info;
                 response.Status = result.Status;
                 response.UserName = result.UserName;
@@ -131,6 +132,7 @@ module.exports = {
                 response._id = result._id;
                 response.Avatar = result.Avatar;
                 response.JoinDate = result.JoinDate;
+                response.DateOfBirth = result.DateOfBirth;
                 response.RoleObjectId = result.RoleObjectId._id;
                 response.RoleCode = result.RoleObjectId.RoleCode;
                 response.RoleName = result.RoleObjectId.RoleName;
@@ -139,6 +141,45 @@ module.exports = {
             return res.json(responseError(40103));
         } catch (errors) {
             return resJsonError(res, errors, 'user');
+        }
+    },
+    update: async (req, res) => {
+        try {
+            beforeUpload(req, res, async () => {
+                if (req.file) {
+                    const stringPath = req.file.path.split('\\').join('/');
+                    req.body.Avatar = sliceString(stringPath, '/uploads');
+                }
+                req.body = convertJSONStrToJSONParse(req.body);
+                const {UserObjectId } = req.decoded;
+                req.body.CreatedBy = UserObjectId;
+                req.checkBody(updateValidator);
+                const errors = req.validationErrors();
+                if (errors) {
+                    return res.json(responseError(40003, errors));
+                }
+                const result = await UserService.update(req.body);
+                if (!isEmpty(result)) {
+                    return res.json(responseSuccess(10113));
+                }
+                return res.json(responseError(40104));
+            }, uploadImage);
+        } catch (errors) {
+            console.log(response);
+            return resJsonError(res, errors, 'user');
+        }
+    },
+    getUser: async (req, res) => {
+        try {
+            const count = {};
+            const result = await UserService.getUser(req.query);
+            count.CountDoctor = result.Doctor;
+            count.CountAdmin = result.AdminSystem;
+            count.CountNurse = result.Nurse;
+            count.CountPharmasist = result.Pharmasist;
+            return res.json(responseSuccess(10141, count));
+        } catch (errors) {
+            return resJsonError(res, errors, 'patient');
         }
     },
 }

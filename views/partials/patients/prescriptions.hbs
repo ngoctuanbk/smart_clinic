@@ -1,0 +1,399 @@
+<div class="tab-pane" id="prescriptions">
+    <div class="portlet light">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="far fa-poll-h"></i>
+                <span class="caption-subject uppercase"> Danh sách đơn thuốc</span>
+            </div>
+            <div class="actions pull-left">
+                <a href="#create_prescriptions" class="btn btn-circle btn-success" data-toggle="modal"><i
+                        class="fa fa-plus"></i>
+                    Thêm mới </a>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="form-group row">
+                <div class="col-md-10">
+                    <div class="col-md-12 flex-box">
+                        <div class="input-group" style="z-index: 1000 !important;">
+                            <div class="input-group-control">
+                                <select style="width: 100px;"
+                                    class="selectpicker form-control limit-data pull-left"
+                                    ng-model="paginatePre.Limit" ng-change="paginatePre.Page = 1; listPrescription();"
+                                    ng-options="v as v for (k,v) in limitData">
+                                    <option value="" ng-if="hideOptions"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 box-search-wrapper">
+                    <div class="col-md-12">
+                        <div class="form-search pull-right">
+                            <div class="input-icon right">
+                                <i class="fas fa-search"></i>
+                                <input type="text" ng-model="paginate.Search" name="bar_code"
+                                    class="form-control" ng-change="paginatePre.Page = 1; listPrescription()"
+                                    placeholder="Tìm kiếm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-scrollable wrapper-table-update">
+                <table class="table table-light table-hover">
+                    <thead>
+                        <tr>
+                            <th class="rowno"> STT </th>
+                            <th class="title"> Mã đơn thuốc</th>
+                            <th class="title"> Tên thuốc </th>
+                            <th class="title"> Thành tiền </th>
+                            <th class="title"> Ngày tạo </th>
+                            <th class="title"> Bác sĩ</th>
+                            <th class="th-size-update"> Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-repeat="(idx, item) in prescriptions"
+                    ng-init='valueDetails=(item.OrderDetail); rowSpan=item.OrderDetail.length; idxRoot=$index'>
+                    <tr ng-repeat="it in valueDetails">
+                        <td ng-if="$first" rowspan="\{{rowSpan}}" ng-bind="idx + 1">
+                        </td>
+                        <td ng-if="$first" ng-bind="item.PrescriptionCode" rowspan="\{{rowSpan}}"></td>
+                        <td ng-bind="it.MedicineObjectId.MedicineName + ' ( Số lượng: ' + it.Quantity + ')'"></td>
+                        <td ng-if="$first" ng-bind="item.SumTotalPrice | number" rowspan="\{{rowSpan}}"></td>
+                        <td ng-if="$first" ng-bind="item.CreatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'" rowspan="\{{rowSpan}}"></td>
+                        <td ng-if="$first" ng-bind="item.CreatedBy.Info.FullName" rowspan="\{{rowSpan}}"></td>
+                        <td class="status" ng-if="$first" rowspan="\{{rowSpan}}">
+                            <div class="btn-group status dropup update-status-mgt">
+                                <label class="btn btn-sm btn-status"
+                                    ng-class="item.Status | filterStatusToClass"
+                                    ng-bind="item.Status | filterStatusToText">
+                                </label>
+                                <button type="button" class="btn btn-sm btn-info dropdown-toggle"
+                                    data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-angle-up"></i>
+                                </button>
+                                <ul class="dropdown-menu status pull-right" role="menu">
+                                    <li class="status-Remove"><a href="javascript:;" data-value="Remove"
+                                            ng-click="delete(item._id, item.BrandName)">
+                                            Xóa </a></li>
+                                    <li class="status-Active"><a href="javascript:;" data-value="Active"
+                                            ng-click="updateStatus(200, item._id, $index)">
+                                            Hoạt động
+                                        </a>
+                                    </li>
+                                    <li class="status-Inactive"><a href="javascript:;"
+                                            data-value="Inactive"
+                                            ng-click="updateStatus(400, item._id, $index)">
+                                            Ngừng </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+            <div class="boxs-footer dvd dvd-top">
+                <div class="row" ng-if="pagination.show">
+                    <div class="col-sm-3 text-left">
+                        <small class="text-muted"
+                            ng-bind="'Hiển thị ' + pagination.skip + '-' + pagination.toSkip + '/' + pagination.total + ' mục'">
+                        </small>
+                    </div>
+                    <div class="col-sm-3 hidden-xs">
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <ul class="pagination m-0">
+                            <li>
+                                <a ng-click="firstPage()">
+                                    <i class="fas fa-angle-double-left"></i>
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
+                            <li>
+                                <a ng-click="prevPage()">
+                                    <i class="fa fa-chevron-left"></i>
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
+                            <li ng-repeat="page in pagination.pages" style="cursor: pointer"
+                                ng-class="{active:pagination.page === page}">
+                                <a ng-click="setPage(page)" ng-bind="page"></a>
+                            </li>
+                            <li>
+                                <a ng-click="nextPage()">
+                                    <i class="fa fa-chevron-right"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a ng-click="endPage()">
+                                    <i class="fas fa-angle-double-right"></i>
+                                    <div class="ripple-container"></div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="create_prescriptions" class="modal fade in bs-modal-lg" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title="">
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="far fa-poll-h"></i>
+                        Thông tin đơn thuốc
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" name="f_CreatePrescription" ng-validate="validator">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}" ng-bind="alertMsg"></div>
+                            </div>
+                            <div class="portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <span class="caption-subject uppercase">
+                                            Chi tiết đơn thuốc </span>
+                                    </div>
+                                    <div class="actions">
+                                        <a href="javascript:;" class="btn green pull-right"
+                                            ng-click="addFieldDetailOrder()"><i class="fas fa-plus"></i>
+                                            Thêm thuốc
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-bordered table-hover">
+                                                <thead>
+                                                    <tr class="table-header">
+                                                        <th class="rowno" style="width: 60px;">
+                                                            STT </th>
+                                                        <th class="title" style="width: 200px;">
+                                                            Tên thuốc
+                                                        </th>
+                                                        <th class="title">
+                                                            Đơn vị tính
+                                                        </th>
+                                                        <th class="title">
+                                                            Số lượng
+                                                        </th>
+                                                        <th class="title">
+                                                            Đơn giá
+                                                        </th>
+                                                        <th class="title">
+                                                            Thành tiền
+                                                        </th>
+                                                        <th class="title">
+                                                            Thao tác
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="item in OrderDetails">
+                                                        <td ng-bind="$index + 1"></td>
+                                                        <td>
+                                                            <span ng-bind="item.Product.MedicineName"
+                                                                ng-if="!item.showEdit"></span>
+                                                            <div class="form-group" ng-if="item.showEdit"
+                                                                style="max-width: 180px">
+                                                                <list-product ngchange="changeProduct(item, $index)">
+                                                                </list-product>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <span ng-bind="item.Product.Unit"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span ng-bind="item.Quantity | number"
+                                                                ng-if="!item.showEdit"></span>
+                                                            <div class="form-group" ng-if="item.showEdit">
+                                                                <input type="text" ng-model="item.Quantity" number-input
+                                                                    class="form-control">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <span ng-bind="item.Product.Price | number"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span ng-bind="item.TotalValue | number"></span>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <div class="btn-group btn-group-sm" role="group"
+                                                                    aria-label="Small button group">
+                                                                    <button type="button" class="btn blue"
+                                                                        ng-if="!item.showEdit"
+                                                                        ng-click="openEditDetailOrder($index)">
+                                                                        <i class="fas fa-pen"></i>
+                                                                    </button>
+                                                                    <button type="button" class="btn green"
+                                                                        ng-if="item.showEdit"
+                                                                        ng-click="saveDetailOrder(item, $index)">
+                                                                        <i class="fas fa-check"></i>
+                                                                    </button>
+                                                                    <button type="button" class="btn red"
+                                                                        ng-click="deleteOrderDetail($index)">
+                                                                        <i class="fas fa-times">
+                                                                        </i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="5" class="bold uppercase">Tổng thành tiền</td>
+                                                        <td class="bold font-18"
+                                                            ng-bind="SumTotalPrice | number"></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="createPrescription(f_CreatePrescription)">
+                        Lưu</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        Hủy</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="update_lab" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title="">
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="fas fa-vial"></i>
+                       Thông tin xét nghiệm
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" name="f_UpdateLab" ng-validate="validator">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}" ng-bind="alertMsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Mã xét nghiệm:</label>
+                                <div class="col-md-8">
+                                    <input type="text" readonly class="form-control" ng-value="LabCode">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Tên xét nghiệm:</label>
+                                <div class="col-md-8">
+                                    <input type="text" readonly class="form-control" ng-value="LabName">
+                                </div>
+                            </div>
+                            <div class="portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <span class="caption-subject uppercase">
+                                            Loại xét nghiệm </span>
+                                    </div>
+                                    <div class="actions">
+                                        <a href="javascript:;" class="btn green pull-right"
+                                            ng-click="addFieldDetailLabUpdate()"><i class="fas fa-plus"></i>
+                                            Thêm xét nghiệm
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-bordered table-hover">
+                                                <thead>
+                                                    <tr class="table-header">
+                                                        <th class="rowno" style="width: 60px;">
+                                                            STT </th>
+                                                        <th class="title" style="width: 250px;">
+                                                            Loại xét nghiệm
+                                                        </th>
+                                                        <th class="title">
+                                                            Kết quả
+                                                        </th>
+                                                        <th class="title">
+                                                            Thao tác
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="item in LabDetailUpdate">
+                                                        <td ng-bind="$index + 1"></td>
+                                                        <td>
+                                                            <span ng-bind="item.LabType"
+                                                                ng-if="!item.showEdit"></span>
+                                                            <div class="form-group" ng-if="item.showEdit"
+                                                                style="width: 250px">
+                                                                <list-lab>
+                                                                </list-lab>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <span ng-bind="item.Result"
+                                                                ng-if="!item.showEdit"></span>
+                                                            <div class="form-group" ng-if="item.showEdit">
+                                                                <input type="text" ng-model="item.Result"
+                                                                   class="form-control">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="form-group">
+                                                                <div class="btn-group btn-group-sm" role="group"
+                                                                    aria-label="Small button group">
+                                                                    <button type="button" class="btn blue"
+                                                                        ng-if="!item.showEdit"
+                                                                        ng-click="openEditDetailLabUpdate($index)">
+                                                                        <i class="fas fa-pen"></i>
+                                                                    </button>
+                                                                    <button type="button" class="btn green"
+                                                                        ng-if="item.showEdit"
+                                                                        ng-click="saveDetailLabUpdate(item, $index)">
+                                                                        <i class="fas fa-check"></i>
+                                                                    </button>
+                                                                    <button type="button" class="btn red"
+                                                                        ng-click="deleteDetailLabUpdate($index)">
+                                                                        <i class="fas fa-times">
+                                                                        </i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="updateLab(f_UpdateLab)">
+                        Lưu</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        Hủy</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

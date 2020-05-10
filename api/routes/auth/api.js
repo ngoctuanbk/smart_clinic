@@ -27,5 +27,13 @@ require('./WardsRoute')(apiRouter);
 require('./PatientsRoute')(apiRouter);
 /* schedules */
 require('./SchedulesRoute')(apiRouter);
+/* labs */
+require('./LabsRoute')(apiRouter);
+/* activities */
+require('./ActivitiesRoute')(apiRouter);
+/* medicines */
+require('./MedicinesRoute')(apiRouter);
+/* prescriptions */
+require('./PrescriptionsRoute')(apiRouter);
 
 module.exports = apiRouter;

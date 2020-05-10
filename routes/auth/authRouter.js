@@ -21,6 +21,12 @@ require('./ProvincesRoute')(authRouter);
 require('./PatientsRoute')(authRouter);
 /* schedules */
 require('./SchedulesRoute')(authRouter);
+/* labs */
+require('./LabsRoute')(authRouter);
+/* labs_result */
+require('./LabResultsRoute')(authRouter);
+/* medicines */
+require('./MedicinesRoute')(authRouter);
 
 
 

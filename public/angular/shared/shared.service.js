@@ -380,5 +380,7 @@
         };
 
         this.trimValue = value => String(value || '').trim();
+        this.isNumberInteger = value => Number.isInteger(+value);
+
     }
 }());

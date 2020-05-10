@@ -6,6 +6,7 @@ function BrandsRoute(apiRouter) {
     apiRouter.route('/brands/update').put(BrandsController.update);
     apiRouter.route('/brands/updateStatus').put(BrandsController.updateStatus);
     apiRouter.route('/brands/delete').put(BrandsController.delete);
+    apiRouter.route('/brands/listActive').get(BrandsController.listActive);
 }
 
 module.exports = BrandsRoute;

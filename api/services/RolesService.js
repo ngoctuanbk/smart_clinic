@@ -38,7 +38,7 @@ module.exports = {
         try {
             const conditions = {DeleteFlag: DELETE_FLAG[200]};
             const fields = {
-                _id: 1, RoleName: 1
+                _id: 1, RoleName: 1, RoleCode: 1,
             };
             const result = await RoleModel.find(conditions).select(fields).sort({Order: 1});
             return promiseResolve(result);

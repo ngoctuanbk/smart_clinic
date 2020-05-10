@@ -9,6 +9,7 @@ const {
     trimValue,
     escapeRegExp,
     convertToTime,
+    convertToObjectId,
 } = require('../libs/shared');
 
 module.exports = {
@@ -101,8 +102,8 @@ module.exports = {
             if (data.ProvinceObjectId) {
                 conditions['Address.ProvinceObjectId'] = {$in: convertToArrayObjectId(data.ProvinceObjectId)};
             }
-            if (data.DistrictObjectId) {
-                conditions['Address.DistrictObjectId'] = {$in: convertToArrayObjectId(data.DistrictObjectId)};
+            if (data.Districts) {
+                conditions['Address.DistrictObjectId'] = {$in: convertToArrayObjectId(data.Districts)};
             }
             const fieldsSelect = '_id PatientID FullName Mobile Sex Age DateOfBirth Career Address.Street CreatedBy CreatedDate Status Reason Contact';
             const populate = [{
@@ -225,8 +226,8 @@ module.exports = {
             if (data.ProvinceObjectId) {
                 match['Address.ProvinceObjectId'] = {$in: convertToArrayObjectId(data.ProvinceObjectId)};
             }
-            if (data.DistrictObjectId) {
-                match['Address.DistrictObjectId'] = {$in: convertToArrayObjectId(data.DistrictObjectId)};
+            if (data.Districts) {
+                match['Address.DistrictObjectId'] = {$in: convertToArrayObjectId(data.Districts)};
             }
             const group = {
                 _id: '$Status',
@@ -266,6 +267,94 @@ module.exports = {
                 select: fieldsSelected,
             };
             const result = await PatientModel.paginate(conditions, options);
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    info: async (data) => {
+        try {
+            const conditions = {
+                _id: convertToObjectId(data.PatientObjectId),
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const fieldsSelect = '_id PatientID FullName Mobile Sex Age DateOfBirth Address.Street Reason HealthStatus Diagnose';
+            const populate = [{
+                path: 'Address.ProvinceObjectId',
+                select: '_id ProvinceName',
+                match: {
+                    DeleteFlag: DELETE_FLAG[200],
+                },
+            },
+            {
+                path: 'Address.DistrictObjectId',
+                select: '_id DistrictName',
+                match: {
+                    DeleteFlag: DELETE_FLAG[200],
+                },
+            }, 
+            {
+                path: 'Address.WardObjectId',
+                select: '_id WardName',
+                match: {
+                    DeleteFlag: DELETE_FLAG[200],
+                },
+            }];
+            const result = await PatientModel.findOne(conditions).select(fieldsSelect).populate(populate);
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    updateHealthStatus: async (data) => {
+        try {
+            const conditions = {
+                _id: data.PatientObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                HealthStatus: {
+                    Height: data.HealthStatus.Height || '',
+                    Weight: data.HealthStatus.Weight || '',
+                    BMI: data.HealthStatus.BMI || '',
+                    BloodGroup: data.HealthStatus.BloodGroup || '',
+                    BloodPressure: data.HealthStatus.BloodPressure || '',
+                    Allergy: data.HealthStatus.Allergy || '',
+                    MedicalHis: data.HealthStatus.MedicalHis || '',
+                    DiseaseHis: data.HealthStatus.DiseaseHis || '',
+                },
+                UpdatedBy: data.UpdatedBy,
+                UpdatedDate: generatorTime(),
+            };
+            const result = await PatientModel.findOneAndUpdate(conditions, set, { new: true});
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    updateDiagnose: async (data) => {
+        try {
+            const conditions = {
+                _id: data.PatientObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                    Diagnose: data.Diagnose,
+                UpdatedBy: data.UpdatedBy,
+                UpdatedDate: generatorTime(),
+            };
+            const result = await PatientModel.findOneAndUpdate(conditions, set, { new: true});
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    countPatient: async (data) => {
+        try {
+            const conditions = {
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const result = await PatientModel.count(conditions);
             return promiseResolve(result);
         } catch (err) {
             return promiseReject(err);

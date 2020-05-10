@@ -74,20 +74,18 @@ module.exports = {
             return promiseReject(err);
         }
     },
-    // listActive: async (data) => {
-    //     try {
-    //         const conn = connectDatabase(data.Database);
-    //         const Brand = conn.model('brands', BrandSchema);
-    //         const conditions = {
-    //             DeleteFlag: DELETE_FLAG[200],
-    //         };
-    //         const fieldsSelect = '_id BrandName BrandCode';
-    //         const result = Brand.find(conditions).select(fieldsSelect);
-    //         return promiseResolve(result);
-    //     } catch (err) {
-    //         return promiseReject(err);
-    //     }
-    // },
+    listActive: async () => {
+        try {
+            const conditions = {
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const fieldsSelect = '_id BrandName BrandCode';
+            const result = BrandModel.find(conditions).select(fieldsSelect);
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
     update: async (data) => {
         try {
             const conditions = {
@@ -141,21 +139,4 @@ module.exports = {
             return promiseReject(err);
         }
     },
-    // findOne: async (data) => {
-    //     try {
-    //         const conn = connectDatabase(data.Database);
-    //         const Brand = conn.model('brands', BrandSchema);
-    //         const conditions = {
-    //             DeleteFlag: DELETE_FLAG[200],
-    //         };
-    //         if (data.BrandCode) {
-    //             conditions.BrandCode = data.BrandCode;
-    //         }
-    //         const fieldsSelected = data.FieldsSelect || '_id';
-    //         const result = await Brand.findOne(conditions).select(fieldsSelected);
-    //         return promiseResolve(result);
-    //     } catch (err) {
-    //         return promiseReject(err);
-    //     }
-    // },
 };

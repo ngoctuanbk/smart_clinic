@@ -1,0 +1,192 @@
+<div class="tab-pane active" id="info">
+     <div class="portlet-body">
+        <form role="form" class="form-horizontal" name="healthStatus" ng-validate="validator">
+            <div class="portlet light demo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <span class="caption-subject uppercase">
+                            Thông tin bệnh nhân </span>
+                    </div>
+                </div>
+                <div class="portlet body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- left form -->
+                            <div class="col-md-6 mb-20">
+                                <div class="solid-block">
+                                    <div class="form-group">
+                                        <label for="" class="col-md-4 control-label text-left">Mã bệnh nhân
+                                            <span class="required">(*)</span>:</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="PatientID" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            class="col-md-4 control-label text-left">Họ tên bệnh nhân<span
+                                                class="required">(*)</span>:</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="FullName" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            class="col-md-4 control-label text-left">Số điện thoại<span
+                                                class="required">(*)</span>:</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="Mobile" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="f_places">
+                                        <label class="col-md-4 control-label text-left">Giới tính<span
+                                                class="required">(*)</span>:</label>
+                                        <div class="col-md-8 btn-g">
+                                            <input type="text" class="form-control" ng-model="Sex" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            class="col-md-4 control-label text-left">Ngày sinh<span
+                                                class="required">(*)</span>:</label>
+                                        <div class="col-md-4 btn-g">
+                                            <input type="text" class="form-control" ng-model="DateOfBirth" readonly>
+                                        </div>
+                                        <label
+                                            class="col-md-2 control-label text-left">Tuổi<span
+                                                class="required">(*)</span>:</label>
+                                        <div class="col-md-2">
+                                            <input type="text" class="form-control" ng-model="Age" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="solid-block">
+                                    <div class="form-group">
+                                        <label for="" class="col-md-4 control-label text-left">Tỉnh/TP
+                                            <span class="required">(*)</span>:</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="ProvinceName" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-md-4 control-label text-left">Quận/huyện
+                                            <span class="required">(*)</span>:</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="DistrictName" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-md-4 control-label text-left">Phường/xã
+                                            <span class="required">(*)</span>:</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="WardName" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-md-4 control-label text-left">Địa chỉ
+                                            <span class="required">(*)</span>:</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="Street" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" id="f_places">
+                                        <label class="col-md-4 control-label text-left">Lý do khám bệnh<span
+                                                class="required">(*)</span>:</label>
+                                        <div class="col-md-8 btn-g">
+                                            <input type="text" class="form-control" ng-model="Reason" readonly>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet light demo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <span class="caption-subject uppercase">
+                            Chỉ số sức khỏe </span>
+                    </div>
+                    <div class="actions">
+                        <a href="javascript:;" class="btn blue pull-right"
+                            ng-click="updateHealthStatus()"><i class="fas fa-plus"></i>
+                            Cập nhật
+                        </a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- left form -->
+                            <div class="col-md-4 mb-20">
+                                <div class="solid-block">
+                                    <div class="form-group">
+                                        <label
+                                            class="col-md-3 control-label text-left">Bệnh sử</label>
+                                        <div class="col-md-9">
+                                            <textarea class="form-control" cols="3" rows="2" ng-model="formUpdate.HealthStatus.DiseaseHis"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label
+                                            class="col-md-3 control-label text-left">Tiền sử</label>
+                                        <div class="col-md-9">
+                                            <textarea class="form-control" cols="3" rows="2" ng-model="formUpdate.HealthStatus.MedicalHis"></textarea>
+                                        </div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="solid-block">
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label text-left">Huyết áp</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="formUpdate.HealthStatus.BloodPressure">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label text-left">Nhóm máu</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="formUpdate.HealthStatus.BloodGroup">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label text-left">Dị ứng</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="formUpdate.HealthStatus.Allergy">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="solid-block">
+                                    <div class="form-group">
+                                        <label for="" class="col-md-4 control-label text-left">Chiều cao (m)</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="formUpdate.HealthStatus.Height">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-md-4 control-label text-left">Cân nặng (kg)</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="formUpdate.HealthStatus.Weight">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="col-md-4 control-label text-left">Chỉ số BMI</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" ng-model="formUpdate.HealthStatus.BMI">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </form>
+    </div>
+</div>
