@@ -10,6 +10,8 @@ function PatientsRoute(apiRouter) {
     apiRouter.route('/patients/updateHealthStatus').put(PatientsController.updateHealthStatus);
     apiRouter.route('/patients/updateDiagnose').put(PatientsController.updateDiagnose);
     apiRouter.route('/patients/countPatient').get(PatientsController.countPatient);
+    apiRouter.route('/patients/patientByDate').get(PatientsController.patientByDate);
+    apiRouter.route('/patients/patientByMonth').get(PatientsController.patientByMonth);
 }
 
 module.exports = PatientsRoute;

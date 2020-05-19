@@ -24,3 +24,7 @@ exports.ACTION = {
     ExportFile: 'Export File',
 };
 exports.SEX = ['Male', 'Female', 'Other'];
+exports.FIELDS_IMPORT = {
+    LabType: 'Loại xét nghiệm(*)',
+    Result: 'Kết quả xét nghiệm(*)',
+};

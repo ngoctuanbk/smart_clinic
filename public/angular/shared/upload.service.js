@@ -5,107 +5,104 @@
     UploadService.$inject = ['$http', 'exception'];
 
     function UploadService($http, exception) {
-
         function hasObject(obj) {
-            if (obj && obj !== null &&  obj !== undefined) {
+            if (obj && obj !== null && obj !== undefined) {
                 return true;
-            } 
+            }
             return false;
-            
         }
         function isObject(a) {
             return !!a && a.constructor === Object && !!Object.keys(a).length;
-        } 
-
+        }
+        function isArray(value) {
+            return Array.isArray(value);
+        }
         this.uploadDataAndImageBase64 = function (method, url, obj, img) {
             const formData = new FormData();
             if (hasObject(img)) {
-                let imageBase64 = img.split(',')[1];
-                let blob = base64toBlob(imageBase64, 'image/png');
-                let file = new File([blob], 'Image.png');
-                formData.append('File', file)
+                const imageBase64 = img.split(',')[1];
+                const blob = base64toBlob(imageBase64, 'image/png');
+                const file = new File([blob], 'Image.png');
+                formData.append('File', file);
             }
-            for (let prop in obj) {
+            for (const prop in obj) {
                 if (Array.isArray(obj[prop]) || isObject(obj[prop])) {
                     formData.append(prop, JSON.stringify(obj[prop]));
                     continue;
                 }
-                formData.append(prop, obj[prop])
+                formData.append(prop, obj[prop]);
             }
             return $http({
-                    method: method,
-                    url: url,
-                    data: formData,
-                    withCredentials: true,
-                    transformRequest: angular.identity,
-                    headers: {
-                        'Content-Type': undefined,
-                    }
-                })
-                .then((response) => {
-                    return response.data;
-                }).catch(error => {
-                    return handlingError('error ', error);
-                })
+                method,
+                url,
+                data: formData,
+                withCredentials: true,
+                transformRequest: angular.identity,
+                headers: {
+                    'Content-Type': undefined,
+                },
+            })
+                .then(response => response.data).catch(error => handlingError('error ', error));
         };
 
-        this.uploadImage = (method, url, data, img, fieldName) => {
-            try {
-                let fd = new FormData();
-                if (img) {
-                    // let imageBase64 = img[0].split(',')[1];
-                    // let blob = base64toBlob(imageBase64, 'image/png');
-                    // let file = new File([blob], 'Image.png');
-                    // fd.append(fieldName, file);.
-                    fd.append(fieldName, img);
-                };
-                fd.append('data', JSON.stringify(data));
-                return $http({
-                        method: method,
-                        url: url,
-                        data: fd,
-                        withCredentials: true,
-                        transformRequest: angular.identity,
-                        headers: {
-                            'Content-Type': undefined,
-                        }
-                    })
-                    .then((response) => {
-                        return response.data;
-                    })
-                    .catch(err => {
-                        handlingError('Error occurred when upload image', err)
+        this.uploadImage = (method, url, data, files, fieldName) => {
+            console.log("abc")
+            const formData = new FormData();
+            if (files) {
+                if (isArray(files)) {
+                    files.map((item, idx) => {
+                        formData.append('File', item);
                     });
-            } catch (err) {
-                handlingError('Error occurred when upload image. File is not image', err);
+                } else {
+                    formData.append('File', files);
+                }
             }
+            for (const prop in data) {
+                if (Array.isArray(data[prop]) || isObject(data[prop])) {
+                    formData.append(prop, JSON.stringify(data[prop]));
+                    continue;
+                }
+                formData.append(prop, data[prop]);
+            }
+            return $http({
+                method,
+                url,
+                data: formData,
+                withCredentials: true,
+                transformRequest: angular.identity,
+                headers: {
+                    'Content-Type': undefined,
+                },
+            })
+                .then(response => response.data)
+                .catch((err) => {
+                    handlingError('Error occurred when upload image', err);
+                });
         };
         this.uploadFile = (method, url, file, obj = {}) => {
             try {
-                let fd = new FormData();
+                const fd = new FormData();
                 for (const prop in obj) {
                     if (obj[prop]) {
-                        fd.append(prop, obj[prop])
+                        fd.append(prop, obj[prop]);
                     }
                 }
                 if (file) {
                     fd.append('File', file);
-                };
+                }
                 return $http({
-                        method: method,
-                        url: url,
-                        data: fd,
-                        withCredentials: true,
-                        transformRequest: angular.identity,
-                        headers: {
-                            'Content-Type': undefined,
-                        }
-                    })
-                    .then((response) => {
-                        return response.data;
-                    })
-                    .catch(err => {
-                        handlingError('Error occurred when upload file', err)
+                    method,
+                    url,
+                    data: fd,
+                    withCredentials: true,
+                    transformRequest: angular.identity,
+                    headers: {
+                        'Content-Type': undefined,
+                    },
+                })
+                    .then(response => response.data)
+                    .catch((err) => {
+                        handlingError('Error occurred when upload file', err);
                     });
             } catch (err) {
                 handlingError('Error occurred when upload file', err);
@@ -115,110 +112,95 @@
         this.downloadfile = (method, url, data) => {
             try {
                 return $http({
-                        method: method,
-                        url: url,
-                        data: data,
-                        // withCredentials: true,
-                        // transformRequest: angular.identity,
-                        //responseType: 'arraybuffer',
-                        // headers: {
-                        //     'Content-Type': undefined,
-                        // }
-                    })
-                    .then((response) => {
-                        return response.data;
-                    })
-                    .catch(err => {
-                        handlingError('Error occurred when download file', err)
+                    method,
+                    url,
+                    data,
+                    // withCredentials: true,
+                    // transformRequest: angular.identity,
+                    // responseType: 'arraybuffer',
+                    // headers: {
+                    //     'Content-Type': undefined,
+                    // }
+                })
+                    .then(response => response.data)
+                    .catch((err) => {
+                        handlingError('Error occurred when download file', err);
                     });
             } catch (err) {
                 handlingError('Error occurred when upload file', err);
             }
         };
-        this.uploadMultiImage = (url, data, img) => {
+        this.uploadMultiImage = (method, url, data, img) => {
             try {
                 const formData = new FormData();
                 if (img && img.length) {
                     for (let i = 0; i < img.length; i++) {
-                        let imageBase64 = img[i].split(',')[1];
-                        let blob = base64toBlob(imageBase64, 'image/png');
-                        let file = new File([blob], 'Image.png');
+                        const imageBase64 = img[i].split(',')[1];
+                        const blob = base64toBlob(imageBase64, 'image/png');
+                        const file = new File([blob], 'Image.png');
                         formData.append('file', file);
                     }
                 }
-                for (let i in data) {
-                    formData.append(i, data[i])
+                for (const i in data) {
+                    formData.append(i, data[i]);
                 }
                 return $http({
                     method: 'POST',
-                    url: url,
+                    url,
                     data: formData,
                     withCredentials: true,
                     transformRequest: angular.identity,
                     headers: {
                         'Content-Type': undefined,
-                    }
+                    },
                 })
-                .then((response) => {
-                    return response.data;
-                }).catch(error => {
-                    return handlingError('error ', error);
-                })
+                    .then(response => response.data).catch(error => handlingError('error ', error));
             } catch (err) {
                 handlingError('Error occurred when upload image. File is not image', err);
-
             }
-
         };
 
         this.upload = (img) => {
-            let imageBase64 = img[0].split(',')[1];
-            let blob = base64toBlob(imageBase64, 'image/png');
-            let file = new File([blob], 'Image.png');
-            let fd = new FormData();
+            const imageBase64 = img[0].split(',')[1];
+            const blob = base64toBlob(imageBase64, 'image/png');
+            const file = new File([blob], 'Image.png');
+            const fd = new FormData();
             fd.append('file', file);
             return $http.post('/admin/setting/banner/create', fd, {
-                    transformRequest: angular.identity,
-                    headers: {
-                        'Content-Type': undefined
-                    }
-                })
-                .then((response) => {
-                    return response.data;
-                })
-                .catch(err => handlingError('Error occurred when upload image', err));
-
-        };
-
-        this.deleteFile = (data) => {
-            return $http.post('/admin/deleteFile', data)
-            .then((response) => {
-                return response.data;
+                transformRequest: angular.identity,
+                headers: {
+                    'Content-Type': undefined,
+                },
             })
-            .catch(err => handlingError('Lỗi xảy ra khi xóa file ', err));
+                .then(response => response.data)
+                .catch(err => handlingError('Error occurred when upload image', err));
         };
+
+        this.deleteFile = data => $http.post('/admin/deleteFile', data)
+            .then(response => response.data)
+            .catch(err => handlingError('Lỗi xảy ra khi xóa file ', err));
 
 
         function base64toBlob(base64Data, contentType) {
             contentType = contentType || 'image/png';
-            let sliceSize = 1024;
-            let byteCharacters = atob(base64Data);
-            let bytesLength = byteCharacters.length;
-            let slicesCount = Math.ceil(bytesLength / sliceSize);
-            let byteArrays = new Array(slicesCount);
+            const sliceSize = 1024;
+            const byteCharacters = atob(base64Data);
+            const bytesLength = byteCharacters.length;
+            const slicesCount = Math.ceil(bytesLength / sliceSize);
+            const byteArrays = new Array(slicesCount);
 
             for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-                let begin = sliceIndex * sliceSize;
-                let end = Math.min(begin + sliceSize, bytesLength);
+                const begin = sliceIndex * sliceSize;
+                const end = Math.min(begin + sliceSize, bytesLength);
 
-                let bytes = new Array(end - begin);
+                const bytes = new Array(end - begin);
                 for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
                     bytes[i] = byteCharacters[offset].charCodeAt(0);
                 }
                 byteArrays[sliceIndex] = new Uint8Array(bytes);
             }
             return new Blob(byteArrays, {
-                type: contentType
+                type: contentType,
             });
         }
 
@@ -226,4 +208,4 @@
             return exception.catcher(msg)(err);
         }
     }
-})();
+}());

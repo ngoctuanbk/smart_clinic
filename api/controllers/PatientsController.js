@@ -177,4 +177,20 @@ module.exports = {
             return resJsonError(res, errors, 'patient');
         }
     },
+    patientByDate: async (req, res) => {
+        try {
+            const result = await PatientsService.patientByDate(req.query);
+            return res.json(responseSuccess(10141, result));
+        } catch (errors) {
+            return resJsonError(res, errors, 'patient');
+        }
+    },
+    patientByMonth: async (req, res) => {
+        try {
+            const result = await PatientsService.patientByMonth(req.query);
+            return res.json(responseSuccess(10141, result));
+        } catch (errors) {
+            return resJsonError(res, errors, 'patient');
+        }
+    },
 };

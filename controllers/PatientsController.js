@@ -135,4 +135,20 @@ module.exports = {
             return res.status(500).json(responseError(1001, err));
         }
     },
+    patientByDate: async (req, res) => {
+        try {
+            const result = await sendQueryToAPI('GET', 'api/patients/patientByDate', getHeaders(req), req.query, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
+    patientByMonth: async (req, res) => {
+        try {
+            const result = await sendQueryToAPI('GET', 'api/patients/patientByMonth', getHeaders(req), req.query, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
 };

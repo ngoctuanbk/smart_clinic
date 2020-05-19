@@ -10,6 +10,10 @@ const {
     escapeRegExp,
     convertToTime,
     convertToObjectId,
+    isArray,
+    RegExpSearch,
+    formatDateToYM,
+    getYMCurrent,
 } = require('../libs/shared');
 
 module.exports = {
@@ -355,6 +359,89 @@ module.exports = {
                 DeleteFlag: DELETE_FLAG[200],
             };
             const result = await PatientModel.count(conditions);
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    patientByDate: async (data) => {
+        try {
+            const match = {
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            if (data.FromDate || data.ToDate) {
+                match.CreatedDate = {};
+                if (data.FromDate) {
+                    match.CreatedDate.$gte = convertToTime(data.FromDate, 'from');
+                }
+                if (data.ToDate) {
+                    match.CreatedDate.$lte = convertToTime(data.ToDate, 'to');
+                }
+            }
+            const group = {
+                _id: {
+                    Date: { $substr: ['$CreatedDate', 0, 10] },
+                },
+                TotalPatient: {
+                    $sum: 1,
+                },
+            };
+            const project = {
+                _id: 0,
+                Date: '$_id.Date',
+                TotalPatient: 1,
+            };
+            const pipeline = [
+                { $match: match },
+                { $group: group },
+                { $project: project },
+            ];
+            const result = await PatientModel.aggregate(pipeline);
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    patientByMonth: async (data) => {
+        try {
+            const match = {
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            if (data.Month) {
+                if (isArray(data.Month)) {
+                    match.$or = [];
+                    data.Month.map((month) => {
+                        match.$or.push({
+                            CreatedDate: RegExpSearch(formatDateToYM(month)),
+                        });
+                    });
+                } else {
+                    match.CreatedDate = RegExpSearch(formatDateToYM(data.Month));
+                }
+            } else {
+                const Month = getYMCurrent;
+                match.CreatedDate = RegExpSearch(Month);
+            }
+            const group = {
+                _id: {
+                    Month: { $substr: ['$CreatedDate', 0, 7] },
+                    // sub string created date to yyyy-mm
+                },
+                TotalPatient: {
+                    $sum: 1,
+                },
+            };
+            const project = {
+                _id: 0,
+                Month: '$_id.Month',
+                TotalPatient: 1,
+            };
+            const pipeline = [
+                { $match: match },
+                { $group: group },
+                { $project: project },
+            ];
+            const result = await PatientModel.aggregate(pipeline);
             return promiseResolve(result);
         } catch (err) {
             return promiseReject(err);

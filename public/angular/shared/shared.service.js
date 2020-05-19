@@ -381,6 +381,11 @@
 
         this.trimValue = value => String(value || '').trim();
         this.isNumberInteger = value => Number.isInteger(+value);
-
+        this.firstDayOfMonth = (date, dateFormat = 'YYYY-MM-DD') => moment(date)
+            .startOf('month')
+            .format(dateFormat);
+        this.endDayOfMonth = (date, dateFormat = 'YYYY-MM-DD') => moment(date)
+            .endOf('month')
+            .format(dateFormat);
     }
 }());

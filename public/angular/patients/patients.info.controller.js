@@ -1,11 +1,9 @@
-'use strict';
-
 (function () {
     angular.module('SmartClinic')
         .controller('PatientsDetailController', PatientsDetailController);
-    PatientsDetailController.$inject = ['$scope', 'PatientsService', 'PaginationFactory', 'logger', '$timeout', 'limitData', 'SharedService', 'ValidatorPatient'];
+    PatientsDetailController.$inject = ['$scope', 'PatientsService', 'UploadService', 'PaginationFactory', 'logger', '$timeout', 'limitData', 'SharedService', 'ValidatorPatient'];
 
-    function PatientsDetailController($scope, PatientsService, PaginationFactory, logger, $timeout, limitData, SharedService, ValidatorPatient) {
+    function PatientsDetailController($scope, PatientsService, UploadService, PaginationFactory, logger, $timeout, limitData, SharedService, ValidatorPatient) {
         const {
             refreshSelectPicker,
             isEmpty,
@@ -49,6 +47,8 @@
             $scope.listActivity();
             $scope.paginatePre.PatientObjectId = $scope.formUpdate.PatientObjectId;
             $scope.listPrescription();
+            $scope.paginateImage.PatientObjectId = $scope.formUpdate.PatientObjectId;
+            $scope.listImage();
         };
         $scope.updateHealthStatus = () => {
             PatientsService.updateHealthStatus($scope.formUpdate)
@@ -229,15 +229,15 @@
             $scope.LabCode = item.LabCode;
             $scope.LabDetailUpdate = item.LabDetail;
         };
-        $scope.addFieldDetailLabUpdate = () => {
-            const newField = {
-                LabType: '',
-                Result: '',
-                showEdit: true,
-            };
-            $scope.LabDetailUpdate.push(newField);
-            refreshSelectPicker();
-        };
+        // $scope.addFieldDetailLabUpdate = () => {
+        //     const newField = {
+        //         LabType: '',
+        //         Result: '',
+        //         showEdit: true,
+        //     };
+        //     $scope.LabDetailUpdate.push(newField);
+        //     refreshSelectPicker();
+        // };
         $scope.openEditDetailLabUpdate = (idx) => {
             $scope.LabDetailUpdate[idx].showEdit = true;
             refreshSelectPicker();
@@ -283,6 +283,70 @@
                 alertMessage('danger', SharedService.checkFormInvalid(form), true);
             }
         };
+        $scope.files = {};
+        $scope.filePathError = '';
+        $scope.importFile = () => {
+            if ($scope.files) {
+                displayLoading('block');
+                console.log($scope.formUpdate.LabObjectId)
+                UploadService.uploadFile('POST', '/admin/labs/importFile', $scope.files, {
+                    LabObjectId: $scope.formUpdateLab.LabObjectId,
+                })
+                    .then((response) => {
+                        console.log(response)
+                        if (response && response.Success) {
+                            alertMessage('success', 'Cập nhật kết quả xét nghiệm thành công', true);
+                            displayLoading('none');
+                            changeCss();
+                            $scope.files = {};
+                            $scope.$broadcast('reloadImport');
+                            $scope.listLab();
+                                $timeout(() => {
+                                    angular.element('#update_lab').modal('hide');
+                                }, 1000);
+                            // download file import error
+                            if (response.pathLogError) {
+                                const pathLogError = response.pathLogError.replace('../public/', '/');
+                                $scope.filePathError = pathLogError;
+                                displayModalImportFile('#import_file', 'hide');
+                                $scope.listLab();
+                                $timeout(() => {
+                                    downloadRemoveFile();
+                                    angular.element('#update_lab').modal('hide');
+                                }, 50);
+                            } else {
+                                $scope.listLab();
+                                $timeout(() => {
+                                    displayModalImportFile('#import_file', 'hide');
+                                }, 1000);
+                            }
+                        } else {
+                            displayLoading('none');
+                        }
+                    }).catch((err) => {
+                        displayLoading('none');
+                        logger.error(err);
+                    });
+            } else {
+                displayLoading('none');
+            }
+        };
+        function displayModalImportFile(element, action) {
+            angular.element(element).modal(action);
+        }
+        function displayLoading(action) {
+            angular.element('#loading_add').css('display', action);
+        }
+
+        function downloadRemoveFile() {
+            function _viewError() {
+                downloadFile($scope.filePathError);
+                $timeout(() => {
+                    deleteFile($scope.filePathError);
+                }, 1000);
+            }
+            show_swal(_viewError, msg);
+        }
 
         function alertMessage(alertClass = '', alertMsg = '', alertShow = false) {
             $scope.alertShow = alertShow;
@@ -439,11 +503,250 @@
                 });
         };
 
+        // images
+        $scope.limitData = limitData();
+        $scope.paginateImage = {};
+        $scope.paginateImage.Page = 1;
+        $scope.paginateImage.Limit = $scope.limitData[0];
+        $scope.paginateImage.SortKey = 'CreatedDate';
+        $scope.paginateImage.SortOrder = -1;
+        $scope.paginateImage.Search = '';
+        $scope.countImage = 1;
+        $scope.listImage = () => {
+            PatientsService.listImage($scope.paginateImage)
+                .then((response) => {
+                    if (response.Success) {
+                        $scope.items = response.Data.docs;
+                        $scope.countImage = response.Data.page === 1 ? 1 : response.Data.limit * (response.Data.page - 1) + 1;
+                        $scope.paginationImage = PaginationFactory.paginations($scope.paginateImage.Page, response.Data);
+                    }
+                });
+        };
+        $scope.setPageImage = (page) => {
+            if (page && page !== $scope.paginateImage.Page) {
+                $scope.paginateImage.Page = +page;
+                $scope.listImage();
+            }
+        };
+
+        $scope.nextPageImage = () => {
+            if ($scope.paginationImage.numberPage > $scope.paginateImage.Page) {
+                $scope.paginateImage.Page += 1;
+                $scope.listImage();
+            }
+        };
+
+        $scope.prevPageImage = () => {
+            if ($scope.paginateImage.Page > 1) {
+                $scope.paginateImage.Page -= 1;
+                $scope.listImage();
+            }
+        };
+
+        $scope.firstPageImage = () => {
+            if ($scope.paginateImage.Page > 1) {
+                $scope.paginateImage.Page = 1;
+                $scope.listImage();
+            }
+        };
+
+        $scope.endPageImage = () => {
+            if ($scope.paginateImage.Page !== $scope.paginationImage.numberPage) {
+                $scope.paginateImage.Page = $scope.paginationImage.numberPage;
+                $scope.listImage();
+            }
+        };
+        $scope.typeImages = [
+            {
+                "TypeName": "Chụp X-quang",
+                "TypeCode": "MT001"
+            },
+            {
+                "TypeName": "Chụp Cộng hưởng từ MRI",
+                "TypeCode": "MT002"
+            },
+            {
+                "TypeName": "Chụp cắt lớp vi tính CT-Scan",
+                "TypeCode": "MT003"
+            },
+            {
+                "TypeName": "Siêu âm khớp",
+                "TypeCode": "MT004"
+            },
+            {
+                "TypeName": "Nội soi",
+                "TypeCode": "MT005"
+            },
+            {
+                "TypeName": "Siêu âm 3D",
+                "TypeCode": "MT004"
+            },
+            {
+                "TypeName": "Siêu âm tim",
+                "TypeCode": "MT004"
+            },
+            {
+                "TypeName": "Siêu âm Dropper",
+                "TypeCode": "MT004"
+            },
+        ];
+        $scope.formCreateImage = {};
+        $scope.createImage = (form) => {
+            $scope.formCreateImage.PatientObjectId = $scope.formUpdate.PatientObjectId;
+            if (form.validate()) {
+                PatientsService.createImage($scope.formCreateImage)
+                    .then((response) => {
+                        console.log($scope.formCreateImage)
+                        console.log(response)
+                        if (response.Success) {
+                            $scope.listImage();
+                            $scope.formCreateImage = {};
+                            refreshSelectPicker();
+                            changeCss();
+                            alertMessage('success', 'Thêm mới yêu cầu chụp chiếu thành công', true);
+                            $timeout(() => {
+                                alertMessage();
+                            }, 2000);
+                        } else {
+                            alertMessage('danger', 'Có lỗi xảy ra. Vui lòng thử lại!', true);
+                        }
+                    });
+            } else {
+                alertMessage('danger', SharedService.checkFormInvalid(form), true);
+            }
+        };
+        $scope.formUpdateImage = {};
+        $scope.infoImage = (item, idx) => {
+            $scope.selectedImage = idx;
+            $scope.formUpdateImage.ImageObjectId = item._id;
+            $scope.formUpdateImage.ImageCode = item.ImageCode;
+            $scope.formUpdateImage.Type = item.Type;
+            $('.preview-images-zone').html('');
+            item.Images.map((item, idx) => {
+                renderViewImg(`${item.ImagesDir}`, idx, item._id);
+            });
+            refreshSelectPicker();
+        };
+        $scope.uImage = (form) => {
+            $scope.formUpdateImage.PatientObjectId = $scope.formUpdate.PatientObjectId;
+            if (form.validate()) {
+                console.log($scope.images)
+                const files = [];
+                if (!isEmpty($scope.images)) {
+                    for (const file of $scope.images) {
+                        files.push(file);
+                    }
+                }
+                $scope.formUpdateImage.ImageObjectIdDeleted = $scope.ImageObjectIdDeleted;
+                UploadService.uploadImage('PUT', '/admin/images/update', $scope.formUpdateImage, files)
+                    .then((response) => {
+                        console.log("fffffffff")
+                        console.log(response);
+                        if (response.Success) {
+                            alertMessage('success', 'Cập nhật kết quả chụp chiếu thành công', true);
+                            $timeout(() => {
+                                angular.element('#update_image').modal('hide');
+                            }, 2000);
+                            $scope.listImage();
+                        } else {
+                            alertMessage('danger', 'Có lỗi xảy ra. Vui lòng thử lại!', true);
+                        }
+                    });
+            } else {
+                alertMessage('danger', SharedService.checkFormInvalid(form), true);
+            }
+        };
+        $(document).ready(() => {
+            document.getElementById('pro-image').addEventListener('change', readImage, false);
+
+            $('.preview-images-zone').sortable();
+
+            $(document).on('click', '.image-cancel', function () {
+                const no = $(this).data('no');
+                $(`.preview-image.preview-show-${no}`).remove();
+                const id = $(this).data('id');
+                $scope.ImageObjectIdDeleted.push(id);
+            });
+        });
+        $scope.ImageObjectIdDeleted = [];
+
+        let num = 0;
+        function readImage(event) {
+            if (window.File && window.FileList && window.FileReader) {
+                const files = event.target.files; // FileList object
+                $scope.images = files;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    // eslint-disable-next-line no-continue
+                    if (!file.type.match('image')) continue;
+
+                    const picReader = new FileReader();
+
+                    // eslint-disable-next-line no-loop-func
+                    picReader.addEventListener('load', (event) => {
+                        const picFile = event.target;
+                        num += 1;
+                        if (num <= 5) {
+                            renderViewImg(picFile.result, num);
+                        }
+                    });
+                    picReader.readAsDataURL(file);
+                }
+            }
+        }
+
+        function renderViewScreen(url) {
+            const output = $('.wrapperSlideScreen');
+            const html = `
+                <div class="mySlides">
+                    <img src="${$scope.checkImage(url)}" style="width:100%;height:600px">
+                </div>
+            `;
+            output.append(html);
+        }
+
+        function renderImageColumn(url) {
+            const output = $('.wrapperImageColumn');
+            const html = `
+                <div class="column">
+                    <img class="demo cursor" src="${$scope.checkImage(url)}" style="width:100%; height:200px" >
+                </div>
+            `;
+            output.append(html);
+        }
+
+        $scope.showImage = (Images) => {
+            const wrapperSlideScreen = $('.wrapperSlideScreen');
+            const wrapperImageColumn = $('.wrapperImageColumn');
+            wrapperSlideScreen.html('');
+            wrapperImageColumn.html('');
+            $scope.SlideImages = Images;
+            Images.map((slide) => {
+                renderViewScreen(slide.ImagesDir);
+                renderImageColumn(slide.ImagesDir);
+            });
+            $('#slide-image-asset').removeClass('hide');
+        }; 
+        $('.modal').on('hide.bs.modal', () => {
+            $timeout(() => {
+                changeCss();
+                alertMessage();
+            });
+        }); 
+
         $scope.init = async () => { 
             await Promise.all([]).then(() => {
                 $scope.getInfo();
                 refreshSelectPicker();
             });
         };
+    }
+    function renderViewImg(url, idx, id) {
+        const output = $('.preview-images-zone');
+        const html = `<div class="preview-image preview-show-${idx}">`
+        + `<div class="image-cancel" data-no="${idx}" data-id="${id}">x</div>`
+        + `<div class="image-zone"><img id="pro-img-${idx}" src="${url}"></div>`
+        + '</div>';
+        output.append(html);
     }
 }());

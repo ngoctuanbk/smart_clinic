@@ -35,5 +35,7 @@ require('./ActivitiesRoute')(apiRouter);
 require('./MedicinesRoute')(apiRouter);
 /* prescriptions */
 require('./PrescriptionsRoute')(apiRouter);
+/* images */
+require('./ImagesRoute')(apiRouter);
 
 module.exports = apiRouter;

@@ -16,7 +16,18 @@ const {
     padNumber,
     resJsonError,
     generatorTime,
+    trimValue,
+    deleteFile,
+    beforeUpload,
+    readFileExcel,
+    uploadFile,
+    storage,
+    fileFilterExcel,
 } = require('../libs/shared');
+const {
+    FIELDS_IMPORT,
+} = require('../constants/constants');
+const uploadExcel = uploadFile(storage('excels'), fileFilterExcel, 'FileExcel');
 
 // create new patientID 
 async function createNewLabCode(AutoIncrement, Database) {
@@ -99,5 +110,103 @@ module.exports = {
         } catch (errors) {
             return resJsonError(res, errors, 'lab');
         }
+    },
+    importFile: async (req, res) => {
+        beforeUpload(req, res, async () => {
+            try {
+                // kiem tra file
+                if (!req.file || !req.file.filename) {
+                    return res.json(responseError(40002));
+                }
+                const LabObjectId = req.body.LabObjectId;
+                const { data } = readFileExcel(req.file.path);
+                const { Database, UserObjectId } = req.decoded;
+                let recordAdded = 0;
+                let recordUpdated = 0;
+                let RowUpdated = [];
+                const listError = [];
+                const listCorrect = [];
+
+                const {
+                    LabType, Result
+                } = FIELDS_IMPORT;
+
+                async function runArrayImported(array = []) {
+
+                    function checkLabDetail(LabType, Result) {
+                        const obj = {
+                            msg: '',
+                            value: [],
+                        };
+                        const _LabType = trimValue(LabType);
+                        if (!_LabType) {
+                            obj.msg = 'Loại xét nghiệm không được để r=trống, ';
+                            return obj;
+                        }
+                        const _Result = trimValue(Result);
+                        if (!_Result) {
+                            obj.msg = 'Kết quả xét nghiệm không được để r=trống, ';
+                            return obj;
+                        }
+                        const LabDetail = {};
+                        LabDetail.LabType = _LabType,
+                        LabDetail.Result = _Result,
+                        obj.value = LabDetail;
+                        return obj;
+                    }
+
+                    let idx = 2;
+                    const len = array.length;
+                    const arr = [];
+                    for (let i = 0; i < len; i++) {
+                        const row = array[i];
+                        const params = {};
+                        let msgError = '';
+                        const detail = checkLabDetail(row[LabType], row[Result]);
+                        msgError += detail.msg;
+                        arr.push(detail.value)
+                        params.LabDetail = arr;
+                        // push vao list correct neu khong co loi
+                        if (listError.length < 1 || isEmpty(msgError)) {
+                            params.row = idx;
+                            listCorrect.push(params);
+                        }
+                        idx++;              
+                    }
+                }
+                // run array import
+                await runArrayImported(data);
+
+                if (!listError.length && listCorrect.length) {
+                    const recordsCreated = [];
+                    const DateCurrent = generatorTime();
+                    const len = listCorrect.length;
+                    for (let i = 0; i < len; i++) {
+                        const item = listCorrect[i];
+                        item.LabObjectId = LabObjectId;
+                        item.UpdatedBy = UserObjectId;
+                        item.UserObjectId = UserObjectId;
+                        item.UpdatedDate = DateCurrent;
+                        const isUpdated = await LabsService.updateImportFile(item);
+                        RowUpdated = !isEmpty(isUpdated) ? [...RowUpdated, item.row] : RowUpdated;
+                        continue;
+                    }
+                }
+
+                if (req.file.path) {
+                    await deleteFile(req.file.path);
+                }
+
+                recordUpdated = RowUpdated.length;
+                const result = {};
+                return res.json(responseSuccess(10007, result));
+            } catch (errors) {
+                console.log(errors)
+                if (req.file && req.file.path) {
+                    deleteFile(req.file.path);
+                }
+                return resJsonError(res, errors, 'question');
+            }
+        }, uploadExcel);
     },
 };

@@ -63,6 +63,10 @@ app.use(express.static(path.join(__dirname, 'public'), {
     // maxage: '24h',
     // etag: false
 }));
+app.use(express.static(path.join(__dirname, 'api/public'), {
+    // maxage: '24h',
+    // etag: false
+}));
 
 app.listen(process.env.PORT || 8000);
 app.use('/', defaultRouter);

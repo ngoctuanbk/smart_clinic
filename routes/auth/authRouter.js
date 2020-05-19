@@ -27,6 +27,8 @@ require('./LabsRoute')(authRouter);
 require('./LabResultsRoute')(authRouter);
 /* medicines */
 require('./MedicinesRoute')(authRouter);
+/* images */
+require('./ImagesRoute')(authRouter);
 
 
 

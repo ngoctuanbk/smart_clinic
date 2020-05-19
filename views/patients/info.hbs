@@ -25,6 +25,11 @@ data-ng-init="PatientObjectId = '{{PatientObjectId}}'; data = {{data}}; init();"
                                     </a>
                                 </li>
                                 <li>
+                                    <a href="#image" ng-click="modifyTab('tabImage')" data-toggle="tab">
+                                        Chụp chiếu
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="#history" ng-click="modifyTab('tabHistory')" data-toggle="tab">
                                         Lịch sử khám chữa bệnh
                                     </a>
@@ -44,6 +49,7 @@ data-ng-init="PatientObjectId = '{{PatientObjectId}}'; data = {{data}}; init();"
                                 {{> patients/info}}
                                 {{> patients/history}}
                                 {{> patients/lab}}
+                                {{> patients/image}}
                                 {{> patients/diagnose}}
                                 {{> patients/prescriptions}}
                             </div>

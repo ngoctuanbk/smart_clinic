@@ -5,9 +5,17 @@ const {
     sendBodyToAPI,
     sendDataToClient,
     getInfoUserSession,
+    uploadFile,
+    storage,
+    fileFilterExcel,
+    beforeUpload,
+    sendFormDataToAPI,
+    isEmpty,
+    fsCreateReadStream,
 } = require('../libs/shared');
 
 const { TITLE_ADMIN } = require('../configs/constants');
+const uploadExcel = uploadFile(storage('labs', 'excels'), fileFilterExcel, 'File');
 
 module.exports = {
     index: async (req, res) => {
@@ -49,6 +57,25 @@ module.exports = {
             return sendDataToClient(req, res, result);
         } catch (err) {
             return res.status(500).json(responseError(1001, err));
+        }
+    },
+    importFile: async (req, res) => {
+        try {
+            beforeUpload(req, res, async () => {
+                const formData = {};
+                formData.LabObjectId = req.body.LabObjectId;
+                if (!isEmpty(req.file)) {
+                    const stream = fsCreateReadStream(req.file.path);
+                    formData.FileExcel = stream;
+                }
+                const result = await sendFormDataToAPI('POST', 'api/labs/importFile', getHeaders(req), formData, true);
+                if (result.Success) {
+                    return sendDataToClient(req, res, result);
+                }
+                return sendDataToClient(req, res, result);
+            }, uploadExcel);
+        } catch (err) {
+            res.status(500).json(responseError(1001));
         }
     },
 };

@@ -90,6 +90,23 @@
                 </ul>
             </li>
             {{/isAcceptedScreen}}
+            {{#isAcceptedScreen Info.Role 'Images'}} 
+            <li class="nav-item {{#active 'class' activity 'Images'}}  {{/active}}">
+                <a href="" class="nav-link nav-toggle">
+                    <i class="fas fa-images"></i>
+                    <span class="title">Quản lý chụp chiếu</span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu">
+                    <li class="nav-item {{#active 'class' activity 'Images'}}  {{/active}}">
+                        <a href="/admin/images" class="nav-link ">
+                            <i class="fas fa-images"></i>
+                            <span class="title">Chụp chiếu</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {{/isAcceptedScreen}}
             {{#isAcceptedScreen Info.Role 'MasterData'}} 
             <li class="nav-item {{#active 'class' activity 'Activity'}}  {{/active}}">
                 <a href="" class="nav-link nav-toggle">

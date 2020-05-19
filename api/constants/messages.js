@@ -55,6 +55,10 @@ exports.CODES_SUCCESS = {
     /* medicine start from 10180 */
     10180: 'Create prescription success',
     10181: 'List prescription success',
+    /* image start from 10180 */
+    10190: 'Create image success',
+    10191: 'List image success',
+    10192: 'List image success',
 };
 
 exports.CODES_ERROR = {
@@ -112,4 +116,8 @@ exports.CODES_ERROR = {
     40163: 'Update medicine error',
     /* prescription error */ 
     40170: 'Create prescription error',
+    /* image error */ 
+    40180: 'Create image error',
+    40181: 'ImageCode has exsit already',
+    40182: 'Update image error',
 };

@@ -1,0 +1,288 @@
+<div class="page-content-wrapper" ng-controller="ImagesController">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fas fa-images"></i>
+                            <span class="caption-subject sbold uppercase"> Danh sách chụp chiếu</span>
+                        </div>
+                        <div class="tools">
+                            <a href="javascript:;" class="collapse"> </a>
+                            <a href="javascript:;" ng-click="paginate.Page = 1; reload();" class="reload"> </a>
+                            <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
+                        </div>
+                        <div class="actions pull-left">
+                            <a href="#create_images" class="btn btn-circle btn-success" data-toggle="modal"><i
+                                    class="fa fa-plus"></i>
+                                Thêm mới </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="col-md-12 flex-box">
+                                    <div class="input-group" style="z-index: 1000 !important;">
+                                        <div class="input-group-control">
+                                            <select style="width: 100px;"
+                                                class="selectpicker form-control limit-data pull-left"
+                                                ng-model="paginate.Limit" ng-change="paginate.Page = 1; list();"
+                                                ng-options="v as v for (k,v) in limitData">
+                                                <option value="" ng-if="hideOptions"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="input-group" style="z-index: 5 !important;">
+                                        <div class="input-group-control">
+                                            <select class="selectpicker form-control" data-live-search="true" 
+                                        data-title="Loại chụp chiếu" ng-change="paginate.Page = 1; list();"
+                                        ng-options="item.TypeName as item.TypeName for item in types"
+                                        ng-model="paginate.Type">
+                                            <option value="" ng-if="hideOption"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <select class="selectpicker" data-size="5" data-live-search="true"
+                                            ng-change="paginate.Page = 1; list()" data-selected-text-format="count > 2"
+                                            data-title="Chọn bệnh nhân"
+                                            ng-options="patient._id as patient.FullName + '(' + patient.PatientID + ')' for patient in patients"
+                                            ng-model="paginate.PatientObjectId">
+                                            <option value="" ng-if="hideOption"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 box-search-wrapper">
+                                <div class="col-md-12">
+                                    <div class="form-search pull-right">
+                                        <div class="input-icon right">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" ng-model="paginate.Search" name="bar_code"
+                                                class="form-control" ng-change="paginate.Page = 1; list()"
+                                                placeholder="Tìm kiếm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-scrollable wrapper-table-update">
+                            <table class="table table-light table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="rowno"> STT </a> </th>
+                                        <th class="title"> Mã chụp chiếu </th>
+                                        <th class="title"> Loại chụp chiếu </a></th>
+                                        <th class="title"> Bệnh nhân </th>
+                                        <th class="title"> Ngày tạo </a></th>
+                                        <th class="th-size-update"> Trạng thái</a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in images" id="tbody-\{{$index}}">
+                                        <td ng-bind="$index + count"></td>
+                                        <td>
+                                            <a href="#update_image" ng-click="info(item)" ng-bind="item.ImageCode"
+                                                data-toggle="modal"></a>
+                                        </td>
+                                        <td ng-bind="item.Type"></td>
+                                        <td ng-bind="item.PatientObjectId.FullName"></td>
+                                        <td ng-bind="item.CreatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
+                                        <td class="status ">
+                                            <div class="btn-group status dropup update-status-mgt">
+                                                <label class="btn btn-sm btn-status"
+                                                    ng-class="item.Status | filterStatusToClass"
+                                                    ng-bind="item.Status | filterStatusToText">
+                                                </label>
+                                                <button type="button" class="btn btn-sm btn-info dropdown-toggle"
+                                                    data-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fa fa-angle-up"></i>
+                                                </button>
+                                                <ul class="dropdown-menu status pull-right" role="menu">
+                                                    <li class="status-Remove"><a href="javascript:;" data-value="Remove"
+                                                            ng-click="delete(item._id, item.BrandName)">
+                                                            Xóa </a></li>
+                                                    <li class="status-Active"><a href="javascript:;" data-value="Active"
+                                                            ng-click="updateStatus(200, item._id, $index)">
+                                                            Hoạt động
+                                                        </a>
+                                                    </li>
+                                                    <li class="status-Inactive"><a href="javascript:;"
+                                                            data-value="Inactive"
+                                                            ng-click="updateStatus(400, item._id, $index)">
+                                                            Ngừng </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="boxs-footer dvd dvd-top">
+                            <div class="row" ng-if="pagination.show">
+                                <div class="col-sm-3 text-left">
+                                    <small class="text-muted"
+                                        ng-bind="'Hiển thị ' + pagination.skip + '-' + pagination.toSkip + '/' + pagination.total + ' mục'">
+                                    </small>
+                                </div>
+                                <div class="col-sm-3 hidden-xs">
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <ul class="pagination m-0">
+                                        <li>
+                                            <a ng-click="firstPage()">
+                                                <i class="fas fa-angle-double-left"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="prevPage()">
+                                                <i class="fa fa-chevron-left"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        <li ng-repeat="page in pagination.pages" style="cursor: pointer"
+                                            ng-class="{active:pagination.page === page}">
+                                            <a ng-click="setPage(page)" ng-bind="page"></a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="nextPage()">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="endPage()">
+                                                <i class="fas fa-angle-double-right"></i>
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="create_images" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title="">
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="fas fa-images"></i>
+                        Thông tin chụp chiếu
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" name="f_CreateImage" ng-validate="validator">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}" ng-bind="alertMsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Mã chụp chiếu<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="image_code"
+                                        ng-model="formCreate.ImageCode" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Bệnh nhân<span class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <select class="selectpicker form-control" name="patient"
+                                        ng-model="formCreate.PatientObjectId"
+                                        ng-options="patient._id as patient.FullName + '(' + patient.PatientID + ')' for patient in patients"
+                                        data-live-search="true" data-size="5" title="Chọn bệnh nhân">
+                                        <option value="" ng-if="hideOptions"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Loại chụp chiếu<span class="required">(*)</span>:</label>
+                                <div class="col-md-8">
+                                    <select class="selectpicker form-control" name="type"
+                                        ng-model="formCreate.Type"
+                                        ng-options="type.TypeName as type.TypeName for type in types"
+                                        data-live-search="true" data-size="5" title="Chọn loại chụp chiếu">
+                                        <option value="" ng-if="hideOptions"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="create(f_CreateImage)">
+                        Lưu</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        Hủy</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="update_image" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title="">
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="fas fa-images"></i>
+                       Thông tin chụp chiếu
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" name="f_UpdateLab" ng-validate="validator">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}" ng-bind="alertMsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Mã chụp chiếu:</label>
+                                <div class="col-md-8">
+                                    <input type="text" readonly class="form-control" ng-value="formUpdate.ImageCode">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Bệnh nhân:</label>
+                                <div class="col-md-8">
+                                    <input type="text" readonly class="form-control" ng-value="Patient">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">Loại chụp chiếu:</label>
+                                <div class="col-md-8">
+                                    <input type="text" readonly class="form-control" ng-value="formUpdate.Type">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <button datatype="slide" class="btn btn-success" href="javascript:void(0)"
+                                        onclick="$('#pro-image').click()">Upload hình ảnh</button>
+                                    <input type="file" id="pro-image" ng-model="images" file-model name="pro-image"
+                                        style="display: none;" multiple required>
+                                </div>
+                                <div class="preview-images-zone">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn green" ng-click="update(f_UpdateLab)">
+                        Lưu</button>
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        Hủy</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

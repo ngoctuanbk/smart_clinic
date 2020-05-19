@@ -3,8 +3,9 @@ const hbs_helpers = require('handlebars-helpers')({
     handlebars,
 });
 
-const ScreenForRoleDoctor = ['Users', 'Products', 'Patients'];
-const ScreenForRoleNurse= [''];
+const ScreenForRoleDoctor = ['Users', 'Patients', 'Labs', 'Images'];
+const ScreenForRolePharmasist= ['Products'];
+const ScreenForRoleNurse= ['Labs', 'Images'];
 
 
 hbs_helpers.isAcceptedScreen = function (role, screen = '', options) {
@@ -15,6 +16,9 @@ hbs_helpers.isAcceptedScreen = function (role, screen = '', options) {
         return options.fn(this)
     }
     if(role == 'Nurse' && ScreenForRoleNurse.includes(screen)){
+        return options.fn(this)
+    }
+    if(role == 'Pharmasist' && ScreenForRolePharmasist.includes(screen)){
         return options.fn(this)
     }
 };

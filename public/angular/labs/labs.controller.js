@@ -3,10 +3,10 @@
 (function () {
     angular.module('SmartClinic')
         .controller('LabsController', LabsController);
-    LabsController.$inject = ['$scope', 'LabsService', 'PaginationFactory',
+    LabsController.$inject = ['$scope', 'LabsService', 'UploadService', 'PaginationFactory',
         'logger', '$timeout', 'ValidatorLab', 'limitData', 'SharedService'];
 
-    function LabsController($scope, LabsService, PaginationFactory,
+    function LabsController($scope, LabsService, UploadService, PaginationFactory,
         logger, $timeout, ValidatorLab, limitData, SharedService) {
         const {
             filterObject,
@@ -171,15 +171,15 @@
             $scope.LabDetailUpdate = item.LabDetail;
             $scope.Patient = item.PatientObjectId.FullName;
         };
-        $scope.addFieldDetailLabUpdate = () => {
-            const newField = {
-                LabType: '',
-                Result: '',
-                showEdit: true,
-            };
-            $scope.LabDetailUpdate.push(newField);
-            refreshSelectPicker();
-        };
+        // $scope.addFieldDetailLabUpdate = () => {
+        //     const newField = {
+        //         LabType: '',
+        //         Result: '',
+        //         showEdit: true,
+        //     };
+        //     $scope.LabDetailUpdate.push(newField);
+        //     refreshSelectPicker();
+        // };
         $scope.openEditDetailLabUpdate = (idx) => {
             $scope.LabDetailUpdate[idx].showEdit = true;
             refreshSelectPicker();
@@ -225,8 +225,69 @@
                 alertMessage('danger', SharedService.checkFormInvalid(form), true);
             }
         };
+        $scope.files = {};
+        $scope.filePathError = '';
+        $scope.importFile = () => {
+            if ($scope.files) {
+                displayLoading('block');
+                console.log($scope.formUpdate.LabObjectId)
+                UploadService.uploadFile('POST', '/admin/labs/importFile', $scope.files, {
+                    LabObjectId: $scope.formUpdate.LabObjectId,
+                })
+                    .then((response) => {
+                        console.log(response)
+                        if (response && response.Success) {
+                            alertMessage('success', 'Cập nhật kết quả xét nghiệm thành công', true);
+                            displayLoading('none');
+                            $scope.files = {};
+                            $scope.$broadcast('reloadImport');
+                            $scope.list();
+                                $timeout(() => {
+                                    angular.element('#update_lab').modal('hide');
+                                }, 1000);
+                            // download file import error
+                            if (response.pathLogError) {
+                                const pathLogError = response.pathLogError.replace('../public/', '/');
+                                $scope.filePathError = pathLogError;
+                                displayModalImportFile('#import_file', 'hide');
+                                $scope.list();
+                                $timeout(() => {
+                                    downloadRemoveFile();
+                                    angular.element('#update_lab').modal('hide');
+                                }, 50);
+                            } else {
+                                $scope.list();
+                                $timeout(() => {
+                                    displayModalImportFile('#import_file', 'hide');
+                                }, 1000);
+                            }
+                        } else {
+                            displayLoading('none');
+                        }
+                    }).catch((err) => {
+                        displayLoading('none');
+                        logger.error(err);
+                    });
+            } else {
+                displayLoading('none');
+            }
+        };
+        function displayModalImportFile(element, action) {
+            angular.element(element).modal(action);
+        }
+        function displayLoading(action) {
+            angular.element('#loading_add').css('display', action);
+        }
 
-
+        function downloadRemoveFile() {
+            function _viewError() {
+                downloadFile($scope.filePathError);
+                $timeout(() => {
+                    deleteFile($scope.filePathError);
+                }, 1000);
+            }
+            show_swal(_viewError, msg);
+        }
         function alertMessage(alertClass = '', alertMsg = '', alertShow = false) {
             $scope.alertShow = alertShow;
             $scope.alertClass = alertClass;
@@ -237,7 +298,6 @@
             $timeout(() => {
                 changeCss();
                 alertMessage();
-                resetDataCreate();
             });
         });
     }

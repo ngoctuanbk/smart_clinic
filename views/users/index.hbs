@@ -123,7 +123,7 @@
                                     <tr class='click-row'>
                                         <td class="rowno" ng-bind="$index + count"> </td>
                                         <td class="title">
-                                            <img ng-src="\{{(user.Avatar | filterImageFromApi) || 'http://localhost:8000/images/avatar.jpg'}}" width="80" height="80" alt="">
+                                            <img ng-src="\{{(user.Avatar) || 'http://localhost:8000/images/avatar.jpg'}}" width="80" height="80" alt="">
                                         </td>
                                         <td class="title link" ng-click="viewInfo(user._id)"
                                             ng-bind="user.Info.FullName" title="Xem chi tiết"></td>

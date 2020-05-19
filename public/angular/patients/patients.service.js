@@ -21,5 +21,7 @@
         this.createPrescription = data => HttpService.sendData('POST', '/admin/prescriptions/create', data, 'Lỗi xảy ra khi thêm mới xét nghiệm');
         this.listPrescription = data => HttpService.sendData('GET', '/admin/prescriptions/list', data, 'Lỗi xảy ra khi hiển thị danh sách xét nghiệm');
         this.updateDiagnose = data => HttpService.sendData('PUT', '/admin/patients/updateDiagnose', data, 'Lỗi xảy khi cập nhật chỉ số sức khỏe bệnh nhân');
+        this.createImage = data => HttpService.sendData('POST', '/admin/images/create', data, 'Lỗi xảy ra khi thêm mới xét nghiệm');
+        this.listImage = data => HttpService.sendData('GET', '/admin/images/list', data, 'Lỗi xảy ra khi hiển thị danh sách xét nghiệm');
     }
 }());

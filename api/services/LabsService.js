@@ -100,6 +100,25 @@ module.exports = {
             return promiseReject(err);
         }
     },
+    updateImportFile: async (data) => {
+        try {
+            const conditions = {
+                _id: data.LabObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                LabDetail: data.LabDetail,
+                Status: STATUS[200],
+                UpdatedDate: generatorTime(),
+                UpdatedBy: data.UpdatedBy,
+                UserObjectId: data.UserObjectId,
+            };
+            const result = await LabModel.findOneAndUpdate(conditions, set, { new: true});
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
     checkLabCodeExist: async (data) => {
         try {
             const conditions = {

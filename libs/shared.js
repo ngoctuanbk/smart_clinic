@@ -162,6 +162,10 @@ module.exports = {
         storage,
         fileFilter,
     }).single(singleName),
+    uploadManyFile: (storage, fileFilter, Name) => multer({
+        storage,
+        fileFilter,
+    }).array(Name),
     beforeUpload: (req, res, next, uploadFile) => {
         uploadFile(req, res, (err) => {
             const { isEmpty, deleteFile, responseError } = module.exports;

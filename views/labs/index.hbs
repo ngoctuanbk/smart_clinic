@@ -328,15 +328,38 @@
                             </div>
                             <div class="portlet light">
                                 <div class="portlet-title">
-                                    <div class="caption">
+                                    <div class="caption" class="col-md-5">
                                         <span class="caption-subject uppercase">
                                             Loại xét nghiệm </span>
                                     </div>
-                                    <div class="actions">
-                                        <a href="javascript:;" class="btn green pull-right"
-                                            ng-click="addFieldDetailLabUpdate()"><i class="fas fa-plus"></i>
-                                            Thêm xét nghiệm
-                                        </a>
+                                    <div class="actions pull-right" class="col-md-7">
+                                        <button href="javascript:;" class="btn green btn-file-upload"><i
+                                                class="fas fa-file-excel"></i>
+                                            <span
+                                                class="file-title">Import kết quả</span>
+                                            <span>
+                                                <input type="file" id="input-file-upload" class="input-file-upload"
+                                                    data-width="180" data-height="180" name="file" multiple
+                                                    accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                                    file-upload="files" title="Xuất file excel" />
+                                            </span>
+                                        </button>
+                                        <button ng-if="files.name" type="button" id="selectBtn" data-dismiss=""
+                                            class="btn green btn-file-upload" ng-click="importFile()">Cập nhật
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group" ng-if="files.name">
+                                        <i class="icon-check"></i>
+                                        <span ng-bind="files.name" class="text-center"></span>
+                                </div>
+                                <!--end form -->
+                                <div class="loading-wrapper" id="loading_add">
+                                    <div>
+                                        <img src="/images/pictures/loading.gif" alt="loading">
+                                    </div>
+                                    <div class="title">
+                                        Đang thêm
                                     </div>
                                 </div>
                                 <div class="portlet-body">

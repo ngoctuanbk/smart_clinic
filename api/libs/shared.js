@@ -9,7 +9,7 @@ const destroy = require('destroy');
 const moment = require('moment-timezone');
 const multer = require('multer');
 const path = require('path');
-// const xlsx = require('xlsx');
+const xlsx = require('xlsx');
 const bcrypt = require('bcrypt');
 const { CODES_SUCCESS, CODES_ERROR} = require('../constants/messages');
 const { STATUS, ROLE } = require('../constants/constants');
@@ -246,25 +246,23 @@ module.exports = {
         storage,
         fileFilter,
     }).single(singleName),
-    // uploadManyFile: (storage, fileFilter, Name) => multer({
-    //     storage,
-    //     fileFilter,
-    // }).array(Name),
-    // // isFileExcel: string => string.match(/\.(xlsx|xls)$/),
-    // fileFilterExcel: (req, file, cb) => {
-    //     const { isFileExcel } = module.exports;
-    //     if (!isFileExcel(file.originalname)) {
-    //         return cb({ StatusCode: 40017});
-    //     }
-    //     return cb(null, true);
-    // },
+    uploadManyFile: (storage, fileFilter, Name) => multer({
+        storage,
+        fileFilter,
+    }).array(Name),
+    isFileExcel: string => string.match(/\.(xlsx|xls)$/),
+    fileFilterExcel: (req, file, cb) => {
+        const { isFileExcel } = module.exports;
+        if (!isFileExcel(file.originalname)) {
+            return cb({ StatusCode: 40017});
+        }
+        return cb(null, true);
+    },
     beforeUpload: (req, res, next, uploadFile) => {
         uploadFile(req, res, (err) => {
             const { isEmpty, deleteFile, responseError } = module.exports;
-            // if (isEmpty(req.file)) {
-            //     return res.json(responseError(40002));
-            // }
             if (!isEmpty(err)) {
+                console.log(err);
                 const { StatusCode } = err;
                 return res.json(responseError(StatusCode || 40015));
             }
@@ -315,27 +313,27 @@ module.exports = {
         const lenNumber = String(number).length;
         return lenNumber < 6 ? (new Array(7 - lenNumber).join('0') + number) : number;
     },
-    // readFileExcel: (filePath, options = {}) => {
-    //     const workbook = xlsx.readFile(filePath);
-    //     const sheetsName = workbook.SheetNames;
-    //     const firstSheetName = sheetsName[0];
-    //     const worksheet = workbook.Sheets[firstSheetName];
-    //     const obj = {
-    //         worksheet: '',
-    //         data: [],
-    //     };
-    //     if (!empty(worksheet)) {
-    //         obj.worksheet = worksheet;
-    //         const _options = {
-    //             raw: false,
-    //         };
-    //         if (options.header) {
-    //             _options.header = options.header;
-    //         }
-    //         obj.data = xlsx.utils.sheet_to_json(worksheet, _options);
-    //     }
-    //     return obj;
-    // },
+    readFileExcel: (filePath, options = {}) => {
+        const workbook = xlsx.readFile(filePath);
+        const sheetsName = workbook.SheetNames;
+        const firstSheetName = sheetsName[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const obj = {
+            worksheet: '',
+            data: [],
+        };
+        if (!empty(worksheet)) {
+            obj.worksheet = worksheet;
+            const _options = {
+                raw: false,
+            };
+            if (options.header) {
+                _options.header = options.header;
+            }
+            obj.data = xlsx.utils.sheet_to_json(worksheet, _options);
+        }
+        return obj;
+    },
     // removeAccents: str => String(str).normalize('NFD')
     //     .replace(/[\u0300-\u036f]/g, '')
     //     .replace(/đ/g, 'd')
@@ -572,18 +570,18 @@ module.exports = {
     // isRoleBackOffice: role => role === ROLE.BackOffice,
     // isRoleAdTeRsmMe: role => [ROLE.AdminSystem, ROLE.TechnicalSupport, ROLE.RSM, ROLE.Member].includes(role),
     // isRoleAdmin: role => role === ROLE.AdminSystem,
-    // removeCommaLast: (string = '') => {
-    //     const { trimValue } = module.exports;
-    //     string = trimValue(string);
-    //     if (string.slice(-1) !== ',') { return string; }
-    //     const lastIdx = string.lastIndexOf(',');
-    //     return string.substr(0, lastIdx);
-    // },
-    // convertStringToArray: (string = '') => {
-    //     const { removeCommaLast } = module.exports;
-    //     string = removeCommaLast(string);
-    //     return string.split(/\s*,\s*/);
-    // },
+    removeCommaLast: (string = '') => {
+        const { trimValue } = module.exports;
+        string = trimValue(string);
+        if (string.slice(-1) !== ',') { return string; }
+        const lastIdx = string.lastIndexOf(',');
+        return string.substr(0, lastIdx);
+    },
+    convertStringToArray: (string = '') => {
+        const { removeCommaLast } = module.exports;
+        string = removeCommaLast(string);
+        return string.split(/\s*,\s*/);
+    },
     // hasDuplicateInArrays: (array1 = [], array2 = []) => {
     //     if (typeof array2 === 'string') {
     //         array2 = array2.split(',');
