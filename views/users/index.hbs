@@ -20,13 +20,7 @@
                                 Thêm mới
                             </a>
                             {{/isActiveFunction}}
-                            {{#isActiveFunction Info.Role 'CreateUser'}}
-                            <button href="#" class="btn btn-success btn-circle" data-toggle="modal"
-                                data-target="#import_file"><i class="fas fa-file-excel"></i>
-                                <span class="file-title">Import</span>
-                            </button>
-                            {{/isActiveFunction}}
-                            {{#isActiveFunction Info.Role 'CreateUser'}}
+                            {{#isActiveFunction Info.Role 'ExportUser'}}
                             <button href="#export" class="btn btn-success btn-circle" data-toggle="modal"><i
                                     class="fas fa-file-excel"></i>
                                 <span class="file-title">Export</span>

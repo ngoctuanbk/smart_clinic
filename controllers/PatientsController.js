@@ -119,14 +119,30 @@ module.exports = {
             return res.status(500).json(responseError(1001, err));
         }
     },
-    updateDiagnose: async (req, res) => {
+    listDiagnose: async (req, res) => {
         try {
-            const result = await sendBodyToAPI('PUT', 'api/patients/updateDiagnose', getHeaders(req), req.body, true);
+            const result = await sendQueryToAPI('GET', 'api/diagnose/list', getHeaders(req), req.query, true);
             return sendDataToClient(req, res, result);
         } catch (err) {
             return res.status(500).json(responseError(1001, err));
         }
     },
+    createDiagnose: async (req, res) => {
+        try {
+            const result = await sendBodyToAPI('POST', 'api/diagnose/create', getHeaders(req), req.body, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
+    // updateDiagnose: async (req, res) => {
+    //     try {
+    //         const result = await sendBodyToAPI('PUT', 'api/patients/updateDiagnose', getHeaders(req), req.body, true);
+    //         return sendDataToClient(req, res, result);
+    //     } catch (err) {
+    //         return res.status(500).json(responseError(1001, err));
+    //     }
+    // },
     countPatient: async (req, res) => {
         try {
             const result = await sendQueryToAPI('GET', 'api/patients/countPatient', getHeaders(req), req.query, true);

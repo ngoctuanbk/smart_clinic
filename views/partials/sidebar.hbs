@@ -24,6 +24,17 @@
                             <span class="title">Nhân viên</span>
                         </a>
                     </li>
+                </ul>
+            </li>
+            {{/isAcceptedScreen}}
+                        {{#isAcceptedScreen Info.Role 'Schedules'}} 
+            <li class="nav-item {{#active 'class' activity 'Schedules'}}  {{/active}}">
+                <a href="" class="nav-link nav-toggle">
+                    <i class="icon-calendar"></i>
+                    <span class="title">Quản lý khám bệnh </span>
+                    <span class="arrow"></span>
+                </a>
+                <ul class="sub-menu">
                     <li class="nav-item {{#active 'class' activity 'Schedules'}}  {{/active}}">
                         <a href="/admin/schedules" class="nav-link">
                             <i class="icon-calendar"></i>

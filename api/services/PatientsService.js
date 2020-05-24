@@ -336,23 +336,23 @@ module.exports = {
             return promiseReject(err);
         }
     },
-    updateDiagnose: async (data) => {
-        try {
-            const conditions = {
-                _id: data.PatientObjectId,
-                DeleteFlag: DELETE_FLAG[200],
-            };
-            const set = {
-                    Diagnose: data.Diagnose,
-                UpdatedBy: data.UpdatedBy,
-                UpdatedDate: generatorTime(),
-            };
-            const result = await PatientModel.findOneAndUpdate(conditions, set, { new: true});
-            return promiseResolve(result);
-        } catch (err) {
-            return promiseReject(err);
-        }
-    },
+    // updateDiagnose: async (data) => {
+    //     try {
+    //         const conditions = {
+    //             _id: data.PatientObjectId,
+    //             DeleteFlag: DELETE_FLAG[200],
+    //         };
+    //         const set = {
+    //                 Diagnose: data.Diagnose,
+    //             UpdatedBy: data.UpdatedBy,
+    //             UpdatedDate: generatorTime(),
+    //         };
+    //         const result = await PatientModel.findOneAndUpdate(conditions, set, { new: true});
+    //         return promiseResolve(result);
+    //     } catch (err) {
+    //         return promiseReject(err);
+    //     }
+    // },
     countPatient: async (data) => {
         try {
             const conditions = {

@@ -110,10 +110,12 @@
                             Chỉ số sức khỏe </span>
                     </div>
                     <div class="actions">
+                        {{#isActiveFunction Info.Role 'UpdatePatient'}}
                         <a href="javascript:;" class="btn blue pull-right"
                             ng-click="updateHealthStatus()"><i class="fas fa-plus"></i>
                             Cập nhật
                         </a>
+                        {{/isActiveFunction}}
                     </div>
                 </div>
                 <div class="portlet-body">

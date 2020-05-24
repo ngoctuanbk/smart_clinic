@@ -40,7 +40,7 @@ const PatientSchema = new mongoose.Schema({
         MedicalHis: {type: String},
         DiseaseHis: {type: String},
     },
-    Diagnose: {type: String},
+    // Diagnose: {type: String},
     Reason: {type: String},
     Status: {type: String, default: STATUS[100]},
     CreatedDate: {type: String, default: generatorTime},

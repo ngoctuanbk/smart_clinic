@@ -7,13 +7,12 @@ const {
 } = require('../libs/shared');
 
 module.exports = {
-    list: async (req, res) => {
+    listByPatient: async (req, res) => {
         try {
-            const result = await ActivitiesService.list(req.query);
+            const result = await ActivitiesService.listByPatient(req.query);
             return res.json(responseSuccess(10163, result));
         } catch (errors) {
-            console.log(errors)
             return resJsonError(res, errors, 'activities');
         }
-    }
+    },
 };

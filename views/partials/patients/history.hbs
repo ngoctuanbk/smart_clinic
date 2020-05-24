@@ -51,19 +51,22 @@
                 <thead>
                     <tr>
                         <th class="rowno"> STT </a> </th>
+                        <th class="title"> Ngày khám bệnh </a></th>
                         <th class="title"> Hoạt động </th>
                         <th class="title"> Bác sĩ/Điều dưỡng </th>
                         <th class="title"> Thời gian </a></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr ng-repeat="item in activities" id="tbody-\{{$index}}">
-                        <td ng-bind="$index + number"></td>
-                        <td ng-bind="item.ActivityName"></td>
-                        <td ng-bind="item.UserObjectId.Info.FullName"></td>
-                        <td ng-bind="item.CreatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
-                    </tr>
-                </tbody>
+                <tbody ng-repeat="(idx, item) in activities"
+                        ng-init='valueDetails=(item.Activities); rowSpan=item.Activities.length; idxRoot=$index'>
+                        <tr ng-repeat="detail in valueDetails">
+                            <td ng-if="$first" rowspan="\{{rowSpan}}" ng-bind="idx + 1"></td>
+                            <td ng-if="$first" ng-bind="item.CreatedDate | formatDateToDMY" rowspan="\{{rowSpan}}"></td>
+                            <td ng-bind="detail.ActivityName"></td>
+                            <td ng-bind="detail.User | filterToString"></td>
+                            <td ng-bind="detail.Time | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
+                        </tr>
+                    </tbody>
             </table>
         </div>
         <div class="boxs-footer dvd dvd-top">

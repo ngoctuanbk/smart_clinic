@@ -7,6 +7,7 @@ const {
     createValidator,
     updateValidator,
     BrandObjectIdValidator,
+    PatientObjectIdValidator,
 } = require('../validators/ImageValidator');
 
 const {
@@ -71,7 +72,6 @@ module.exports = {
         }
     },
     update: async (req, res) => {
-        console.log("abbbbbbbbbbbbb")
         const {Database, UserObjectId} = req.decoded;
         beforeUpload(req, res, async (err) => {
             try {
@@ -112,19 +112,15 @@ module.exports = {
                     }
                     req.body.Images = imagesCreated.map(image => image._id);
                 }
-                const paramsCreateActivity = {
-                    records: [],
+                const paramsupdateStatusImage = {
+                    ImageObjectId: req.body.ImageObjectId,
+                    Status: 400,
+                    UpdatedBy: req.decoded.UserObjectId
                 };
-                paramsCreateActivity.records.push({
-                    ActivityName: 'Chụp chiếu',
-                    UserObjectId: req.body.UserObjectId,
-                    CreatedDate: generatorTime(),
-                    PatientObjectId: req.body.PatientObjectId,
-                });
-                const activityCreated = await ActivitiesService.create(paramsCreateActivity) || [];
-                    if (isEmpty(activityCreated)) {
-                        return res.json(responseError(40153, err));
-                    }
+                const updateStatusImage = await ImagesService.updateStatus(paramsupdateStatusImage);
+                if (isEmpty(updateStatusImage)) {
+                    return res.json(responseError(40182, err));
+                }
                 const result = await ImagesService.update(req.body);
                 if (!isEmpty(result)) {
                     return res.json(responseSuccess(10192));
@@ -138,5 +134,53 @@ module.exports = {
                 return resJsonError(res, errors, 'image');
             }
         }, uploadImage('images'));
+    },
+    listByPatient: async (req, res) => {
+        try {
+            req.checkQuery(PatientObjectIdValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            const result = await ImagesService.listByPatient(req.query);
+            return res.json(responseSuccess(10191, result));
+        } catch (errors) {
+            console.log(errors)
+            return resJsonError(res, errors, 'image');
+        }
+    },
+    updateStatus: async (req, res) => {
+        try {
+            req.checkBody(updateStatusValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.body.UpdatedBy = req.decoded.UserObjectId;
+            const infoPatient = await ImagesService.infoPatient({ImageObjectId: req.body.ImageObjectId})
+            if (req.body.Status === 200) {
+                const paramsCreateActivity = {
+                    records: [],
+                };
+                paramsCreateActivity.records.push({
+                    ActivityName: infoPatient[0].Type,
+                    UserObjectId: req.decoded.UserObjectId,
+                    CreatedDate: generatorTime(),
+                    PatientObjectId: infoPatient[0].PatientObjectId,
+                });
+                const activityCreated = await ActivitiesService.create(paramsCreateActivity);
+                    if (isEmpty(activityCreated)) {
+                        return res.json(responseError(40153, err));
+                    }
+            }
+            const result = await ImagesService.updateStatus(req.body);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10192));
+            }
+            return res.json(responseError(40182));
+        } catch (errors) {
+            console.log(errors)
+            return resJsonError(res, errors, 'image');
+        }
     },
 };

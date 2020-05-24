@@ -1,5 +1,6 @@
 
 const LabsService = require('../services/LabsService');
+const LabDetailsService = require('../services/LabDetailsService');
 const ActivitiesService = require('../services/ActivitiesService');
 const {
     createValidator,
@@ -57,8 +58,15 @@ module.exports = {
             if (errors) {
                 return res.json(responseError(40003, errors));
             }
-            const result = await LabsService.create(req.body);
-            if (!isEmpty(result)) {;
+            const LabDetails = req.body.LabDetail;
+            const resultLab = await LabsService.create(req.body);
+            if (!isEmpty(resultLab)) {
+                const LabObjectId = resultLab._id;
+                LabDetails.map((detail) => {
+                    detail.LabObjectId = LabObjectId;
+                    return detail;
+                });
+                await LabDetailsService.createMany({records: LabDetails});
                 return res.json(responseSuccess(10160));
             }
             return res.json(responseError(40150));
@@ -75,6 +83,19 @@ module.exports = {
                 return res.json(responseError(40003, errors));
             }
             const result = await LabsService.list(req.query);
+            return res.json(responseSuccess(10161, result));
+        } catch (errors) {
+            return resJsonError(res, errors, 'lab');
+        }
+    },
+    listByPatient: async (req, res) => {
+        try {
+            req.checkQuery(PatientObjectIdValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            const result = await LabsService.listByPatient(req.query);
             return res.json(responseSuccess(10161, result));
         } catch (errors) {
             return resJsonError(res, errors, 'lab');
@@ -208,5 +229,39 @@ module.exports = {
                 return resJsonError(res, errors, 'question');
             }
         }, uploadExcel);
+    },
+    updateStatus: async (req, res) => {
+        try {
+            req.checkBody(updateStatusValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.body.UpdatedBy = req.decoded.UserObjectId;
+            const infoPatient = await LabsService.infoPatient({LabObjectId: req.body.LabObjectId})
+            if (req.body.Status === 200) {
+                const paramsCreateActivity = {
+                    records: [],
+                };
+                paramsCreateActivity.records.push({
+                    ActivityName: 'Xét nghiệm cận lâm sàng',
+                    UserObjectId: req.decoded.UserObjectId,
+                    CreatedDate: generatorTime(),
+                    PatientObjectId: infoPatient[0].PatientObjectId,
+                });
+                const activityCreated = await ActivitiesService.create(paramsCreateActivity) || [];
+                    if (isEmpty(activityCreated)) {
+                        return res.json(responseError(40153, err));
+                    }
+            }
+            const result = await LabsService.updateStatus(req.body);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10162));
+            }
+            return res.json(responseError(40152));
+        } catch (errors) {
+            console.log(errors)
+            return resJsonError(res, errors, 'lab');
+        }
     },
 };

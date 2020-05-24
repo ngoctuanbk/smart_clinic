@@ -43,6 +43,14 @@ module.exports = {
             return res.status(500).json(responseError(1001, err));
         }
     },
+    listByPatient: async (req, res) => {
+        try {
+            const result = await sendQueryToAPI('GET', 'api/images/listByPatient', getHeaders(req), req.query, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
     update: async (req, res) => {
         try {
             beforeUpload(req, res, async () => {
@@ -63,6 +71,14 @@ module.exports = {
             }, uploadImage('images', 'image'));
         } catch (err) {
             res.status(500).json(responseError(1001));
+        }
+    },
+    updateStatus: async (req, res) => {
+        try {
+            const result = await sendBodyToAPI('PUT', 'api/images/updateStatus', getHeaders(req), req.body, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
         }
     },
 };

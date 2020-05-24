@@ -3,7 +3,13 @@ const {
     promiseReject,
     promiseResolve,
     convertToTime,
-ss} = require('../libs/shared');
+    trimValue,
+    convertToObjectId,
+    escapeRegExp,
+    isEmpty,
+    lookupAggre,
+    unwindAggre
+} = require('../libs/shared');
 const { DELETE_FLAG} = require('../constants/constants');
 
 module.exports = {
@@ -16,45 +22,91 @@ module.exports = {
             return promiseReject(err);
         }
     },
-    list: async (data) => {
+    listByPatient: async (data) => {
         try {
+            const search = trimValue(data.Search);
             const page = +data.Page || 1;
             const limit = +data.Limit || 10;
+            const skip = (page - 1) * limit;
             const sortKey = data.SortKey || 'CreatedDate';
-            const sortOrder = data.SortOrder || -1;
-            const conditions = {
-                PatientObjectId: data.PatientObjectId,
+            const sortOrder = +data.SortOrder || -1;
+            const match = {
                 DeleteFlag: DELETE_FLAG[200],
+                PatientObjectId: convertToObjectId(data.PatientObjectId),
             };
             if (data.FromDate || data.ToDate) {
-                conditions.CreatedDate = {};
+                match.CreatedDate = {};
                 if (data.FromDate) {
-                    conditions.CreatedDate.$gte = convertToTime(data.FromDate, 'from');
+                    match.CreatedDate.$gte = convertToTime(data.FromDate, 'from');
                 }
                 if (data.ToDate) {
-                    conditions.CreatedDate.$lte = convertToTime(data.ToDate, 'to');
+                    match.CreatedDate.$lte = convertToTime(data.ToDate, 'to');
                 }
             }
-            const fieldsSelect = 'ActivityName CreatedDate';
-            const populate = {
-                path: 'UserObjectId',
-                select: '_id Info UserCode',
-                match: {
-                    DeleteFlag: DELETE_FLAG[200],
+            if (search) {
+                const regex = new RegExp(escapeRegExp(search), 'i');
+                conditions.$or = [
+                    { ActivityName: regex }];
+            }
+            const pipelineCount = [
+                {$match: match},
+                {$group: 
+                    {_id: {$substr: ['$CreatedDate', 0, 10]}}
                 },
+                {$count: 'total'},
+            ];
+            const resultCount = await ActivityModel.aggregate(pipelineCount) || [];
+            const totalRecord = !isEmpty(resultCount) ? resultCount[0].total : 0;
+            const pages = Math.ceil(totalRecord / limit);
+            const response = {
+                docs: [],
+                total: totalRecord,
+                limit,
+                page,
+                pages,
             };
-            const options = {
-                sort: {
-                    [sortKey]: sortOrder,
-                },
-                lean: true,
-                page: parseInt(page, 10),
-                limit: parseInt(limit, 10),
-                select: fieldsSelect,
-                populate: populate,
-            };
-            const result = ActivityModel.paginate(conditions, options);
-            return promiseResolve(result);
+            if (!isEmpty(totalRecord)) {
+                const pipeline = [
+                    {$match: match},
+                    {
+                        $sort: {
+                            [sortKey]: sortOrder,
+                        },
+                    },
+                ];
+                const fieldsPushed = {
+                    ActivityName: '$ActivityName',
+                    Time: '$CreatedDate',
+                    User: '$User.Info.FullName'
+                };
+                const group = {
+                    _id: {
+                        CreatedDate: {$substr: ['$CreatedDate', 0, 10]},
+                    },
+                    Activities: {
+                        $push: fieldsPushed,
+                    },
+                };
+                const lookupUser = lookupAggre('users', 'UserObjectId', '_id', 'User');
+                const unwindUser = unwindAggre('$User');
+                const project = {
+                    _id: 0,
+                    CreatedDate: '$_id.CreatedDate',
+                    Activities: 1,
+                };
+                pipeline.push(
+                    {$lookup: lookupUser},
+                    {$group: group},
+                    {$unwind: unwindUser},
+                    {$project: project},
+                    {$skip: skip },
+                    {$limit: limit},
+                );
+                console.log(pipeline)
+                const result = await ActivityModel.aggregate(pipeline);
+                response.docs = result;
+            }
+            return promiseResolve(response);
         } catch (err) {
             return promiseReject(err);
         }

@@ -14,9 +14,11 @@
                             <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
                         </div>
                         <div class="actions pull-left">
+                            {{#isActiveFunction Info.Role 'CreateImage'}}
                             <a href="#create_images" class="btn btn-circle btn-success" data-toggle="modal"><i
                                     class="fa fa-plus"></i>
                                 Thêm mới </a>
+                            {{/isActiveFunction}}
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -44,7 +46,7 @@
                                         </div>
                                     </div>
                                     <div class="input-group">
-                                        <select class="selectpicker" data-size="5" data-live-search="true"
+                                        <select class="bs-select" data-size="5" data-live-search="true"
                                             ng-change="paginate.Page = 1; list()" data-selected-text-format="count > 2"
                                             data-title="Chọn bệnh nhân"
                                             ng-options="patient._id as patient.FullName + '(' + patient.PatientID + ')' for patient in patients"
@@ -93,26 +95,27 @@
                                             <div class="btn-group status dropup update-status-mgt">
                                                 <label class="btn btn-sm btn-status"
                                                     ng-class="item.Status | filterStatusToClass"
-                                                    ng-bind="item.Status | filterStatusToText">
+                                                    ng-bind="item.Status | filterStatusImageToText">
                                                 </label>
                                                 <button type="button" class="btn btn-sm btn-info dropdown-toggle"
                                                     data-toggle="dropdown" aria-expanded="false">
                                                     <i class="fa fa-angle-up"></i>
                                                 </button>
                                                 <ul class="dropdown-menu status pull-right" role="menu">
-                                                    <li class="status-Remove"><a href="javascript:;" data-value="Remove"
-                                                            ng-click="delete(item._id, item.BrandName)">
-                                                            Xóa </a></li>
+                                                    {{#isActiveFunction Info.Role 'UpdateStatusImage'}}
                                                     <li class="status-Active"><a href="javascript:;" data-value="Active"
                                                             ng-click="updateStatus(200, item._id, $index)">
-                                                            Hoạt động
+                                                            Đang chụp
                                                         </a>
                                                     </li>
+                                                    {{/isActiveFunction}}
+                                                    {{#isActiveFunction Info.Role 'UpdateStatusImage'}}
                                                     <li class="status-Inactive"><a href="javascript:;"
                                                             data-value="Inactive"
                                                             ng-click="updateStatus(400, item._id, $index)">
-                                                            Ngừng </a>
+                                                            Đã chụp </a>
                                                     </li>
+                                                    {{/isActiveFunction}}
                                                 </ul>
                                             </div>
                                         </td>
@@ -195,7 +198,7 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label">Bệnh nhân<span class="required">(*)</span>:</label>
                                 <div class="col-md-8">
-                                    <select class="selectpicker form-control" name="patient"
+                                    <select class="bs-select form-control" name="patient"
                                         ng-model="formCreate.PatientObjectId"
                                         ng-options="patient._id as patient.FullName + '(' + patient.PatientID + ')' for patient in patients"
                                         data-live-search="true" data-size="5" title="Chọn bệnh nhân">
@@ -218,8 +221,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'CreateImage'}}
                     <button type="button" class="btn green" ng-click="create(f_CreateImage)">
                         Lưu</button>
+                    {{/isActiveFunction}}
                     <button type="button" data-dismiss="modal" class="btn default">
                         Hủy</button>
                 </div>
@@ -262,6 +267,7 @@
                                     <input type="text" readonly class="form-control" ng-value="formUpdate.Type">
                                 </div>
                             </div>
+                            {{#isActiveFunction Info.Role 'UpdateImage'}}
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <button datatype="slide" class="btn btn-success" href="javascript:void(0)"
@@ -272,12 +278,15 @@
                                 <div class="preview-images-zone">
                                 </div>
                             </div>
+                            {{/isActiveFunction}}
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'UpdateImage'}}
                     <button type="button" class="btn green" ng-click="update(f_UpdateLab)">
                         Lưu</button>
+                    {{/isActiveFunction}}
                     <button type="button" data-dismiss="modal" class="btn default">
                         Hủy</button>
                 </div>

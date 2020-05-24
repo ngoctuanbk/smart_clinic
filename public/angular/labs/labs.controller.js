@@ -53,6 +53,7 @@
             LabsService.list($scope.paginate)
                 .then((response) => {
                     if (response.Success) {
+                        console.log(response)
                         $scope.labs = response.Data.docs;
                         $scope.count = response.Data.page === 1 ? 1 : response.Data.limit * (response.Data.page - 1) + 1;
                         $scope.pagination = PaginationFactory.paginations($scope.paginate.Page, response.Data);
@@ -109,7 +110,6 @@
         $scope.addFieldDetailLab = () => {
             const newField = {
                 LabType: '',
-                Result: '',
                 showEdit: true,
             };
             $scope.LabDetail.push(newField);
@@ -129,7 +129,6 @@
                 return logger.error('Đã tồn tại loại xét nghiệm này');
             }
             $scope.LabDetail[idxItem].LabType = item.LabType;
-            $scope.LabDetail[idxItem].Result = item.Result;
             $scope.LabDetail[idxItem].showEdit = false;
         };
         $scope.deleteDetailLab = (idx) => {
@@ -168,7 +167,7 @@
             $scope.formUpdate.PatientObjectId = item.PatientObjectId._id;
             $scope.LabName = item.LabName;
             $scope.LabCode = item.LabCode;
-            $scope.LabDetailUpdate = item.LabDetail;
+            $scope.LabDetailUpdate = item.LabDetails;
             $scope.Patient = item.PatientObjectId.FullName;
         };
         // $scope.addFieldDetailLabUpdate = () => {
@@ -180,59 +179,75 @@
         //     $scope.LabDetailUpdate.push(newField);
         //     refreshSelectPicker();
         // };
-        $scope.openEditDetailLabUpdate = (idx) => {
-            $scope.LabDetailUpdate[idx].showEdit = true;
-            refreshSelectPicker();
-        };
-        $scope.saveDetailLabUpdate = (item, idxItem) => {
-            if (isEmpty(item.LabType)) {
-                return logger.error('Hãy chọn loại xét nghiệm');
-            }
-            let idxFound = null;
-            const hasLab = $scope.LabDetailUpdate.find((detail, index) => { idxFound = index; return detail.LabType === item.LabType; });
-            if (hasLab && idxFound !== idxItem) {
-                return logger.error('Đã tồn tại loại xét nghiệm này');
-            }
-            $scope.LabDetailUpdate[idxItem].LabType = item.LabType;
-            $scope.LabDetailUpdate[idxItem].Result = item.Result;
-            $scope.LabDetailUpdate[idxItem].showEdit = false;
-        };
-        $scope.deleteDetailLabUpdate = (idx) => {
-                $scope.LabDetailUpdate.splice(idx, 1);
-        };
-        console.log($scope.LabDetailUpdate)
+        // $scope.openEditDetailLabUpdate = (idx) => {
+        //     $scope.LabDetailUpdate[idx].showEdit = true;
+        //     refreshSelectPicker();
+        // };
+        // $scope.saveDetailLabUpdate = (item, idxItem) => {
+        //     if (isEmpty(item.LabType)) {
+        //         return logger.error('Hãy chọn loại xét nghiệm');
+        //     }
+        //     let idxFound = null;
+        //     const hasLab = $scope.LabDetailUpdate.find((detail, index) => { idxFound = index; return detail.LabType === item.LabType; });
+        //     if (hasLab && idxFound !== idxItem) {
+        //         return logger.error('Đã tồn tại loại xét nghiệm này');
+        //     }
+        //     $scope.LabDetailUpdate[idxItem].LabType = item.LabType;
+        //     $scope.LabDetailUpdate[idxItem].Result = item.Result;
+        //     $scope.LabDetailUpdate[idxItem].showEdit = false;
+        // };
+        // $scope.deleteDetailLabUpdate = (idx) => {
+        //         $scope.LabDetailUpdate.splice(idx, 1);
+        // };
+        // console.log($scope.LabDetailUpdate)
 
-        $scope.update = (form) => {
-            if (!isEmpty($scope.LabDetailUpdate)) {
-                $scope.formUpdate.LabDetail = $scope.LabDetailUpdate;
-            }
-            if (form.validate()) {
-                LabsService.update($scope.formUpdate)
-                    .then((response) => {
-                        console.log(response);
-                        console.log($scope.formUpdate)
-                        if (response.Success) {
-                            alertMessage('success', 'Cập nhật kết quả xét nghiệm thành công', true);
-                            $timeout(() => {
-                                angular.element('#update_lab').modal('hide');
-                            }, 2000);
-                            $scope.list();
-                        } else {
-                            alertMessage('danger', 'Có lỗi xảy ra. Vui lòng thử lại!', true);
-                        }
-                    });
-            } else {
-                alertMessage('danger', SharedService.checkFormInvalid(form), true);
-            }
+        // $scope.update = (form) => {
+        //     if (!isEmpty($scope.LabDetailUpdate)) {
+        //         $scope.formUpdate.LabDetail = $scope.LabDetailUpdate;
+        //     }
+        //     if (form.validate()) {
+        //         LabsService.update($scope.formUpdate)
+        //             .then((response) => {
+        //                 console.log(response);
+        //                 console.log($scope.formUpdate)
+        //                 if (response.Success) {
+        //                     alertMessage('success', 'Cập nhật kết quả xét nghiệm thành công', true);
+        //                     $timeout(() => {
+        //                         angular.element('#update_lab').modal('hide');
+        //                     }, 2000);
+        //                     $scope.list();
+        //                 } else {
+        //                     alertMessage('danger', 'Có lỗi xảy ra. Vui lòng thử lại!', true);
+        //                 }
+        //             });
+        //     } else {
+        //         alertMessage('danger', SharedService.checkFormInvalid(form), true);
+        //     }
+        // };
+        $scope.updateStatus = (Status, LabObjectId) => {
+            const formUpdate = {
+                Status,
+                LabObjectId,
+            };
+            LabsService.updateStatus(formUpdate)
+                .then((response) => {
+                    if (response.Success) {
+                        $scope.list();
+                        logger.success('Cập nhật trạng thái thành công');
+                    } else {
+                        logger.error('Có lỗi xảy ra, Vui lòng thử lại.');
+                    }
+                });
         };
         $scope.files = {};
         $scope.filePathError = '';
-        $scope.importFile = () => {
+        $scope.importFile = (item, files) => {
+            console.log(files)
             if ($scope.files) {
                 displayLoading('block');
-                console.log($scope.formUpdate.LabObjectId)
-                UploadService.uploadFile('POST', '/admin/labs/importFile', $scope.files, {
-                    LabObjectId: $scope.formUpdate.LabObjectId,
+                console.log(item._id)
+                UploadService.uploadFile('POST', '/admin/lab_details/importFile', files, {
+                    LabDetailObjectId : item._id,
                 })
                     .then((response) => {
                         console.log(response)
@@ -243,7 +258,8 @@
                             $scope.$broadcast('reloadImport');
                             $scope.list();
                                 $timeout(() => {
-                                    angular.element('#update_lab').modal('hide');
+                                    // angular.element('#update_lab').modal('hide');
+                                    changeCss();
                                 }, 1000);
                             // download file import error
                             if (response.pathLogError) {
@@ -288,6 +304,15 @@
             }
             show_swal(_viewError, msg);
         }
+        $scope.infoDetail = async (LabDetailObjectId) => {
+            await LabsService.info({LabDetailObjectId})
+                .then((response) => {
+                    console.log(response);
+                    $scope.details = response.Success ? response.Data : [];
+                    $scope.type = response.Data[0].LabType;
+                    
+                });
+        };
         function alertMessage(alertClass = '', alertMsg = '', alertShow = false) {
             $scope.alertShow = alertShow;
             $scope.alertClass = alertClass;

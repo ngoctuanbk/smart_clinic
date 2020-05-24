@@ -6,9 +6,11 @@
                 <span class="caption-subject uppercase"> Danh sách chụp chiếu</span>
             </div>
             <div class="actions pull-left">
+                {{#isActiveFunction Info.Role 'CreateImage'}}
                 <a href="#create_image" class="btn btn-circle btn-success" data-toggle="modal"><i
                         class="fa fa-plus"></i>
                     Thêm mới </a>
+                {{/isActiveFunction}}
             </div>
         </div>
         <div class="portlet-body">
@@ -55,30 +57,31 @@
                     <thead>
                         <tr>
                             <th class="rowno"> STT </a> </th>
+                            <th class="title"> Ngày khám bệnh</a></th>
                             <th class="title"> Mã chụp chiếu </th>
                             <th class="title"> Loại chụp chiếu </a></th>
                             <th class="title"> Người thực hiện </th>
-                            <th class="title"> Ngày tạo yêu cầu</a></th>
                             <th class="title"> Ngày thực hiện </a></th>
                             <th class="th-size-update"> Trạng thái</a></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr ng-repeat="item in items" id="tbody-\{{$index}}">
-                            <td ng-bind="$index + countImage"></td>
-                            <td>
-                                <a href="#update_image" ng-click="infoImage(item)" ng-bind="item.ImageCode"
+                    <tbody ng-repeat="(idx, item) in items"
+                        ng-init='valueDetails=(item.Images); rowSpan=item.Images.length; idxRoot=$index'>
+                        <tr ng-repeat="detail in valueDetails">
+                            <td ng-if="$first" rowspan="\{{rowSpan}}" ng-bind="idx + 1"></td>
+                            <td ng-if="$first" ng-bind="item.CreatedDate | formatDateToDMY" rowspan="\{{rowSpan}}"></td>
+                            <td class="bd-bt-grey">
+                                <a href="#update_image" ng-click="infoImage(detail)" ng-bind="detail.ImageCode"
                                     data-toggle="modal"></a>
                             </td>
-                            <td ng-bind="item.Type"></td>
-                            <td ng-bind="item.UserObjectId.Info.FullName"></td>
-                            <td ng-bind="item.CreatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
-                            <td ng-bind="item.UpdatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
+                            <td ng-bind="detail.Type"></td>
+                            <td ng-bind="detail.User | filterToString"></td>
+                            <td ng-bind="detail.UpdatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
                             <td class="status ">
                                 <div class="btn-group status dropup update-status-mgt">
                                     <label class="btn btn-sm btn-status"
-                                        ng-class="item.Status | filterStatusToClass"
-                                        ng-bind="item.Status | filterStatusToText">
+                                        ng-class="detail.Status | filterStatusToClass"
+                                        ng-bind="detail.Status | filterStatusToText">
                                     </label>
                                     <button type="button" class="btn btn-sm btn-info dropdown-toggle"
                                         data-toggle="dropdown" aria-expanded="false">
@@ -189,8 +192,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'CreateImage'}}
                     <button type="button" class="btn green" ng-click="createImage(f_CreateImage)">
                         Lưu</button>
+                    {{/isActiveFunction}}
                     <button type="button" data-dismiss="modal" class="btn default">
                         Hủy</button>
                 </div>
@@ -241,8 +246,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'UpdateImage'}}
                     <button type="button" class="btn green" ng-click="uImage(f_Updateabc)">
                         Lưu</button>
+                    {{/isActiveFunction}}
                     <button type="button" data-dismiss="modal" class="btn default">
                         Hủy</button>
                 </div>

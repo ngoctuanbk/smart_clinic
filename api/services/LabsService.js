@@ -6,6 +6,10 @@ const {
     trimValue,
     promiseResolve,
     compareValue,
+    isEmpty,
+    lookupAggre,
+    unwindAggre,
+    convertToObjectId,
 } = require('../libs/shared');
 const { STATUS, DELETE_FLAG} = require('../constants/constants');
 
@@ -15,7 +19,6 @@ module.exports = {
             const set = {
                 LabCode: data.LabCode,
                 LabName: data.LabName,
-                LabDetail: data.LabDetail,
                 PatientObjectId: data.PatientObjectId,
                 Note: data.Note || '',
                 CreatedDate: generatorTime(),
@@ -49,7 +52,7 @@ module.exports = {
             if (data.PatientObjectId) {
                 conditions.PatientObjectId = data.PatientObjectId;
             }
-            const fieldsSelect = 'LabName LabCode LabDetail Status UpdatedDate CreatedDate';
+            const fieldsSelect = 'LabName LabCode LabDetails Status UpdatedDate CreatedDate';
             const populate = [{
                 path: 'PatientObjectId',
                 select: '_id FullName',
@@ -60,6 +63,13 @@ module.exports = {
             {
                 path: 'UserObjectId',
                 select: '_id Info',
+                match: {
+                    DeleteFlag: DELETE_FLAG[200],
+                },
+            },
+            {
+                path: 'LabDetails',
+                select: 'LabType Result',
                 match: {
                     DeleteFlag: DELETE_FLAG[200],
                 },
@@ -161,6 +171,125 @@ module.exports = {
                 return promiseResolve(true);
             }
             return promiseResolve(false);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    listByPatient: async (data) => {
+        try {
+            const search = trimValue(data.Search);
+            const page = +data.Page || 1;
+            const limit = +data.Limit || 10;
+            const skip = (page - 1) * limit;
+            const sortKey = data.SortKey || 'CreatedDate';
+            const sortOrder = +data.SortOrder || -1;
+            const match = {
+                DeleteFlag: DELETE_FLAG[200],
+                PatientObjectId: convertToObjectId(data.PatientObjectId),
+            };
+            if (search) {
+                const regex = new RegExp(escapeRegExp(search), 'i');
+                conditions.$or = [
+                    { LabName: regex },
+                    { LabCode: regex }];
+            }
+            const pipelineCount = [
+                {$match: match},
+                {$group: 
+                    {_id: {$substr: ['$CreatedDate', 0, 10]}}
+                },
+                {$count: 'total'},
+            ];
+            const resultCount = await LabModel.aggregate(pipelineCount) || [];
+            const totalRecord = !isEmpty(resultCount) ? resultCount[0].total : 0;
+            const pages = Math.ceil(totalRecord / limit);
+            const response = {
+                docs: [],
+                total: totalRecord,
+                limit,
+                page,
+                pages,
+            };
+            if (!isEmpty(totalRecord)) {
+                const pipeline = [
+                    {$match: match},
+                    {
+                        $sort: {
+                            [sortKey]: sortOrder,
+                        },
+                    },
+                ];
+                const fieldsPushed = {
+                    LabObjectId: '$_id',
+                    LabName: '$LabName',
+                    LabCode: '$LabCode',
+                    LabDetail: '$LabDetail',
+                    Status: '$Status',
+                    UpdatedDate: '$UpdatedDate',
+                    CreatedDate: '$CreatedDate',
+                    User: '$User.Info.FullName',
+                    LabDetail: '$LabDetails'
+                };
+                const group = {
+                    _id: {
+                        CreatedDate: {$substr: ['$CreatedDate', 0, 10]},
+                    },
+                    Labs: {
+                        $push: fieldsPushed,
+                    },
+                };
+                const lookupUser = lookupAggre('users', 'UserObjectId', '_id', 'User');
+                const unwindUser = unwindAggre('$User');
+                const lookupDetail = lookupAggre('lab_details', '_id', 'LabObjectId', 'LabDetails');
+                const project = {
+                    _id: 0,
+                    CreatedDate: '$_id.CreatedDate',
+                    Labs: 1,
+                };
+                pipeline.push(
+                    {$lookup: lookupUser},
+                    {$lookup: lookupDetail},
+                    {$group: group},
+                    {$unwind: unwindUser},
+                    {$project: project},
+                    {$skip: skip },
+                    {$limit: limit},
+                );
+                console.log(pipeline)
+                const result = await LabModel.aggregate(pipeline);
+                response.docs = result;
+            }
+            return promiseResolve(response);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    updateStatus: async (data) => {
+        try {
+            const conditions = {
+                _id: data.LabObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                Status: STATUS[+data.Status],
+                UpdatedDate: generatorTime(),
+                UpdatedBy: data.UpdatedBy,
+            };
+            const result = await LabModel.findOneAndUpdate(conditions, set, { new: true });
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    infoPatient: async (data) => {
+        try {
+            const conditions = {
+                DeleteFlag: DELETE_FLAG[200],
+                _id: data.LabObjectId,
+            };
+            const fieldsSelect = 'PatientObjectId';
+            const result = LabModel.find(conditions).select(fieldsSelect);
+            return promiseResolve(result);
         } catch (err) {
             return promiseReject(err);
         }

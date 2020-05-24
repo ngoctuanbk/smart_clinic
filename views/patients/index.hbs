@@ -13,15 +13,12 @@
                             <a href="javascript:;" ng-click="reset();" class="reload"> </a>
                             <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
                         </div>
-
                         <div class="actions pull-left">
+                            {{#isActiveFunction Info.Role 'CreatePatient'}}
                             <a href="#create_patient" class="btn btn-circle btn-success" data-toggle="modal"><i class="fa fa-plus"></i>
                                 Thêm mới
                             </a>
-                            <button href="#export" class="btn btn-success btn-circle" data-toggle="modal"><i
-                                    class="fas fa-file-excel"></i>
-                                <span class="file-title">Export</span>
-                            </button>
+                            {{/isActiveFunction}}
                         </div>
                     </div>
                     <div class="portlet-body form">
@@ -515,8 +512,10 @@
                         </form>
                     </div>
                     <div class="modal-footer">
+                        {{#isActiveFunction Info.Role 'CreatePatient'}}
                         <button type="button" class="btn green" ng-click="create(f_CreatePatient)">
                             Lưu</button>
+                        {{/isActiveFunction}}
                         <button type="button" data-dismiss="modal" class="btn default">
                             Hủy</button>
                     </div>
@@ -699,8 +698,10 @@
                         </form>
                     </div>
                     <div class="modal-footer">
+                        {{#isActiveFunction Info.Role 'UpdatePatient'}}
                         <button type="button" class="btn green" ng-click="update(f_updatePatient)">
                             Lưu</button>
+                        {{/isActiveFunction}}
                         <button type="button" data-dismiss="modal" class="btn default">
                             Hủy</button>
                     </div>

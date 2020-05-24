@@ -6,9 +6,11 @@
                 <span class="caption-subject uppercase"> Danh sách xét nghiệm</span>
             </div>
             <div class="actions pull-left">
+                {{#isActiveFunction Info.Role 'CreateLab'}}
                 <a href="#create_lab" class="btn btn-circle btn-success" data-toggle="modal"><i
                         class="fa fa-plus"></i>
                     Thêm mới </a>
+                {{/isActiveFunction}}
             </div>
         </div>
         <div class="portlet-body">
@@ -55,56 +57,56 @@
                     <thead>
                         <tr>
                             <th class="rowno"> STT </a> </th>
+                            <th class="title"> Ngày khám bệnh </a></th>
                             <th class="title"> Mã xét nghiệm </th>
                             <th class="title"> Tên xét nghiệm </th>
                             <th class="title"> Loại xét nghiệm </a></th>
-                            <th class="title"> Kết quả </a></th>
-                            <th class="title"> Người thực hiện </th>
-                            <th class="title"> Ngày tạo </a></th>
+                            <th class="title"> Ngày tạo</a></th>
                             <th class="title"> Ngày thực hiện </a></th>
                             <th class="th-size-update"> Trạng thái</a></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr ng-repeat="item in labs" id="tbody-\{{$index}}">
-                            <td ng-bind="$index + count"></td>
+                    <tbody ng-repeat="(idx, item) in labs"
+                        ng-init='valueDetails=(item.Labs); rowSpan=item.Labs.length; idxRoot=$index'>
+                        <tr ng-repeat="detail in valueDetails">
+                            <td ng-if="$first" rowspan="\{{rowSpan}}" ng-bind="idx + 1"></td>
+                            <td ng-if="$first" ng-bind="item.CreatedDate | formatDateToDMY" rowspan="\{{rowSpan}}"></td>
                             <td>
-                                <a href="#update_lab" ng-click="info(item)" ng-bind="item.LabCode"
+                                <a href="#update_lab" ng-click="info(detail)" ng-bind="detail.LabCode"
                                     data-toggle="modal"></a>
                             </td>
                             <td>
-                                <a href="#update_lab" ng-click="info(item)" ng-bind="item.LabName"
+                                <a href="#update_lab" ng-click="info(detail)" ng-bind="detail.LabName"
                                     data-toggle="modal"></a>
                             </td>
-                            <td ng-bind="item.LabDetail | convertArrayObjectToString : 'LabType'"></td>
-                            <td ng-bind="item.LabDetail | convertArrayObjectToString : 'Result'"></td>
-                            <td ng-bind="item.UserObjectId.Info.FullName"></td>
-                            <td ng-bind="item.CreatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
-                            <td ng-bind="item.UpdatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
+                            <td ng-bind="detail.LabDetail | convertArrayObjectToString : 'LabType'"></td>
+                            <td ng-bind="detail.CreatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
+                            <td ng-bind="detail.UpdatedDate | formatDateToDMY : 'DD-MM-YYYY HH:mm:ss'"></td>
                             <td class="status ">
                                 <div class="btn-group status dropup update-status-mgt">
                                     <label class="btn btn-sm btn-status"
-                                        ng-class="item.Status | filterStatusToClass"
-                                        ng-bind="item.Status | filterStatusToText">
+                                        ng-class="detail.Status | filterStatusToClass"
+                                        ng-bind="detail.Status | filterStatusLabToText">
                                     </label>
                                     <button type="button" class="btn btn-sm btn-info dropdown-toggle"
                                         data-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-angle-up"></i>
                                     </button>
                                     <ul class="dropdown-menu status pull-right" role="menu">
-                                        <li class="status-Remove"><a href="javascript:;" data-value="Remove"
-                                                ng-click="delete(item._id, item.BrandName)">
-                                                Xóa </a></li>
+                                        {{#isActiveFunction Info.Role 'UpdateStatusLab'}}
                                         <li class="status-Active"><a href="javascript:;" data-value="Active"
-                                                ng-click="updateStatus(200, item._id, $index)">
-                                                Hoạt động
+                                                ng-click="updateStatusLab(200, detail.LabObjectId, $index)">
+                                                Đang xét nghiệm
                                             </a>
                                         </li>
+                                        {{/isActiveFunction}}
+                                        {{#isActiveFunction Info.Role 'UpdateStatusLab'}}
                                         <li class="status-Inactive"><a href="javascript:;"
                                                 data-value="Inactive"
-                                                ng-click="updateStatus(400, item._id, $index)">
-                                                Ngừng </a>
+                                                ng-click="updateStatusLab(400, detail.LabObjectId, $index)">
+                                                Đã xét nghiệm </a>
                                         </li>
+                                        {{/isActiveFunction}}
                                     </ul>
                                 </div>
                             </td>
@@ -156,7 +158,7 @@
             </div>
         </div>
     </div>
-        <div id="create_lab" class="modal fade in" tabindex="-1" aria-hidden="true">
+    <div id="create_lab" class="modal fade in" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -255,8 +257,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'CreateLab'}}
                     <button type="button" class="btn green" ng-click="createLab(f_CreateLab)">
                         Lưu</button>
+                    {{/isActiveFunction}}
                     <button type="button" data-dismiss="modal" class="btn default">
                         Hủy</button>
                 </div>
@@ -299,35 +303,6 @@
                                         <span class="caption-subject uppercase">
                                             Loại xét nghiệm </span>
                                     </div>
-                                    <div class="actions pull-right" class="col-md-7">
-                                        <button href="javascript:;" class="btn green btn-file-upload"><i
-                                                class="fas fa-file-excel"></i>
-                                            <span
-                                                class="file-title">Import kết quả</span>
-                                            <span>
-                                                <input type="file" id="input-file-upload" class="input-file-upload"
-                                                    data-width="180" data-height="180" name="file" multiple
-                                                    accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                                                    file-upload="files" title="Xuất file excel" />
-                                            </span>
-                                        </button>
-                                        <button ng-if="files.name" type="button" id="selectBtn" data-dismiss=""
-                                            class="btn green btn-file-upload" ng-click="importFile()">Cập nhật
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="form-group" ng-if="files.name">
-                                        <i class="icon-check"></i>
-                                        <span ng-bind="files.name" class="text-center"></span>
-                                </div>
-                                <!--end form -->
-                                <div class="loading-wrapper" id="loading_add">
-                                    <div>
-                                        <img src="/images/pictures/loading.gif" alt="loading">
-                                    </div>
-                                    <div class="title">
-                                        Đang thêm
-                                    </div>
                                 </div>
                                 <div class="portlet-body">
                                     <div class="row">
@@ -337,13 +312,10 @@
                                                     <tr class="table-header">
                                                         <th class="rowno" style="width: 60px;">
                                                             STT </th>
-                                                        <th class="title" style="width: 250px;">
+                                                        <th class="title" style="width: 300px;">
                                                             Loại xét nghiệm
                                                         </th>
-                                                        <th class="title">
-                                                            Kết quả
-                                                        </th>
-                                                        <th class="title">
+                                                        <th class="title" style="width: 300px;">
                                                             Thao tác
                                                         </th>
                                                     </tr>
@@ -354,6 +326,10 @@
                                                         <td>
                                                             <span ng-bind="item.LabType"
                                                                 ng-if="!item.showEdit"></span>
+                                                            </br>
+                                                            <a href="#detail" ng-click="infoDetail(item._id)"
+                                                             data-toggle="modal"><em>Xem chi tiết</em>
+                                                            </a>
                                                             <div class="form-group" ng-if="item.showEdit"
                                                                 style="width: 250px">
                                                                 <list-lab>
@@ -361,34 +337,33 @@
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <span ng-bind="item.Result"
-                                                                ng-if="!item.showEdit"></span>
-                                                            <div class="form-group" ng-if="item.showEdit">
-                                                                <input type="text" ng-model="item.Result"
-                                                                   class="form-control">
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="form-group">
-                                                                <div class="btn-group btn-group-sm" role="group"
-                                                                    aria-label="Small button group">
-                                                                    <button type="button" class="btn blue"
-                                                                        ng-if="!item.showEdit"
-                                                                        ng-click="openEditDetailLabUpdate($index)">
-                                                                        <i class="fas fa-pen"></i>
-                                                                    </button>
-                                                                    <button type="button" class="btn green"
-                                                                        ng-if="item.showEdit"
-                                                                        ng-click="saveDetailLabUpdate(item, $index)">
-                                                                        <i class="fas fa-check"></i>
-                                                                    </button>
-                                                                    <button type="button" class="btn red"
-                                                                        ng-click="deleteDetailLabUpdate($index)">
-                                                                        <i class="fas fa-times">
-                                                                        </i>
-                                                                    </button>
+                                                            \{{item.files.name}}
+                                                            <div class="loading-wrapper" id="loading_add">
+                                                                <div>
+                                                                    <img src="/images/pictures/loading.gif" alt="loading">
+                                                                </div>
+                                                                <div class="title">
+                                                                    Đang thêm
                                                                 </div>
                                                             </div>
+                                                            {{#isActiveFunction Info.Role 'UpdateLab'}}
+                                                            <div class="actions pull-right" class="col-md-7">
+                                                                <button href="javascript:;" class="btn green btn-file-upload"><i
+                                                                        class="fas fa-file-excel"></i>
+                                                                    <span
+                                                                        class="file-title">Import</span>
+                                                                    <span>
+                                                                        <input type="file" id="input-file-upload" class="input-file-upload"
+                                                                            data-width="180" data-height="180" name="file" multiple
+                                                                            accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                                                            file-upload="item.files" title="Xuất file excel" />
+                                                                    </span>
+                                                                </button>
+                                                                <button ng-if="item.files.name" type="button" id="selectBtn" data-dismiss=""
+                                                                    class="btn green btn-file-upload" ng-click="importFile(item, item.files)">Cập nhật
+                                                                </button>
+                                                            </div>
+                                                            {{/isActiveFunction}}
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -401,10 +376,47 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn green" ng-click="updateLab(f_UpdateLab)">
-                        Lưu</button>
                     <button type="button" data-dismiss="modal" class="btn default">
-                        Hủy</button>
+                        Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>   
+    <div id="detail" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title="">
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="fas fa-vial"></i>
+                       Thông tin kết quả xét nghiệm
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <em>Tên xét nghiệm: \{{type}}</em>
+                    <div class="table-scrollable wrapper-table-update">
+                        <table class="table table-light table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="rowno"> STT </a> </th>
+                                    <th class="title"> Chỉ số </th>
+                                    <th class="title"> Kết quả </th>
+                                </tr>
+                            </thead>
+                            <tbody ng-repeat="item in details" ng-init='valueDetails=(item.Result)' id="tbody-\{{$index}}">
+                                <tr ng-repeat="detail in valueDetails">
+                                    <td ng-bind="$index + count"></td>
+                                    <td ng-bind="detail.key"></td>
+                                    <td ng-bind="detail.value"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        Đóng</button>
                 </div>
 
             </div>

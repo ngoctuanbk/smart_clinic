@@ -750,10 +750,10 @@ module.exports = {
     //     };
     //     return response;
     // },
-    // lookupAggre: (from, localField, foreignField, as) => ({
-    //     from, localField, foreignField, as,
-    // }),
-    // unwindAggre: (path, preserveNullAndEmptyArrays = true) => ({
-    //     path, preserveNullAndEmptyArrays,
-    // }),
+    lookupAggre: (from, localField, foreignField, as) => ({
+        from, localField, foreignField, as,
+    }),
+    unwindAggre: (path, preserveNullAndEmptyArrays = true) => ({
+        path, preserveNullAndEmptyArrays,
+    }),
 };

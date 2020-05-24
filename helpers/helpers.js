@@ -3,9 +3,9 @@ const hbs_helpers = require('handlebars-helpers')({
     handlebars,
 });
 
-const ScreenForRoleDoctor = ['Users', 'Patients', 'Labs', 'Images'];
-const ScreenForRolePharmasist= ['Products'];
-const ScreenForRoleNurse= ['Labs', 'Images'];
+const ScreenForRoleDoctor = ['Users', 'Patients', 'Schedules', 'Labs', 'Images', 'Products', 'Prescription'];
+const ScreenForRolePharmasist= ['Users', 'Patients', 'Products', 'Prescription'];
+const ScreenForRoleNurse= ['Users', 'Patients', 'Schedules', 'Labs', 'Images'];
 
 
 hbs_helpers.isAcceptedScreen = function (role, screen = '', options) {
@@ -25,6 +25,57 @@ hbs_helpers.isAcceptedScreen = function (role, screen = '', options) {
 
 const FuncForRoleDoctor = [
     'ListUser', 
+    'ExportUser',
+    'ListPatient',
+    'UpdatePatient',
+    'UpdateStatusPatient',
+    'DeletePatient',
+    'ListSchedule',
+    'UpdateStatusSchedule',
+    'ListLab',
+    'CreateLab',
+    'ListImage',
+    'CreateImage',
+    'ListProduct',
+    'ListPrescription',
+    'CreatePrescription',
+    'UpdatePrescription',
+    'UpdateStatusPrescription',
+    'DeletePrescription',
+    'ListActivity',
+    'Diagnose',
+    'UpdateDiagnose'
+];
+const FuncForRoleNurse = [
+    'ListUser', 
+    'ExportUser',
+    'ListPatient',
+    'CreatePatient',
+    'UpdatePatient',
+    'UpdateStatusPatient',
+    'DeletePatient',
+    'ListSchedule',
+    'CreateSchedule',
+    'UpdateSchedule',
+    'UpdateStatusSchedule',
+    'ListLab',
+    'UpdateLab',
+    'UpdateStatusLab',
+    'ListImage',
+    'UpdateStatusImage',
+    'UpdateImage',
+    'ListActivity'
+];
+const FuncForRolePharmasist = [
+    'ListUser', 
+    'ExportUser',
+    'ListPatient',
+    'ListProduct',
+    'CreateProduct',
+    'UpdateProduct',
+    'UpdateStatus',
+    'DeleteStatus',
+    'ListPrescription'
 ];
 
 hbs_helpers.isActiveFunction = function (role, func = '', options) {
@@ -32,6 +83,12 @@ hbs_helpers.isActiveFunction = function (role, func = '', options) {
         return options.fn(this)
     }
     else if(role == 'Doctor' && FuncForRoleDoctor.includes(func)){
+        return options.fn(this)
+    }
+    else if(role == 'Nurse' && FuncForRoleNurse.includes(func)){
+        return options.fn(this)
+    }
+    else if(role == 'Pharmasist' && FuncForRolePharmasist.includes(func)){
         return options.fn(this)
     }
 };

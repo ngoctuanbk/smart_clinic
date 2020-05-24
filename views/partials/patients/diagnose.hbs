@@ -7,29 +7,178 @@
                         <span class="caption-subject uppercase">
                             Chuẩn đoán </span>
                     </div>
-                    <div class="actions">
-                        <a href="javascript:;" class="btn blue pull-right"
-                            ng-click="updateDiagnose()"><i class="fas fa-plus"></i>
-                            Cập nhật
-                        </a>
+                    <div class="actions pull-left">
+                        {{#isActiveFunction Info.Role 'CreateDiagnose'}}
+                        <a href="#create_diagnose" class="btn btn-circle btn-success" data-toggle="modal"><i
+                            class="fa fa-plus"></i>
+                        Thêm mới </a>
+                        {{/isActiveFunction}}
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="solid-block">
-                                <div class="form-group">
-                                    <label
-                                        class="col-md-3 control-label text-left">Chuẩn đoán</label>
-                                    <div class="col-md-9">
-                                        <textarea class="form-control" cols="3" rows="2" ng-model="formUpdate.Diagnose"></textarea>
+                    <div class="form-group row">
+                        <div class="col-md-10">
+                            <div class="col-md-12 flex-box">
+                                <div class="input-group" style="z-index: 1000 !important;">
+                                    <div class="input-group-control">
+                                        <select style="width: 100px;"
+                                            class="bs-select form-control limit-data pull-left"
+                                            ng-model="paginateDia.Limit" ng-change="paginateDia.Page = 1; listDiagnose();"
+                                            ng-options="v as v for (k,v) in limitData">
+                                            <option value="" ng-if="hideOptions"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="input-group date date-picker" data-date-format="dd-mm-yyyy"
+                                    data-date-viewmode="years" data-date-today-highlight="true">
+                                    <input type="text" class="form-control dashed-border" id="from_date"
+                                        ng-model="paginateDia.FromDate" name="from_date" readonly
+                                        ng-change="paginateDia.Page = 1; listDiagnose()" placeholder="Từ ngày">
+                                    <div class="form-control-focus"> </div>
+                                    <span class="input-group-addon"><i
+                                            class="far fa-calendar-alt font-blue"></i></span>
+                                </div>
+                                <div class="input-group date date-picker" data-date-format="dd-mm-yyyy"
+                                    data-date-viewmode="years" data-date-today-highlight="true">
+                                    <input type="text" class="form-control dashed-border" readonly id="from_date"
+                                        ng-model="paginateDia.ToDate" name="from_date"
+                                        ng-change="paginateDia.Page = 1; listDiagnose()" placeholder="Đến ngày">
+                                    <div class="form-control-focus"> </div>
+                                    <span class="input-group-addon"><i
+                                            class="far fa-calendar-alt font-blue"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 box-search-wrapper">
+                            <div class="col-md-12">
+                                <div class="form-search pull-right">
+                                    <div class="input-icon right">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" ng-model="paginateDia.Search" name="bar_code"
+                                            class="form-control" ng-change="paginateDia.Page = 1; listDiagnose()"
+                                            placeholder="Tìm kiếm">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>  
+                    <div class="table-scrollable wrapper-table-update">
+                        <table class="table table-light table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="rowno"> STT </a> </th>
+                                    <th class="title"> Ngày khám bệnh </a></th>
+                                    <th class="title"> Loại bệnh </th>
+                                    <th class="title"> Chuẩn đoán cụ thể</th>
+                                    <th class="title"> Bác sĩ </a></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in diagnoses" id="tbody-\{{$index}}"
+                                    ng-class="{selected: $index === selectedDiagnose}">
+                                    <td ng-bind="$index + numberDia"></td>
+                                    <td ng-bind="item.CreatedDate | formatDateToDMY : 'YYYY-MM-DD'"></td>
+                                    <td>
+                                        <a href="#update_diagnose" ng-click="info(item, $index);" ng-bind="item.Type"
+                                            data-toggle="modal"></a>
+                                    </td>
+                                    <td ng-bind="item.Description"></td>
+                                    <td ng-bind="item.UserObjectId.Info.FullName"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="boxs-footer dvd dvd-top">
+                        <div class="row" ng-if="pagination.show">
+                            <div class="col-sm-3 text-left">
+                                <small class="text-muted"
+                                    ng-bind="'Hiển thị ' + pagination.skip + '-' + pagination.toSkip + '/' + pagination.total + ' mục'">
+                                </small>
+                            </div>
+                            <div class="col-sm-3 hidden-xs">
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <ul class="pagination m-0">
+                                    <li>
+                                        <a ng-click="firstPage()">
+                                            <i class="fas fa-angle-double-left"></i>
+                                            <div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="prevPage()">
+                                            <i class="fa fa-chevron-left"></i>
+                                            <div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+                                    <li ng-repeat="page in pagination.pages" style="cursor: pointer"
+                                        ng-class="{active:pagination.page === page}">
+                                        <a ng-click="setPage(page)" ng-bind="page"></a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="nextPage()">
+                                            <i class="fa fa-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="endPage()">
+                                            <i class="fas fa-angle-double-right"></i>
+                                            <div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
             </div>
         </form>
+    </div>
+        <div id="create_diagnose" class="modal fade in" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="javascript:;" class="fullscreen" data-original-title="" title="">
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title"><i class="fas fa-vial"></i>
+                        Thông tin chuẩn đoán
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" name="f_CreateDia" ng-validate="validatorDiagnose">
+                        <div class="form-body">
+                            <div class="form-group" ng-if="alertShow">
+                                <div class="alert alert-\{{alertClass}}" ng-bind="alertMsg"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Loại bệnh<span
+                                        class="required">(*)</span>:</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="type_patient"
+                                        ng-model="formCreateDia.Type" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Chi tiết:</label>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" cols="3" rows="4"  name="description"
+                                        ng-model="formCreateDia.Description"></textarea>
+                                </div>
+                            </div> 
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'CreateDiagnose'}}
+                    <button type="button" class="btn green" ng-click="createDiagnose(f_CreateDia)">
+                        Lưu</button>
+                    {{/isActiveFunction}}
+                    <button type="button" data-dismiss="modal" class="btn default">
+                        Hủy</button>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>

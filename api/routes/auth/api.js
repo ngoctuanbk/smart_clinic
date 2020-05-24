@@ -37,5 +37,9 @@ require('./MedicinesRoute')(apiRouter);
 require('./PrescriptionsRoute')(apiRouter);
 /* images */
 require('./ImagesRoute')(apiRouter);
+/* lab_details */
+require('./LabDetailRoute')(apiRouter);
+/* diagnose */
+require('./DiagnoseRoute')(apiRouter);
 
 module.exports = apiRouter;

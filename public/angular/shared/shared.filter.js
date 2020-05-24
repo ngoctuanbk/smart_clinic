@@ -14,6 +14,8 @@
         .filter('filterStatusToText', filterStatusToText)
         .filter('filterStatusOrderToText', filterStatusOrderToText)
         .filter('filterStatusScheduleToText', filterStatusScheduleToText)
+        .filter('filterStatusLabToText', filterStatusLabToText)
+        .filter('filterStatusImageToText', filterStatusImageToText)
         .filter('filterStatusToClass', filterStatusToClass)
         .filter('filterStatusToLabelClass', filterStatusToLabelClass)
         .filter('filterDaysOfWeek', filterDaysOfWeek)
@@ -26,7 +28,8 @@
         .filter('filterAgencyName', filterAgencyName)
         .filter('currencyFormat', currencyFormat)
         .filter('convertArrayObjectToString', convertArrayObjectToString)
-        .filter('filterImageFromApi', filterImageFromApi);
+        .filter('filterImageFromApi', filterImageFromApi)
+        .filter('filterToString', filterToString);
 
     diffTimeFilter.$inject = ['moment'];
 
@@ -151,11 +154,39 @@
     function filterStatusScheduleToText() {
         function filterStatus(status) {
             if (status === 'Active' || +status === 200) {
-                return 'Đã duyệt'; // 'Đã duyệt',
+                return 'Đang khám'; // 'Đã duyệt',
             } if (status === 'WaitingAccepted' || +status === 100) {
-                return 'Chờ duyệt'; // 'Chờ duyệt'
+                return 'Mới'; // 'Chờ duyệt'
             } if (status === 'Inactive' || +status === 400) {
-                return 'Hủy'; // 'Hủy'
+                return 'Đã khám'; // 'Hủy'
+            } if (status === 'Deleted') {
+                return 'Đã xóa'; // 'Bị xóa'
+            }
+        }
+        return filterStatus;
+    }
+    function filterStatusLabToText() {
+        function filterStatus(status) {
+            if (status === 'Active' || +status === 200) {
+                return 'Đang XN'; // 'Đã duyệt',
+            } if (status === 'WaitingAccepted' || +status === 100) {
+                return 'Mới'; // 'Chờ duyệt'
+            } if (status === 'Inactive' || +status === 400) {
+                return 'Đã XN'; // 'Hủy'
+            } if (status === 'Deleted') {
+                return 'Đã xóa'; // 'Bị xóa'
+            }
+        }
+        return filterStatus;
+    }
+    function filterStatusImageToText() {
+        function filterStatus(status) {
+            if (status === 'Active' || +status === 200) {
+                return 'Đang chụp'; // 'Đã duyệt',
+            } if (status === 'WaitingAccepted' || +status === 100) {
+                return 'Mới'; // 'Chờ duyệt'
+            } if (status === 'Inactive' || +status === 400) {
+                return 'Đã chụp'; // 'Hủy'
             } if (status === 'Deleted') {
                 return 'Đã xóa'; // 'Bị xóa'
             }
@@ -387,5 +418,13 @@
             return urlImage ? `${getUrlApi()}${urlImage}` : '';
         }
         return input;
+    }
+    function filterToString() {
+        function filterToString(arr = []) {
+            let stringData = '';
+            stringData = arr.toString();
+            return stringData;
+        }
+        return filterToString;
     }
 }());

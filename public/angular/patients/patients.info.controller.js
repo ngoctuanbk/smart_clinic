@@ -49,6 +49,8 @@
             $scope.listPrescription();
             $scope.paginateImage.PatientObjectId = $scope.formUpdate.PatientObjectId;
             $scope.listImage();
+            $scope.paginateDia.PatientObjectId = $scope.formUpdate.PatientObjectId;
+            $scope.listDiagnose();
         };
         $scope.updateHealthStatus = () => {
             PatientsService.updateHealthStatus($scope.formUpdate)
@@ -104,6 +106,7 @@
             PatientsService.listLab($scope.paginate)
                 .then((response) => {
                     if (response.Success) {
+                        console.log(response)
                         $scope.labs = response.Data.docs;
                         $scope.count = response.Data.page === 1 ? 1 : response.Data.limit * (response.Data.page - 1) + 1;
                         $scope.pagination = PaginationFactory.paginations($scope.paginate.Page, response.Data);
@@ -224,7 +227,7 @@
         };
         $scope.info = (item, idx) => {
             $scope.selectedLab = idx;
-            $scope.formUpdateLab.LabObjectId = item._id;
+            $scope.formUpdateLab.LabObjectId = item.LabObjectId;
             $scope.LabName = item.LabName;
             $scope.LabCode = item.LabCode;
             $scope.LabDetailUpdate = item.LabDetail;
@@ -238,84 +241,85 @@
         //     $scope.LabDetailUpdate.push(newField);
         //     refreshSelectPicker();
         // };
-        $scope.openEditDetailLabUpdate = (idx) => {
-            $scope.LabDetailUpdate[idx].showEdit = true;
-            refreshSelectPicker();
-        };
-        $scope.saveDetailLabUpdate = (item, idxItem) => {
-            if (isEmpty(item.LabType)) {
-                return logger.error('Hãy chọn loại xét nghiệm');
-            }
-            let idxFound = null;
-            const hasLab = $scope.LabDetailUpdate.find((detail, index) => { idxFound = index; return detail.LabType === item.LabType; });
-            if (hasLab && idxFound !== idxItem) {
-                return logger.error('Đã tồn tại loại xét nghiệm này');
-            }
-            $scope.LabDetailUpdate[idxItem].LabType = item.LabType;
-            $scope.LabDetailUpdate[idxItem].Result = item.Result;
-            $scope.LabDetailUpdate[idxItem].showEdit = false;
-        };
-        $scope.deleteDetailLabUpdate = (idx) => {
-                $scope.LabDetailUpdate.splice(idx, 1);
-        };
+        // $scope.openEditDetailLabUpdate = (idx) => {
+        //     $scope.LabDetailUpdate[idx].showEdit = true;
+        //     refreshSelectPicker();
+        // };
+        // $scope.saveDetailLabUpdate = (item, idxItem) => {
+        //     if (isEmpty(item.LabType)) {
+        //         return logger.error('Hãy chọn loại xét nghiệm');
+        //     }
+        //     let idxFound = null;
+        //     const hasLab = $scope.LabDetailUpdate.find((detail, index) => { idxFound = index; return detail.LabType === item.LabType; });
+        //     if (hasLab && idxFound !== idxItem) {
+        //         return logger.error('Đã tồn tại loại xét nghiệm này');
+        //     }
+        //     $scope.LabDetailUpdate[idxItem].LabType = item.LabType;
+        //     $scope.LabDetailUpdate[idxItem].Result = item.Result;
+        //     $scope.LabDetailUpdate[idxItem].showEdit = false;
+        // };
+        // $scope.deleteDetailLabUpdate = (idx) => {
+        //         $scope.LabDetailUpdate.splice(idx, 1);
+        // };
         $scope.formUpdateLab={};
-        $scope.updateLab = (form) => {
-            if (!isEmpty($scope.LabDetailUpdate)) {
-                $scope.formUpdateLab.LabDetail = $scope.LabDetailUpdate;
-            }
-            $scope.formUpdateLab.PatientObjectId = $scope.formUpdate.PatientObjectId;
-            if (form.validate()) {
-                PatientsService.updateLab($scope.formUpdateLab)
-                    .then((response) => {
-                        console.log(response);
-                        console.log($scope.formUpdateLab)
-                        if (response.Success) {
-                            alertMessage('success', 'Cập nhật kết quả xét nghiệm thành công', true);
-                            $timeout(() => {
-                                angular.element('#update_lab').modal('hide');
-                            }, 2000);
-                            $scope.listLab();
-                        } else {
-                            alertMessage('danger', 'Có lỗi xảy ra. Vui lòng thử lại!', true);
-                        }
-                    });
-            } else {
-                alertMessage('danger', SharedService.checkFormInvalid(form), true);
-            }
-        };
+        // $scope.updateLab = (form) => {
+        //     if (!isEmpty($scope.LabDetailUpdate)) {
+        //         $scope.formUpdateLab.LabDetail = $scope.LabDetailUpdate;
+        //     }
+        //     $scope.formUpdateLab.PatientObjectId = $scope.formUpdate.PatientObjectId;
+        //     if (form.validate()) {
+        //         PatientsService.updateLab($scope.formUpdateLab)
+        //             .then((response) => {
+        //                 console.log(response);
+        //                 console.log($scope.formUpdateLab)
+        //                 if (response.Success) {
+        //                     alertMessage('success', 'Cập nhật kết quả xét nghiệm thành công', true);
+        //                     $timeout(() => {
+        //                         angular.element('#update_lab').modal('hide');
+        //                     }, 2000);
+        //                     $scope.listLab();
+        //                 } else {
+        //                     alertMessage('danger', 'Có lỗi xảy ra. Vui lòng thử lại!', true);
+        //                 }
+        //             });
+        //     } else {
+        //         alertMessage('danger', SharedService.checkFormInvalid(form), true);
+        //     }
+        // };
         $scope.files = {};
         $scope.filePathError = '';
-        $scope.importFile = () => {
+        $scope.importFile = (item, files) => {
+            console.log(files)
             if ($scope.files) {
                 displayLoading('block');
-                console.log($scope.formUpdate.LabObjectId)
-                UploadService.uploadFile('POST', '/admin/labs/importFile', $scope.files, {
-                    LabObjectId: $scope.formUpdateLab.LabObjectId,
+                console.log(item._id)
+                UploadService.uploadFile('POST', '/admin/lab_details/importFile', files, {
+                    LabDetailObjectId : item._id,
                 })
                     .then((response) => {
                         console.log(response)
                         if (response && response.Success) {
                             alertMessage('success', 'Cập nhật kết quả xét nghiệm thành công', true);
                             displayLoading('none');
-                            changeCss();
                             $scope.files = {};
                             $scope.$broadcast('reloadImport');
                             $scope.listLab();
                                 $timeout(() => {
-                                    angular.element('#update_lab').modal('hide');
+                                    // angular.element('#update_lab').modal('hide');
+                                    changeCss();
                                 }, 1000);
                             // download file import error
                             if (response.pathLogError) {
                                 const pathLogError = response.pathLogError.replace('../public/', '/');
                                 $scope.filePathError = pathLogError;
                                 displayModalImportFile('#import_file', 'hide');
-                                $scope.listLab();
+                                $scope.list();
                                 $timeout(() => {
                                     downloadRemoveFile();
                                     angular.element('#update_lab').modal('hide');
                                 }, 50);
                             } else {
-                                $scope.listLab();
+                                $scope.list();
                                 $timeout(() => {
                                     displayModalImportFile('#import_file', 'hide');
                                 }, 1000);
@@ -347,6 +351,31 @@
             }
             show_swal(_viewError, msg);
         }
+        $scope.infoDetail = async (LabDetailObjectId) => {
+            await PatientsService.info({LabDetailObjectId})
+                .then((response) => {
+                    console.log(response);
+                    $scope.details = response.Success ? response.Data : [];
+                    $scope.type = response.Data[0].LabType;
+                    
+                });
+        };
+        $scope.updateStatusLab = (Status, LabObjectId) => {
+            const formUpdate = {
+                Status,
+                LabObjectId,
+            };
+            PatientsService.updateStatusLab(formUpdate)
+                .then((response) => {
+                    console.log(response)
+                    if (response.Success) {
+                        $scope.listLab();
+                        logger.success('Cập nhật trạng thái thành công');
+                    } else {
+                        logger.error('Có lỗi xảy ra, Vui lòng thử lại.');
+                    }
+                });
+        };
 
         function alertMessage(alertClass = '', alertMsg = '', alertShow = false) {
             $scope.alertShow = alertShow;
@@ -490,17 +519,46 @@
                  });
          };
          /* update diagnose*/
-         $scope.updateDiagnose = () => {
-            PatientsService.updateDiagnose($scope.formUpdate)
+        /*activities */
+        $scope.paginateDia = {};
+        $scope.paginateDia.Page = 1;
+        $scope.paginateDia.Limit = $scope.limitData[0];
+        $scope.paginateDia.SortKey = 'CreatedDate';
+        $scope.paginateDia.SortOrder = -1;
+        $scope.numberDia = 1;
+        $scope.listDiagnose = () => {
+            PatientsService.listDiagnose($scope.paginateDia)
                 .then((response) => {
-                    console.log($scope.formUpdate)
-                    console.log(response);
+                    console.log(response)
                     if (response.Success) {
-                        logger.success('Cập nhật chuẩn đoán thành công');
-                    } else {
-                        logger.error('Có lỗi xảy ra. Vui lòng thử lại!');
+                        $scope.diagnoses = response.Data.docs;
+                        $scope.numberDia = response.Data.page === 1 ? 1 : response.Data.limit * (response.Data.page - 1) + 1;
+                        // $scope.paginationAc = PaginationFactory.paginations($scope.paginate.Page, response.Data);
                     }
                 });
+        };
+        $scope.formCreateDia = {};
+        $scope.createDiagnose = (form) => {
+            $scope.formCreateDia.PatientObjectId = $scope.formUpdate.PatientObjectId;
+            if (form.validate()) {
+                PatientsService.createDiagnose($scope.formCreateDia)
+                    .then((response) => {
+                        console.log(response)
+                        if (response.Success) {
+                            $scope.listDiagnose();
+                            $scope.formCreateDia = {};
+                            changeCss();
+                            alertMessage('success', 'Thêm chuẩn đoán thành công', true);
+                            $timeout(() => {
+                                alertMessage();
+                            }, 2000);
+                        } else {
+                            alertMessage('danger', 'Có lỗi xảy ra. Vui lòng thử lại!', true);
+                        }
+                    });
+            } else {
+                alertMessage('danger', SharedService.checkFormInvalid(form), true);
+            }
         };
 
         // images
@@ -513,9 +571,10 @@
         $scope.paginateImage.Search = '';
         $scope.countImage = 1;
         $scope.listImage = () => {
-            PatientsService.listImage($scope.paginateImage)
+            PatientsService.listImageByPatient($scope.paginateImage)
                 .then((response) => {
                     if (response.Success) {
+                        console.log(response)
                         $scope.items = response.Data.docs;
                         $scope.countImage = response.Data.page === 1 ? 1 : response.Data.limit * (response.Data.page - 1) + 1;
                         $scope.paginationImage = PaginationFactory.paginations($scope.paginateImage.Page, response.Data);
@@ -618,12 +677,12 @@
         $scope.formUpdateImage = {};
         $scope.infoImage = (item, idx) => {
             $scope.selectedImage = idx;
-            $scope.formUpdateImage.ImageObjectId = item._id;
+            $scope.formUpdateImage.ImageObjectId = item.ImageObjectId;
             $scope.formUpdateImage.ImageCode = item.ImageCode;
             $scope.formUpdateImage.Type = item.Type;
             $('.preview-images-zone').html('');
-            item.Images.map((item, idx) => {
-                renderViewImg(`${item.ImagesDir}`, idx, item._id);
+            item.Image.map((item, idx) => {
+                renderViewImg(`${item}`, idx, item._id);
             });
             refreshSelectPicker();
         };

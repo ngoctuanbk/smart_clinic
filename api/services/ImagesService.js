@@ -6,6 +6,10 @@ const {
     trimValue,
     promiseResolve,
     compareValue,
+    convertToObjectId,
+    isEmpty,
+    lookupAggre,
+    unwindAggre,
 } = require('../libs/shared');
 const { STATUS, DELETE_FLAG} = require('../constants/constants');
 
@@ -95,7 +99,6 @@ module.exports = {
                 UserObjectId: data.UserObjectId,
                 Type: data.Type,
                 Note: data.Note || '',
-                Status: STATUS[200],
                 UpdatedDate: generatorTime(),
                 UpdatedBy: data.UpdatedBy,
             };
@@ -126,6 +129,122 @@ module.exports = {
                 return promiseResolve(true);
             }
             return promiseResolve(false);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    listByPatient: async (data) => {
+        try {
+            const search = trimValue(data.Search);
+            const page = +data.Page || 1;
+            const limit = +data.Limit || 10;
+            const skip = (page - 1) * limit;
+            const sortKey = data.SortKey || 'CreatedDate';
+            const sortOrder = +data.SortOrder || -1;
+            const match = {
+                DeleteFlag: DELETE_FLAG[200],
+                PatientObjectId: convertToObjectId(data.PatientObjectId),
+            };
+            if (search) {
+                const regex = new RegExp(escapeRegExp(search), 'i');
+                conditions.$or = [
+                    { ImageCode: regex }];
+            }
+            const pipelineCount = [
+                {$match: match},
+                {$group: 
+                    {_id: {$substr: ['$CreatedDate', 0, 10]}}
+                },
+                {$count: 'total'},
+            ];
+            const resultCount = await ImageModel.aggregate(pipelineCount) || [];
+            const totalRecord = !isEmpty(resultCount) ? resultCount[0].total : 0;
+            const pages = Math.ceil(totalRecord / limit);
+            const response = {
+                docs: [],
+                total: totalRecord,
+                limit,
+                page,
+                pages,
+            };
+            if (!isEmpty(totalRecord)) {
+                const pipeline = [
+                    {$match: match},
+                    {
+                        $sort: {
+                            [sortKey]: sortOrder,
+                        },
+                    },
+                ];
+                const fieldsPushed = {
+                    ImageObjectId: '$_id',
+                    ImageCode: '$ImageCode',
+                    Status: '$Status',
+                    UpdatedDate: '$UpdatedDate',
+                    Type: '$Type',
+                    User: '$User.Info.FullName',
+                    Image: '$Image.ImagesDir'
+                };
+                const group = {
+                    _id: {
+                        CreatedDate: {$substr: ['$CreatedDate', 0, 10]},
+                    },
+                    Images: {
+                        $push: fieldsPushed,
+                    },
+                };
+                const lookupUser = lookupAggre('users', 'UserObjectId', '_id', 'User');
+                const unwindUser = unwindAggre('$User');
+                const lookupImage = lookupAggre('photos', 'Images', '_id', 'Image');
+                const project = {
+                    _id: 0,
+                    CreatedDate: '$_id.CreatedDate',
+                    Images: 1,
+                };
+                pipeline.push(
+                    {$lookup: lookupUser},
+                    {$lookup: lookupImage},
+                    {$group: group},
+                    {$unwind: unwindUser},
+                    {$project: project},
+                    {$skip: skip },
+                    {$limit: limit},
+                );
+                console.log(pipeline)
+                const result = await ImageModel.aggregate(pipeline);
+                response.docs = result;
+            }
+            return promiseResolve(response);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    updateStatus: async (data) => {
+        try {
+            const conditions = {
+                _id: data.ImageObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                Status: STATUS[+data.Status],
+                UpdatedDate: generatorTime(),
+                UpdatedBy: data.UpdatedBy,
+            };
+            const result = await ImageModel.findOneAndUpdate(conditions, set, { new: true });
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    infoPatient: async (data) => {
+        try {
+            const conditions = {
+                DeleteFlag: DELETE_FLAG[200],
+                _id: data.ImageObjectId,
+            };
+            const fieldsSelect = 'PatientObjectId Type';
+            const result = ImageModel.find(conditions).select(fieldsSelect);
+            return promiseResolve(result);
         } catch (err) {
             return promiseReject(err);
         }

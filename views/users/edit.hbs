@@ -30,12 +30,14 @@
 								<div class="tab-pane active" id="place_1">
 									<div class="portlet light">
                                         <div class="portlet-title">
+                                            {{#isActiveFunction Info.Role 'UpdateUser'}}
                                             <div class="actions">
                                                 <a href="javascript:;" ng-if="disabledElement" ng-click="openToUpdate()" class="btn btn-circle green">
                                                     <i class="fa fa-pen"></i>Sửa </a>
                                                 <a href="javascript:;" ng-if="!disabledElement" ng-click="update(f_UpdateUser)" class="btn btn-circle green">
                                                     <i class="fa fa-save"></i>Lưu</a>
                                             </div>
+                                            {{/isActiveFunction}}
                                         </div>
 										<div class="porlet-body form">
 											<form role="form" class="form-horizontal" name="f_UpdateUser"

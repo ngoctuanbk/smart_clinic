@@ -1,5 +1,7 @@
 
 const SchedulesService = require('../services/SchedulesService');
+const PatientsService = require('../services/PatientsService');
+const ActivitiesService = require('../services/ActivitiesService');
 const {
     createValidator,
     listValidator,
@@ -13,6 +15,7 @@ const {
     responseError,
     padNumber,
     resJsonError,
+    generatorTime,
 } = require('../libs/shared');
 
 module.exports = {
@@ -77,6 +80,31 @@ module.exports = {
             }
             req.body.Database = req.decoded.Database;
             req.body.UpdatedBy = req.decoded.UserObjectId;
+            const infoPatient = await SchedulesService.infoPatient({ScheduleObjectId: req.body.ScheduleObjectId})
+            if (req.body.Status === 200) {
+                const paramsupdateStatusPatient = {
+                    PatientObjectId: infoPatient[0].PatientObjectId,
+                    Status: 500,
+                    UpdatedBy: req.decoded.UserObjectId
+                };
+                const updateStatusPatient = await PatientsService.updateStatus(paramsupdateStatusPatient);
+                if (isEmpty(updateStatusPatient)) {
+                    return res.json(responseError(40132, err));
+                }
+                const paramsCreateActivity = {
+                    records: [],
+                };
+                paramsCreateActivity.records.push({
+                    ActivityName: 'Khám ban đầu',
+                    UserObjectId: req.decoded.UserObjectId,
+                    CreatedDate: generatorTime(),
+                    PatientObjectId: infoPatient[0].PatientObjectId,
+                });
+                const activityCreated = await ActivitiesService.create(paramsCreateActivity) || [];
+                    if (isEmpty(activityCreated)) {
+                        return res.json(responseError(40153, err));
+                    }
+            }
             const result = await SchedulesService.updateStatus(req.body);
             if (!isEmpty(result)) {
                 return res.json(responseSuccess(10153, result));

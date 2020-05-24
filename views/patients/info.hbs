@@ -19,31 +19,41 @@ data-ng-init="PatientObjectId = '{{PatientObjectId}}'; data = {{data}}; init();"
                                         Thông tin bệnh nhân
                                     </a>
                                 </li>
+                                {{#isActiveFunction Info.Role 'ListLab'}}
                                 <li>
                                     <a href="#lab" ng-click="modifyTab('tabLab')" data-toggle="tab">
                                         Xét nghiệm
                                     </a>
                                 </li>
+                                {{/isActiveFunction}}
+                                {{#isActiveFunction Info.Role 'ListImage'}}
                                 <li>
                                     <a href="#image" ng-click="modifyTab('tabImage')" data-toggle="tab">
                                         Chụp chiếu
                                     </a>
                                 </li>
+                                {{/isActiveFunction}}
+                                {{#isActiveFunction Info.Role 'ListActivity'}}
                                 <li>
                                     <a href="#history" ng-click="modifyTab('tabHistory')" data-toggle="tab">
                                         Lịch sử khám chữa bệnh
                                     </a>
                                 </li>
+                                {{/isActiveFunction}}
+                                {{#isActiveFunction Info.Role 'Diagnose'}}
                                 <li>
                                     <a href="#diagnose" ng-click="modifyTab('tabDiagnose')" data-toggle="tab">
                                         Chuẩn đoán
                                     </a>
                                 </li>
+                                {{/isActiveFunction}}
+                                {{#isActiveFunction Info.Role 'ListPrescription'}}
                                 <li>
                                     <a href="#prescriptions" ng-click="modifyTab('tabPrescriptions')" data-toggle="tab">
                                         Đơn thuốc
                                     </a>
                                 </li>
+                                {{/isActiveFunction}}
                             </ul>
                             <div class="tab-content">
                                 {{> patients/info}}

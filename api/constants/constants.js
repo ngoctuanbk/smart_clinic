@@ -25,6 +25,6 @@ exports.ACTION = {
 };
 exports.SEX = ['Male', 'Female', 'Other'];
 exports.FIELDS_IMPORT = {
-    LabType: 'Loại xét nghiệm(*)',
-    Result: 'Kết quả xét nghiệm(*)',
+    Param: 'Chỉ số',
+    Value: 'Kết quả',
 };

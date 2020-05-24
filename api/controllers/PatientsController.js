@@ -151,24 +151,24 @@ module.exports = {
             return resJsonError(res, errors, 'patient');
         }
     },
-    updateDiagnose: async (req, res) => {
-        try {
-            req.checkBody(PatientObjectIdValidator);
-            const errors = req.validationErrors();
-            if (errors) {
-                return res.json(responseError(40003, errors));
-            }
-            req.body.UpdatedBy = req.decoded.UserObjectId;
-            const result = await PatientsService.updateDiagnose(req.body);
-            if (!isEmpty(result)) {
-                return res.json(responseSuccess(10143));
-            }
-            return res.json(responseError(40133));
-        } catch (errors) {
-            console.log(errors)
-            return resJsonError(res, errors, 'patient');
-        }
-    },
+    // updateDiagnose: async (req, res) => {
+    //     try {
+    //         req.checkBody(PatientObjectIdValidator);
+    //         const errors = req.validationErrors();
+    //         if (errors) {
+    //             return res.json(responseError(40003, errors));
+    //         }
+    //         req.body.UpdatedBy = req.decoded.UserObjectId;
+    //         const result = await PatientsService.updateDiagnose(req.body);
+    //         if (!isEmpty(result)) {
+    //             return res.json(responseSuccess(10143));
+    //         }
+    //         return res.json(responseError(40133));
+    //     } catch (errors) {
+    //         console.log(errors)
+    //         return resJsonError(res, errors, 'patient');
+    //     }
+    // },
     countPatient: async (req, res) => {
         try {
             const result = await PatientsService.countPatient(req.query);

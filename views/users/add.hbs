@@ -270,10 +270,12 @@
 													</div>
 												</div>
 												<!--form body -->
+												{{#isActiveFunction Info.Role 'CreateUser'}}
 												<div class="form-actions right">
 													<button type="submit" class="btn green"
 														ng-click="create(f_CreateUser)">Lưu</button>
 												</div>
+												{{/isActiveFunction}}
 											</form>
 										</div>
 									</div>

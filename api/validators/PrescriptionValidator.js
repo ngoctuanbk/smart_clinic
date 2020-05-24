@@ -20,6 +20,7 @@ const createValidator = Object.assign({}, PatientObjectIdValidator);
 module.exports = {
     listValidator,
     createValidator,
+    PatientObjectIdValidator,
     // updateValidator,
     // updateStatusValidator,
     // LabObjectIdValidator,

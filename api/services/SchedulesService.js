@@ -28,7 +28,7 @@ module.exports = {
                 CreatedBy: data.CreatedBy,
                 CreatedDate: generatorTime(),
                 Note: data.Note || '',
-                Status: STATUS[200],
+                Status: STATUS[100],
             };
             const result = await ScheduleModel.create(set);
             return promiseResolve(result);
@@ -200,6 +200,19 @@ module.exports = {
             set.UpdatedDate = generatorTime();
             set.UpdatedBy = data.UpdatedBy;
             const result = await ScheduleModel.findOneAndUpdate(conditions, set, { new: true });
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    infoPatient: async (data) => {
+        try {
+            const conditions = {
+                DeleteFlag: DELETE_FLAG[200],
+                _id: data.ScheduleObjectId,
+            };
+            const fieldsSelect = 'PatientObjectId';
+            const result = ScheduleModel.find(conditions).select(fieldsSelect);
             return promiseResolve(result);
         } catch (err) {
             return promiseReject(err);

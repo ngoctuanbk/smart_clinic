@@ -14,12 +14,12 @@ const LabSchema = new mongoose.Schema({
     UserObjectId: {
         type: mongoose.Schema.Types.ObjectId, ref: 'users', index: true,
     },
-    LabDetail: [
-        {
-            LabType: {type: String, required: true},
-            Result: {type: String},
-        },
-    ],
+    // LabDetail: [
+    //     {
+    //         LabType: {type: String, required: true},
+    //         Result: {type: String},
+    //     },
+    // ],
     Note: {type: String},
     Status: {type: String, default: STATUS[100]},
     CreatedDate: {type: String, default: generatorTime},
@@ -38,6 +38,11 @@ LabSchema.plugin(autoIncrement.plugin, {
     unique: true,
     required: true,
     index: 1,
+});
+LabSchema.virtual('LabDetails', {
+    ref: 'lab_details',
+    localField: '_id',
+    foreignField: 'LabObjectId',
 });
 
 const LabModel = mongoose.model('labs', LabSchema);

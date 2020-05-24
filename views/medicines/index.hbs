@@ -14,9 +14,11 @@
                             <a href="javascript:;" class="fullscreen" data-original-title="" title=""> </a>
                         </div>
                         <div class="actions pull-left">
+                            {{#isActiveFunction Info.Role 'CreateProduct'}}
                             <a href="#create_medicine" class="btn btn-circle btn-success" data-toggle="modal"><i
                                     class="fa fa-plus"></i>
                                 Thêm mới </a>
+                            {{/isActiveFunction}}
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -105,9 +107,12 @@
                                                     <i class="fa fa-angle-up"></i>
                                                 </button>
                                                 <ul class="dropdown-menu status pull-right" role="menu">
+                                                    {{#isActiveFunction Info.Role 'DeleteProduct'}}
                                                     <li class="status-Remove"><a href="javascript:;" data-value="Remove"
                                                             ng-click="delete(item._id, item.BrandName)">
                                                             Xóa </a></li>
+                                                    {{/isActiveFunction}}
+                                                    {{#isActiveFunction Info.Role 'UpdateStatusProduct'}}
                                                     <li class="status-Active"><a href="javascript:;" data-value="Active"
                                                             ng-click="updateStatus(200, item._id, $index)">
                                                             Hoạt động
@@ -118,6 +123,7 @@
                                                             ng-click="updateStatus(400, item._id, $index)">
                                                             Ngừng </a>
                                                     </li>
+                                                    {{/isActiveFunction}}
                                                 </ul>
                                             </div>
                                         </td>
@@ -292,8 +298,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'CreateProduct'}}
                     <button type="button" class="btn green" ng-click="create(f_CreateMedicine)">
                         Lưu</button>
+                    {{/isActiveFunction}}
                     <button type="button" data-dismiss="modal" class="btn default">
                         Hủy</button>
                 </div>
@@ -405,8 +413,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'CreateProduct'}}
                     <button type="button" class="btn green" ng-click="update(f_UpdateMedicine)">
                         Lưu</button>
+                    {{/isActiveFunction}}
                     <button type="button" data-dismiss="modal" class="btn default">
                         Hủy</button>
                 </div>

@@ -14,8 +14,10 @@
                             <a href="javascript:;" class="fullscreen"> </a>
                         </div>
                         <div class="actions pull-left">
+                            {{#isActiveFunction Info.Role 'CreateSchedule'}}
                             <a href="#create_schedule" class="btn btn-circle btn-success" data-toggle="modal"><i class="fa fa-plus"></i>
                                 Thêm mới </a>
+                            {{/isActiveFunction}}
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -233,8 +235,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'CreateSchedule'}}
                     <button type="button" class="btn green" ng-click="create(f_CreateSchedule)">
                         Lưu</button>
+                    {{/isActiveFunction}}
                     <button type="button" data-dismiss="modal" class="btn default">
                         Hủy</button>
                 </div>
@@ -317,10 +321,12 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'UpdateStatusSchedule'}}
                     <button type="button" class="btn green" ng-if="infoSchedule.Status === 'WaitingAccepted'" ng-click="updateStatus(200, infoSchedule._id)">
-                        Duyệt</button>
-                    <button type="button" class="btn btn-danger" ng-if="infoSchedule.Status === 'WaitingAccepted'" ng-click="updateStatus(400, infoSchedule._id)">
-                        Hủy</button>
+                        Đang khám</button>
+                    <button type="button" class="btn btn-danger" ng-click="updateStatus(400, infoSchedule._id)">
+                        Đã khám</button>
+                    {{/isActiveFunction}}
                     <button type="button" data-dismiss="modal" class="btn default">
                         Đóng</button>
                 </div>

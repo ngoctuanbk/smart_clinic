@@ -6,9 +6,11 @@
                 <span class="caption-subject uppercase"> Danh sách đơn thuốc</span>
             </div>
             <div class="actions pull-left">
+                {{#isActiveFunction Info.Role 'CreatePrescription'}}
                 <a href="#create_prescriptions" class="btn btn-circle btn-success" data-toggle="modal"><i
                         class="fa fa-plus"></i>
                     Thêm mới </a>
+                {{/isActiveFunction}}
             </div>
         </div>
         <div class="portlet-body">
@@ -45,10 +47,11 @@
                     <thead>
                         <tr>
                             <th class="rowno"> STT </th>
+                            <th class="title"> Ngày khám bệnh</th>
                             <th class="title"> Mã đơn thuốc</th>
                             <th class="title"> Tên thuốc </th>
                             <th class="title"> Thành tiền </th>
-                            <th class="title"> Ngày tạo </th>
+                            <th class="title"> Thời gian tạo đơn thuốc</th>
                             <th class="title"> Bác sĩ</th>
                             <th class="th-size-update"> Trạng thái</th>
                         </tr>
@@ -58,6 +61,7 @@
                     <tr ng-repeat="it in valueDetails">
                         <td ng-if="$first" rowspan="\{{rowSpan}}" ng-bind="idx + 1">
                         </td>
+                        <td ng-if="$first" ng-bind="item.CreatedDate | formatDateToDMY : 'YYYY-MM-DD'" rowspan="\{{rowSpan}}"></td>
                         <td ng-if="$first" ng-bind="item.PrescriptionCode" rowspan="\{{rowSpan}}"></td>
                         <td ng-bind="it.MedicineObjectId.MedicineName + ' ( Số lượng: ' + it.Quantity + ')'"></td>
                         <td ng-if="$first" ng-bind="item.SumTotalPrice | number" rowspan="\{{rowSpan}}"></td>
@@ -264,8 +268,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'CreatePrescription'}}
                     <button type="button" class="btn green" ng-click="createPrescription(f_CreatePrescription)">
                         Lưu</button>
+                    {{/isActiveFunction}}
                     <button type="button" data-dismiss="modal" class="btn default">
                         Hủy</button>
                 </div>
@@ -387,8 +393,10 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    {{#isActiveFunction Info.Role 'UpdatePrescription'}}
                     <button type="button" class="btn green" ng-click="updateLab(f_UpdateLab)">
                         Lưu</button>
+                    {{/isActiveFunction}}
                     <button type="button" data-dismiss="modal" class="btn default">
                         Hủy</button>
                 </div>

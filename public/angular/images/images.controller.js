@@ -77,10 +77,6 @@
             $scope.list();
         };
         // end paginate customers
-
-        Promise.all([$scope.list()]).then(() => {
-            refreshSelectPicker();
-        });
         $scope.listPatient = async () => {
             await ImagesService.listPatient()
                 .then((response) => {
@@ -88,7 +84,11 @@
                     $scope.patients = response.Success ? response.Data.docs : [];
                 });
         };
-        $scope.listPatient();
+
+        Promise.all([$scope.list(), $scope.listPatient()]).then(() => {
+            refreshSelectPicker();
+        });
+        
         $scope.types = [
             {
                 "TypeName": "Chụp X-quang",
@@ -159,6 +159,21 @@
                 renderViewImg(`${item.ImagesDir}`, idx, item._id);
             });
             refreshSelectPicker();
+        };
+        $scope.updateStatus = (Status, ImageObjectId) => {
+            const formUpdate = {
+                Status,
+                ImageObjectId,
+            };
+            ImagesService.updateStatus(formUpdate)
+                .then((response) => {
+                    if (response.Success) {
+                        $scope.list();
+                        logger.success('Cập nhật trạng thái thành công');
+                    } else {
+                        logger.error('Có lỗi xảy ra, Vui lòng thử lại.');
+                    }
+                });
         };
 
         $scope.update = (form) => {
