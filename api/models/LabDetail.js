@@ -10,7 +10,7 @@ const LabDetailSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, required: true, ref: 'labs', index: true,
     }, 
     LabType: {type: String, required: true,},
-    Result: [{key: String, value: String}],
+    Result: [{key: String, value: String, range: String, unit: String}],
     CreatedDate: {type: String, default: generatorTime},
     CreatedBy: {type: mongoose.Schema.Types.ObjectId, ref: 'users', index: true},
     UpdatedDate: {type: String},

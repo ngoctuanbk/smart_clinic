@@ -447,4 +447,55 @@ module.exports = {
             return promiseReject(err);
         }
     },
+    listExport: async (data) => {
+        try {
+            const sortKey = data.SortKey ? data.SortKey : 'CreatedDate';
+            const sortOrder = data.SortOrder ? data.SortOrder : -1;
+            const conditions = {
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            if (data.FromDate || data.ToDate) {
+                conditions.CreatedDate = {};
+                if (data.FromDate) {
+                    conditions.CreatedDate.$gte = convertToTime(data.FromDate, 'from');
+                }
+                if (data.ToDate) {
+                    conditions.CreatedDate.$lte = convertToTime(data.ToDate, 'to');
+                }
+            }
+            const fieldsSelect = '_id PatientID FullName Mobile Sex Age DateOfBirth Career Address.Street CreatedBy CreatedDate Status Reason Contact';
+            const populate = [{
+                path: 'Address.ProvinceObjectId',
+                select: '_id ProvinceName',
+                match: {
+                    DeleteFlag: DELETE_FLAG[200],
+                },
+            },
+            {
+                path: 'Address.DistrictObjectId',
+                select: '_id DistrictName',
+                match: {
+                    DeleteFlag: DELETE_FLAG[200],
+                },
+            }, 
+            {
+                path: 'Address.WardObjectId',
+                select: '_id WardName',
+                match: {
+                    DeleteFlag: DELETE_FLAG[200],
+                },
+            }];
+            const options = {
+                sort: {
+                    [sortKey]: sortOrder,
+                },
+                select: fieldsSelect,
+                populate: populate,
+            };
+            const result = PatientModel.paginate(conditions, options);
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
 };

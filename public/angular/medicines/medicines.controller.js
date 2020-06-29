@@ -139,7 +139,39 @@
                 alertMessage('danger', SharedService.checkFormInvalid(form), true);
             }
         };
-
+        $scope.updateStatus = (Status, MedicineObjectId) => {
+            const formUpdate = {
+                Status,
+                MedicineObjectId,
+            };
+            MedicinesService.updateStatus(formUpdate)
+                .then((response) => {
+                    if (response.Success) {
+                        $scope.list();
+                        logger.success('Cập nhật trạng thái thành công');
+                    } else {
+                        logger.error('Có lỗi xảy ra, Vui lòng thử lại.');
+                    }
+                });
+        };
+        $scope.delete = (MedicineObjectId, MedicineName) => {
+            function deleteMedicines() {
+                MedicinesService.delete({
+                    MedicineObjectId,
+                })
+                    .then((response) => {
+                        console.log(response);
+                        if (response.Success) {
+                            swal('Đã xóa!', 'success');
+                            $scope.list();
+                        } else {
+                            swal('Có lỗi xảy ra', 'Vui lòng thử lại.', 'error');
+                        }
+                    });
+            }
+            const msg = `Bạn có chắc chắn muốn xóa thuốc ${MedicineName}?`;
+            deleteItem(deleteMedicines, msg);
+        };
         function alertMessage(alertClass = '', alertMsg = '', alertShow = false) {
             $scope.alertShow = alertShow;
             $scope.alertClass = alertClass;

@@ -100,7 +100,7 @@
                                             <div class="btn-group status dropup _status">
                                                 <label class="btn btn-sm btn-status"
                                                     ng-class="item.Status | filterStatusToClass"
-                                                    ng-bind="item.Status | filterStatusToText">
+                                                    ng-bind="item.Status | filterStatusMedicineToText">
                                                 </label>
                                                 <button type="button" class="btn btn-sm btn-info dropdown-toggle"
                                                     data-toggle="dropdown" aria-expanded="false">
@@ -109,7 +109,7 @@
                                                 <ul class="dropdown-menu status pull-right" role="menu">
                                                     {{#isActiveFunction Info.Role 'DeleteProduct'}}
                                                     <li class="status-Remove"><a href="javascript:;" data-value="Remove"
-                                                            ng-click="delete(item._id, item.BrandName)">
+                                                            ng-click="delete(item._id, item.MedicineName)">
                                                             Xóa </a></li>
                                                     {{/isActiveFunction}}
                                                     {{#isActiveFunction Info.Role 'UpdateStatusProduct'}}
@@ -121,7 +121,7 @@
                                                     <li class="status-Inactive"><a href="javascript:;"
                                                             data-value="Inactive"
                                                             ng-click="updateStatus(400, item._id, $index)">
-                                                            Ngừng </a>
+                                                            Hết hàng </a>
                                                     </li>
                                                     {{/isActiveFunction}}
                                                 </ul>

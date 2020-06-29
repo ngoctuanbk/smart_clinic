@@ -1,7 +1,3 @@
-/*
-Mr : Dang Xuan Truong
-Email: truongdx@runsystem.net
-*/
 const util = require('util');
 const mongoose = require('mongoose');
 const autoIncrement = require('mongoose-auto-increment');

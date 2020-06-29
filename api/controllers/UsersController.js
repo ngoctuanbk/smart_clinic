@@ -6,15 +6,12 @@ const {
     isEmpty,
     responseSuccess,
     responseError,
-    getParamsWriteLog,
     sliceString,
     beforeUpload,
     uploadFile,
     fileFilterImage,
     storage,
-    isManagerTypeBoth,
-    isManagerTypeDirect,
-    isManagerTypeInDirect,
+    deleteFile,
     convertJSONStrToJSONParse,
     resJsonError,
 } = require('../libs/shared');
@@ -23,6 +20,7 @@ const {
     listValidator,
     UserObjectIdValidator,
     updateValidator,
+    updateStatusValidator
 } = require('../validators/UsersValidator');
 
 const uploadImage = uploadFile(storage('users', 'images'), fileFilterImage, 'Image');
@@ -180,6 +178,82 @@ module.exports = {
             return res.json(responseSuccess(10141, count));
         } catch (errors) {
             return resJsonError(res, errors, 'patient');
+        }
+    },
+    updateStatus: async (req, res) => {
+        try {
+            req.checkBody(updateStatusValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.body.UpdatedBy = req.decoded.UserObjectId;
+            const result = await UserService.updateStatus(req.body);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10123));
+            }
+            return res.json(responseError(40113));
+        } catch (errors) {
+            console.log(errors)
+            return resJsonError(res, errors, 'user');
+        }
+    },
+    delete: async (req, res) => {
+        try {
+            req.checkBody(UserObjectIdValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.body.UpdateBy = req.decoded.UserObjectId;
+            const result = await UserService.delete(req.body);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10124));
+            }
+            return res.json(responseError(40114));
+        } catch (errors) {
+            return resJsonError(res, errors, 'user');
+        }
+    },
+    updateAvatar: async (req, res) => {
+        beforeUpload(req, res, async () => {
+            function deleteImage() {
+                req.file && deleteFile(req.file.path);
+            }
+            try {
+                if (req.file) {
+                    const stringPath = req.file.path.split('\\').join('/');
+                    req.body.Avatar = sliceString(stringPath, '/uploads');
+                }
+                req.checkBody(UserObjectIdValidator);
+                const errors = req.validationErrors();
+                if (errors) {
+                    deleteImage();
+                    return res.json(responseError(40003, errors));
+                }
+                req.body.Database = req.decoded.Database;
+                req.body.UpdatedBy = req.decoded.UserObjectId;
+                const result = await UserService.updateAvatar(req.body);
+                if (!isEmpty(result)) {
+                    const pathAvatarOld = `./public${result.Avatar}`;
+                    deleteFile(pathAvatarOld);
+                    return res.json(responseSuccess(10113));
+                }
+                deleteImage();
+                return res.json(responseError(40104));
+            } catch (errors) {
+                deleteImage();
+                return resJsonError(res, errors, 'user');
+            }
+        }, uploadImage);
+    },
+    exportFile: async (req, res) => {
+        try {
+            const result = await UserService.listExport(req.query);
+            return res.json(responseSuccess(10111, result));
+        } catch (errors) {
+            console.log(errors)
+            return resJsonError(res, errors, 'user');
         }
     },
 }

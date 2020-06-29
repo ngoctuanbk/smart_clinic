@@ -51,6 +51,22 @@ module.exports = {
             return res.status(500).json(responseError(1001, err));
         }
     },
+    updateStatus: async (req, res) => {
+        try {
+            const result = await sendBodyToAPI('PUT', 'api/medicines/updateStatus', getHeaders(req), req.body, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
+    delete: async (req, res) => {
+        try {
+            const result = await sendBodyToAPI('PUT', 'api/medicines/delete', getHeaders(req), req.body, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
     // listActivity: async (req, res) => {
     //     try {
     //         const result = await sendQueryToAPI('GET', 'api/activities/list', getHeaders(req), req.query, true);

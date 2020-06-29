@@ -27,4 +27,6 @@ exports.SEX = ['Male', 'Female', 'Other'];
 exports.FIELDS_IMPORT = {
     Param: 'Chỉ số',
     Value: 'Kết quả',
+    Range: 'Khoảng tham chiếu',
+    Unit: 'Đơn vị'
 };

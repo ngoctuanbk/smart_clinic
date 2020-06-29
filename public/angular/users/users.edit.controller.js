@@ -141,12 +141,12 @@
                 $scope.image,
             ).then((response) => {
                 if (response.Success) {
-                    logger.success(getMsgResponse(response));
+                    logger.success('Cập nhật ảnh nhân viên thành công');
                     changeCss();
                     // eslint-disable-next-line no-unused-expressions
                     ($scope.image && replaceImage(urlImage), $scope.deleteImage());
                 } else {
-                    logger.error(getMsgResponse(response));
+                    logger.error('Đã xảy ra lỗi. Vui lòng thử lại');
                 }
             });
         };

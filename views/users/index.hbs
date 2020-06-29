@@ -139,21 +139,27 @@
                                                     <i class="fa fa-angle-up"></i>
                                                 </button>
                                                 <ul class="dropdown-menu status pull-right" role="menu">
+                                                    {{#isActiveFunction Info.Role 'DeleteUser'}}
                                                     <li class="status-Remove">
                                                         <a href="javascript:;" data-value="Remove"
                                                             ng-click="delete(user._id, user.Info.FullName)">
                                                             Xóa </a>
                                                     </li>
+                                                    {{/isActiveFunction}}
+                                                    {{#isActiveFunction Info.Role 'UpdateStatusUser'}}
                                                     <li class="status-Active">
                                                         <a href="javascript:;" data-value="Active"
                                                             ng-click="updateStatus(200, user._id, $index)">Hoạt
                                                             động</a>
                                                     </li>
+                                                    {{/isActiveFunction}}
+                                                    {{#isActiveFunction Info.Role 'UpdateStatusUser'}}
                                                     <li class="status-Inactive">
                                                         <a href="javascript:;" data-value="Inactive"
                                                             ng-click="updateStatus(400, user._id, $index)">Ngừng
                                                         </a>
                                                     </li>
+                                                    {{/isActiveFunction}}
                                                 </ul>
                                             </div>
                                         </td>
@@ -214,43 +220,6 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                         <h4 class="modal-title"> <i class="fas fa-filter"></i> Lọc điều kiện xuất dữ liệu </h4>
                     </div>
-                    <div class="modal-body">
-                        <form class="form-horizontal">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Chọn chi nhánh</label>
-                                        <div class="col-md-9">
-                                            <select class="bs-select form-control pull-left"
-                                                ng-model="export.Branches" multiple
-                                                data-selected-text-format="count > 2" name="branch"
-                                                data-live-search="true" title="Tất cả chi nhánh" style="display:none !important;"
-                                                data-size="4">
-                                                <option ng-model="a" ng-repeat="branch in branches"
-                                                    ng-value="branch._id" ng-bind="branch.BranchName"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label">Chọn quyền</label>
-                                        <div class="col-md-9">
-                                            <select class="bs-select form-control pull-left"
-                                                ng-model="export.Roles" multiple
-                                                data-selected-text-format="count > 2" name="branch"
-                                                data-live-search="true" title="Tất cả quyền" style="display:none !important;"
-                                                data-size="4">
-                                                <option ng-model="a" ng-repeat="role in roles"
-                                                    ng-value="role._id" ng-bind="role.Info[0].Name"></option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <!--end form -->
-                    </div>
                     <div class="modal-footer">
                         <a ng-click="exportFile()" class="btn green">Tải xuống</a>
                         <button type="button" id="cancelBtn" data-dismiss="modal" class="btn btn-ok default"> Huỷ
@@ -260,65 +229,5 @@
             </div>
         </div>
         <!-- END Export -->
-        <!-- Import -->
-        <div class="modal  fade in" id="import_file" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content ">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                        <h4 class="modal-title"><i class="fab fa-product-hunt"></i> Chọn tập tin danh sách nhân viên
-                        </h4>
-                    </div>
-                    <div class="modal-body">
-                        <form class="form-horizontal" name="form_import" ng-validate="validator">
-                            <div class="row">
-                                <div class="form-group">
-                                    <div class="col-md-3"></div>
-                                    <div class="col-md-8">
-                                        <div class="actions pull-right">
-                                            <a href="/admin/users/downloadSampleExcel" class="btn green">
-                                                <i class="fa fa-download"></i>
-                                                Tải file mẫu
-                                            </a>
-                                            <button href="javascript:;" class="btn btn-success btn-file-upload"><i
-                                                    class="fas fa-file-excel"></i>
-                                                <span class="file-title">Import</span>
-                                                <span>
-                                                    <input type="file" ng-model="data" id="input-file-upload"
-                                                        class="input-file-upload" data-width="180" data-height="180"
-                                                        name="file" multiple
-                                                        accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                                                        file-upload="files" title="Chọn file excel để import" />
-                                                </span>
-                                            </button>
-                                            <button ng-if="files.name" type="button" id="selectBtn" data-dismiss=""
-                                                class="btn green" ng-click="importFile()">
-                                                Thêm mới </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group" ng-if="files.name">
-                                    <label for="" class="col-md-3 control-label">Tên file: </label>
-                                    <label for="" class="text-left control-label col-md-8">
-                                        <i class="icon-check"></i>
-                                        Tập tin \{{files.name}} đã được tải lên
-                                    </label>
-                                </div>
-                                <div class="form-group">
-                                    <div class="loading-wrapper" id="loading_add">
-                                        <div>
-                                            <img src="/images/pictures/loading.gif" alt="loading">
-                                        </div>
-                                        <div class="title">
-                                            Đang thêm
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>

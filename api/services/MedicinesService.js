@@ -143,5 +143,38 @@ module.exports = {
             return promiseReject(err);
         }
     },
-
+    updateStatus: async (data) => {
+        try {
+            const conditions = {
+                _id: data.MedicineObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                Status: STATUS[+data.Status],
+                UpdatedDate: generatorTime(),
+                UpdatedBy: data.UpdatedBy,
+            };
+            const result = await MedicineModel.findOneAndUpdate(conditions, set, { new: true });
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    delete: async (data) => {
+        try {
+            const conditions = {
+                _id: data.MedicineObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                DeleteFlag: DELETE_FLAG[300],
+                UpdatedDate: generatorTime(),
+                UpdatedBy: data.UpdatedBy,
+            };
+            const result = await MedicineModel.findOneAndUpdate(conditions, set, { new: true });
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
 };

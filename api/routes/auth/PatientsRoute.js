@@ -11,6 +11,7 @@ function PatientsRoute(apiRouter) {
     apiRouter.route('/patients/countPatient').get(PatientsController.countPatient);
     apiRouter.route('/patients/patientByDate').get(PatientsController.patientByDate);
     apiRouter.route('/patients/patientByMonth').get(PatientsController.patientByMonth);
+    apiRouter.route('/patients/export').get(PatientsController.exportFile);
 }
 
 module.exports = PatientsRoute;

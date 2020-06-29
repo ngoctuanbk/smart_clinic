@@ -51,7 +51,7 @@ module.exports = {
             if (data.PatientObjectId) {
                 conditions.PatientObjectId = data.PatientObjectId;
             }
-            const fieldsSelect = 'ImageCode Type Status UpdatedDate CreatedDate';
+            const fieldsSelect = 'ImageCode Type Status UpdatedDate CreatedDate Note';
             const populate = [{
                 path: 'PatientObjectId',
                 select: '_id FullName',
@@ -98,7 +98,7 @@ module.exports = {
                 PatientObjectId: data.PatientObjectId,
                 UserObjectId: data.UserObjectId,
                 Type: data.Type,
-                Note: data.Note || '',
+                Note: data.Note,
                 UpdatedDate: generatorTime(),
                 UpdatedBy: data.UpdatedBy,
             };
@@ -182,6 +182,7 @@ module.exports = {
                     Status: '$Status',
                     UpdatedDate: '$UpdatedDate',
                     Type: '$Type',
+                    Note: '$Note',
                     User: '$User.Info.FullName',
                     Image: '$Image.ImagesDir'
                 };

@@ -1,7 +1,3 @@
-/**
-Mr : Dang Xuan Truong
-Email: truongdx@runsystem.net
-*/
 const util = require('util');
 const jwt = require('jsonwebtoken');
 const moment = require('moment-timezone');

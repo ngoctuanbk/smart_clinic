@@ -14,12 +14,6 @@ const LabSchema = new mongoose.Schema({
     UserObjectId: {
         type: mongoose.Schema.Types.ObjectId, ref: 'users', index: true,
     },
-    // LabDetail: [
-    //     {
-    //         LabType: {type: String, required: true},
-    //         Result: {type: String},
-    //     },
-    // ],
     Note: {type: String},
     Status: {type: String, default: STATUS[100]},
     CreatedDate: {type: String, default: generatorTime},

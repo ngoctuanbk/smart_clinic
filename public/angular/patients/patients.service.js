@@ -26,5 +26,6 @@
         this.info = data => HttpService.sendData('GET', '/admin/lab_details/info', data, 'Lỗi xảy ra khi hiển thị danh sách xét nghiệm');
         this.updateStatusLab = data => HttpService.sendData('PUT', '/admin/labs/updateStatus', data, 'Lỗi xảy ra khi cập nhật xét nghiệm');
         this.createDiagnose = data => HttpService.sendData('POST', '/admin/diagnose/create', data, 'Lỗi xảy khi thêm mới bệnh nhân');
+        this.updateStatusImage = data => HttpService.sendData('PUT', '/admin/images/updateStatus', data, 'Lỗi xảy ra khi cập nhật xét nghiệm');
     }
 }());

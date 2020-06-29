@@ -61,7 +61,7 @@
                     <tr ng-repeat="it in valueDetails">
                         <td ng-if="$first" rowspan="\{{rowSpan}}" ng-bind="idx + 1">
                         </td>
-                        <td ng-if="$first" ng-bind="item.CreatedDate | formatDateToDMY : 'YYYY-MM-DD'" rowspan="\{{rowSpan}}"></td>
+                        <td ng-if="$first" ng-bind="item.CreatedDate | formatDateToDMY" rowspan="\{{rowSpan}}"></td>
                         <td ng-if="$first" ng-bind="item.PrescriptionCode" rowspan="\{{rowSpan}}"></td>
                         <td ng-bind="it.MedicineObjectId.MedicineName + ' ( Số lượng: ' + it.Quantity + ')'"></td>
                         <td ng-if="$first" ng-bind="item.SumTotalPrice | number" rowspan="\{{rowSpan}}"></td>
@@ -71,7 +71,7 @@
                             <div class="btn-group status dropup update-status-mgt">
                                 <label class="btn btn-sm btn-status"
                                     ng-class="item.Status | filterStatusToClass"
-                                    ng-bind="item.Status | filterStatusToText">
+                                    ng-bind="item.Status | filterStatusPrescriptionToText">
                                 </label>
                                 <button type="button" class="btn btn-sm btn-info dropdown-toggle"
                                     data-toggle="dropdown" aria-expanded="false">
@@ -89,7 +89,7 @@
                                     <li class="status-Inactive"><a href="javascript:;"
                                             data-value="Inactive"
                                             ng-click="updateStatus(400, item._id, $index)">
-                                            Ngừng </a>
+                                            Hủy đơn </a>
                                     </li>
                                 </ul>
                             </div>

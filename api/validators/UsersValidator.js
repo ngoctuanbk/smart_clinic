@@ -113,13 +113,13 @@ const createValidator = Object.assign({}, UserName, Password, Info, Email, Mobil
 const updateValidator = Object.assign({}, UserObjectIdValidator, Info, Email, Mobile, RoleObjectIdValidator);
 // const updateMobileValidator = Object.assign({}, UserObjectIdValidator, Info);
 const listValidator = Object.assign({}, paginate);
-// const updateStatusValidator = Object.assign({}, UserObjectIdValidator, StatusValidator);
+const updateStatusValidator = Object.assign({}, UserObjectIdValidator, StatusValidator);
 // const listByRoleValidator = Object.assign({}, RoleObjectIdValidator, StatusOptionalValidator);
 module.exports = {
     createValidator,
     listValidator,
     UserObjectIdValidator,
-    // updateStatusValidator,
+    updateStatusValidator,
     // listByRoleValidator,
     // updateValidator,
     // // RoleCodesValidator,

@@ -153,6 +153,7 @@
             $scope.formUpdate.PatientObjectId = item.PatientObjectId._id;
             $scope.formUpdate.ImageCode = item.ImageCode;
             $scope.formUpdate.Type = item.Type;
+            $scope.formUpdate.Note = item.Note;
             $scope.Patient = item.PatientObjectId.FullName;
             $('.preview-images-zone').html('');
             item.Images.map((item, idx) => {
@@ -185,6 +186,7 @@
                     }
                 }
                 $scope.formUpdate.ImageObjectIdDeleted = $scope.ImageObjectIdDeleted;
+                console.log(files)
                 UploadService.uploadImage('PUT', '/admin/images/update', $scope.formUpdate, files)
                     .then((response) => {
                         console.log(response);

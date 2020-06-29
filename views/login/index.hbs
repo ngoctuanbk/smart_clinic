@@ -24,13 +24,6 @@
                     <span class="focus-input100" data-placeholder="&#xf191;"></span>
                 </div>
 
-                <div class="contact100-form-checkbox">
-                    <input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
-                    <label class="label-checkbox100" for="ckb1">
-                        Remember me
-                    </label>
-                </div>
-
                 <div class="form-actions" class="container-login100-form-btn">
                     <button type="submit" class="login100-form-btn">
                         Đăng nhập
@@ -39,60 +32,10 @@
 
                 <div class="text-center p-t-90">
                     <a class="txt1" href="#">
-                        Quên mật khẩu?
+                        
                     </a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-    {{!-- <a href="javascript:;" id="forget-password" ng-click="movetoForm()" class="forget-password">Quên mật khẩu ?
-    </a> --}}
-
-<form class="forgot-password-form" ng-if="EnabledFormFogotPassword" ng-submit="forgotPassword(forgotPasswordForm)" ng-validate="validationLogin"
-    name="forgotPasswordForm">
-    <h3 class="form-title font-green">Quên mật khẩu?</h3>
-    <p>Nhập địa chỉ email dưới đây để tạo lại mật khẩu.</p>
-    <div class="alert \{{alertClass}}" ng-if="alertShow">
-        <button class="close" data-close="alert" ng-click="closeAlert()"></button>
-        <span>\{{message}}</span>
-    </div>
-    <div class="form-group">
-        <input class="form-control form-control-solid " type="email" autocomplete="off" placeholder="Nhập địa chỉ email của bạn"
-            name="Email" ng-model="user.Email" />
-    </div>
-    <div class="form-actions">
-        <button type="button" class="btn green btn-outline" ng-click="back()">Quay lại</button>
-        <button type="submit" class="btn green pull-right">Gửi đi</button>
-    </div>
-</form>
-
-<form class="reset-password-form" ng-submit="resetPassword(resetPasswordForm)" ng-validate="validationLogin" ng-if="showFormResetPassword"
-    name="resetPasswordForm">
-    <h3 class="form-title font-green">Thay đổi mật khẩu</h3>
-    <div class="alert \{{alertClass}}" ng-if="alertShow">
-        <button class="close" data-close="alert" ng-click="closeAlert()"></button>
-        <span>\{{message}}</span>
-    </div>
-    <div class="form-group">
-        <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
-        <label class="control-label visible-ie8 visible-ie9">Nhập mã xác nhận</label>
-        <input class="form-control form-control-solid" type="text" autocomplete="off" placeholder="Mã xác nhận" name="VerifyCode"
-            ng-model="formResetPassword.VerifyCode" />
-    </div>
-    <div class="form-group">
-        <label class="control-label visible-ie8 visible-ie9">Mật khẩu mới</label>
-        <input class="form-control form-control-solid " type="password" autocomplete="off" placeholder="Mật khẩu mới" name="NewPassword"
-            id="NewPassword" ng-model="formResetPassword.NewPassword" />
-    </div>
-    <div class="form-group">
-        <label class="control-label visible-ie8 visible-ie9">Xác nhận mật khẩu mới</label>
-        <input class="form-control form-control-solid " type="password" autocomplete="off" placeholder="Xác nhận mật khẩu mới" name="ReNewPassword"
-            id="ReNewPassword" ng-model="formResetPassword.ReNewPassword" />
-    </div>
-    <div class="form-actions">
-        <button type="button" class="btn green btn-outline" ng-click="back()">Đăng nhập</button>
-        <button type="submit" class="btn green pull-right">Xác nhận</button>
-    </div>
-    <a href="javascript:;" id="forget-password" class="forget-password" ng-click="movetoForm()">Gửi lại mã</a>
-</form>

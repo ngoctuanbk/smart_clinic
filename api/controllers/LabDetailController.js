@@ -31,21 +31,22 @@ module.exports = {
                     return res.json(responseError(40002));
                 }
                 const LabDetailObjectId = req.body.LabDetailObjectId;
-                const { data } = readFileExcel(req.file.path);
+                const { data } = readFileExcel(req.file.path, {header: 'A'});
                 const { Database, UserObjectId } = req.decoded;
                 let recordAdded = 0;
                 let recordUpdated = 0;
                 let RowUpdated = [];
                 const listError = [];
                 const listCorrect = [];
+                let hasRowError = false;
 
                 const {
-                    Param, Value
+                    Param, Value, Range, Unit
                 } = FIELDS_IMPORT;
 
                 async function runArrayImported(array = []) {
-
-                    function checkLabDetail(Pram, Value) {
+                    console.log('aaa', array)
+                    function checkLabDetail(Pram, Value, Range, Unit) {
                         const obj = {
                             msg: '',
                             value: [],
@@ -60,28 +61,41 @@ module.exports = {
                             obj.msg = 'Giá trị không được để trống, ';
                             return obj;
                         }
+                        const _Range = trimValue(Range);
+                        const _Unit = trimValue(Unit);
                         const Result = {};
                         Result.key = _Pram,
                         Result.value = _Value,
+                        Result.range = _Range,
+                        Result.unit = _Unit,
                         obj.value = Result;
+                        console.log('ddd', Result)
                         return obj;
                     }
 
-                    let idx = 2;
+                    let idx = 6;
                     const len = array.length;
                     const arr = [];
-                    for (let i = 0; i < len; i++) {
+                    for (let i = 6; i < len; i++) {
                         const row = array[i];
+                        console.log('cccc', row)
+                        for(const prop in row){
+                            row[trimValue(prop)] = row[prop];
+                        }
                         const params = {};
                         let msgError = '';
-                        const detail = checkLabDetail(row[Param], row[Value]);
+                        const detail = checkLabDetail(row['A'], row['B'], row['C'], row['D']);
                         msgError += detail.msg;
-                        arr.push(detail.value)
+                        // arr.push(detail.value)
                         params.Result = arr;
+                        console.log('bbb', arr)
                         // push vao list correct neu khong co loi
-                        if (listError.length < 1 || isEmpty(msgError)) {
+                        if (!hasRowError && !isEmpty(msgError)) {
+                            hasRowError = true;
+                        }
+                        if(!hasRowError){
                             params.row = idx;
-                            listCorrect.push(params);
+                            listCorrect.push(detail.value);
                         }
                         idx++;              
                     }
@@ -89,20 +103,27 @@ module.exports = {
                 // run array import
                 await runArrayImported(data);
 
-                if (!listError.length && listCorrect.length) {
+                if (!hasRowError) {
                     const recordsCreated = [];
                     const DateCurrent = generatorTime();
                     const len = listCorrect.length;
-                    for (let i = 0; i < len; i++) {
-                        const item = listCorrect[i];
-                        item.LabDetailObjectId = LabDetailObjectId;
-                        item.UpdatedBy = UserObjectId;
-                        item.UserObjectId = UserObjectId;
-                        item.UpdatedDate = DateCurrent;
-                        const isUpdated = await LabDetailsService.updateImportFile(item);
-                        RowUpdated = !isEmpty(isUpdated) ? [...RowUpdated, item.row] : RowUpdated;
-                        continue;
-                    }
+                    const paramsUpdate = {};
+                    paramsUpdate.LabDetailObjectId = LabDetailObjectId;
+                    paramsUpdate.Result = listCorrect;
+                    paramsUpdate.UpdatedBy = UserObjectId;
+                    paramsUpdate.UserObjectId = UserObjectId;
+                    paramsUpdate.UpdatedDate = DateCurrent;
+                    const isUpdated = await LabDetailsService.updateImportFile(paramsUpdate);
+                    // for (let i = 0; i < len; i++) {
+                    //     const item = listCorrect[i];
+                    //     item.LabDetailObjectId = LabDetailObjectId;
+                    //     item.UpdatedBy = UserObjectId;
+                    //     item.UserObjectId = UserObjectId;
+                    //     item.UpdatedDate = DateCurrent;
+                    //     const isUpdated = await LabDetailsService.updateImportFile(item);
+                    //     RowUpdated = !isEmpty(isUpdated) ? [...RowUpdated, item.row] : RowUpdated;
+                    //     continue;
+                    // }
                 }
 
                 if (req.file.path) {

@@ -378,6 +378,9 @@
             }
             return 'Hãy điền đầy đủ thông tin';
         };
+        this.hideActionChangeImage = () => {
+            $('.fileinput').addClass('fileinput-new').removeClass('fileinput-exists');
+        };
 
         this.trimValue = value => String(value || '').trim();
         this.isNumberInteger = value => Number.isInteger(+value);

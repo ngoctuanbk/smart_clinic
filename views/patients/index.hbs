@@ -19,6 +19,12 @@
                                 Thêm mới
                             </a>
                             {{/isActiveFunction}}
+                            {{#isActiveFunction Info.Role 'ExportPatient'}}
+                            <button href="#export" class="btn btn-success btn-circle" data-toggle="modal"><i
+                                    class="fas fa-file-excel"></i>
+                                <span class="file-title">Export</span>
+                            </button>
+                            {{/isActiveFunction}}
                         </div>
                     </div>
                     <div class="portlet-body form">
@@ -240,7 +246,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                         <h4 class="modal-title"> <i class="fas fa-filter"></i> Lọc điều kiện xuất dữ liệu </h4>
                     </div>
-                    <div class="modal-body">
+                    {{!-- <div class="modal-body">
                         <form class="form-horizontal">
                             <div class="row">
                                 <div class="col-md-12">
@@ -276,7 +282,7 @@
                             </div>
                         </form>
                         <!--end form -->
-                    </div>
+                    </div> --}}
                     <div class="modal-footer">
                         <a ng-click="exportFile()" class="btn green">Tải xuống</a>
                         <button type="button" id="cancelBtn" data-dismiss="modal" class="btn btn-ok default"> Huỷ

@@ -82,7 +82,7 @@
                 "LabTypeCode": "MT002"
             },
             {
-                "LabTypeName": "Xét nghiệm mỡ máu",
+                "LabTypeName": "Xét nghiệm máu",
                 "LabTypeCode": "MT003"
             },
             {
@@ -90,8 +90,12 @@
                 "LabTypeCode": "MT004"
             },
             {
-                "LabTypeName": "Xét nghiệm cơ bản nước tiểu",
+                "LabTypeName": "Xét nghiệm nước tiểu",
                 "LabTypeCode": "MT005"
+            },
+            {
+                "LabTypeName": "Xét nghiệm sinh hóa",
+                "LabTypeCode": "MT006"
             }
         ];
         $scope.limitData = limitData();
@@ -170,7 +174,6 @@
         $scope.addFieldDetailLab = () => {
             const newField = {
                 LabType: '',
-                Result: '',
                 showEdit: true,
             };
             $scope.LabDetail.push(newField);
@@ -190,7 +193,6 @@
                 return logger.error('Đã tồn tại loại xét nghiệm này');
             }
             $scope.LabDetail[idxItem].LabType = item.LabType;
-            $scope.LabDetail[idxItem].Result = item.Result;
             $scope.LabDetail[idxItem].showEdit = false;
         };
         $scope.deleteDetailLab = (idx) => {
@@ -313,13 +315,13 @@
                                 const pathLogError = response.pathLogError.replace('../public/', '/');
                                 $scope.filePathError = pathLogError;
                                 displayModalImportFile('#import_file', 'hide');
-                                $scope.list();
+                                $scope.listLab();
                                 $timeout(() => {
                                     downloadRemoveFile();
                                     angular.element('#update_lab').modal('hide');
                                 }, 50);
                             } else {
-                                $scope.list();
+                                $scope.listLab();
                                 $timeout(() => {
                                     displayModalImportFile('#import_file', 'hide');
                                 }, 1000);
@@ -481,7 +483,7 @@
                         console.log(response);
                         console.log($scope.formCreate)
                         if (response.Success) {
-                            // $scope.listP();
+                            $scope.listPrescription();
                             $scope.formCreate = {};
                             $scope.OrderDetails = [];
                             $scope.formCreate.SumTotalPrice = 0;
@@ -680,6 +682,7 @@
             $scope.formUpdateImage.ImageObjectId = item.ImageObjectId;
             $scope.formUpdateImage.ImageCode = item.ImageCode;
             $scope.formUpdateImage.Type = item.Type;
+            $scope.formUpdateImage.Note = item.Note;
             $('.preview-images-zone').html('');
             item.Image.map((item, idx) => {
                 renderViewImg(`${item}`, idx, item._id);
@@ -688,6 +691,7 @@
         };
         $scope.uImage = (form) => {
             $scope.formUpdateImage.PatientObjectId = $scope.formUpdate.PatientObjectId;
+            console.log($scope.formUpdateImage)
             if (form.validate()) {
                 console.log($scope.images)
                 const files = [];
@@ -714,6 +718,22 @@
             } else {
                 alertMessage('danger', SharedService.checkFormInvalid(form), true);
             }
+        };
+        $scope.updateStatusImage = (Status, ImageObjectId) => {
+            const formUpdate = {
+                Status,
+                ImageObjectId,
+            };
+            PatientsService.updateStatusImage(formUpdate)
+                .then((response) => {
+                    console.log(response)
+                    if (response.Success) {
+                        $scope.listImage();
+                        logger.success('Cập nhật trạng thái thành công');
+                    } else {
+                        logger.error('Có lỗi xảy ra, Vui lòng thử lại.');
+                    }
+                });
         };
         $(document).ready(() => {
             document.getElementById('pro-image').addEventListener('change', readImage, false);

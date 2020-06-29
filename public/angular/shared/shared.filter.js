@@ -16,6 +16,8 @@
         .filter('filterStatusScheduleToText', filterStatusScheduleToText)
         .filter('filterStatusLabToText', filterStatusLabToText)
         .filter('filterStatusImageToText', filterStatusImageToText)
+        .filter('filterStatusMedicineToText', filterStatusMedicineToText)
+        .filter('filterStatusPrescriptionToText', filterStatusPrescriptionToText)
         .filter('filterStatusToClass', filterStatusToClass)
         .filter('filterStatusToLabelClass', filterStatusToLabelClass)
         .filter('filterDaysOfWeek', filterDaysOfWeek)
@@ -187,6 +189,34 @@
                 return 'Mới'; // 'Chờ duyệt'
             } if (status === 'Inactive' || +status === 400) {
                 return 'Đã chụp'; // 'Hủy'
+            } if (status === 'Deleted') {
+                return 'Đã xóa'; // 'Bị xóa'
+            }
+        }
+        return filterStatus;
+    }
+    function filterStatusMedicineToText() {
+        function filterStatus(status) {
+            if (status === 'Active' || +status === 200) {
+                return 'Hoạt động'; // 'Đã duyệt',
+            } if (status === 'WaitingAccepted' || +status === 100) {
+                return 'Mới'; // 'Chờ duyệt'
+            } if (status === 'Inactive' || +status === 400) {
+                return 'Hết hàng'; // 'Hủy'
+            } if (status === 'Deleted') {
+                return 'Đã xóa'; // 'Bị xóa'
+            }
+        }
+        return filterStatus;
+    }
+    function filterStatusPrescriptionToText() {
+        function filterStatus(status) {
+            if (status === 'Active' || +status === 200) {
+                return 'Hoạt động'; // 'Đã duyệt',
+            } if (status === 'WaitingAccepted' || +status === 100) {
+                return 'Mới'; // 'Chờ duyệt'
+            } if (status === 'Inactive' || +status === 400) {
+                return 'Hủy'; // 'Hủy'
             } if (status === 'Deleted') {
                 return 'Đã xóa'; // 'Bị xóa'
             }

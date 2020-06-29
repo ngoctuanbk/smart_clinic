@@ -81,25 +81,22 @@
                                 <div class="btn-group status dropup update-status-mgt">
                                     <label class="btn btn-sm btn-status"
                                         ng-class="detail.Status | filterStatusToClass"
-                                        ng-bind="detail.Status | filterStatusToText">
+                                        ng-bind="detail.Status | filterStatusImageToText">
                                     </label>
                                     <button type="button" class="btn btn-sm btn-info dropdown-toggle"
                                         data-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-angle-up"></i>
                                     </button>
                                     <ul class="dropdown-menu status pull-right" role="menu">
-                                        <li class="status-Remove"><a href="javascript:;" data-value="Remove"
-                                                ng-click="delete(item._id, item.BrandName)">
-                                                Xóa </a></li>
                                         <li class="status-Active"><a href="javascript:;" data-value="Active"
-                                                ng-click="updateStatus(200, item._id, $index)">
-                                                Hoạt động
+                                                ng-click="updateStatusImage(200, detail.ImageObjectId, $index)">
+                                                Đang chụp
                                             </a>
                                         </li>
                                         <li class="status-Inactive"><a href="javascript:;"
                                                 data-value="Inactive"
-                                                ng-click="updateStatus(400, item._id, $index)">
-                                                Ngừng </a>
+                                                ng-click="updateStatusImage(400, detail.ImageObjectId, $index)">
+                                                Đã chụp </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -232,6 +229,7 @@
                                     <input type="text" readonly class="form-control" ng-value="formUpdateImage.Type">
                                 </div>
                             </div>
+                            {{#isActiveFunction Info.Role 'UpdateImage'}}
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <button datatype="slide" class="btn btn-success" href="javascript:void(0)"
@@ -240,6 +238,15 @@
                                         style="display: none;" multiple required>
                                 </div>
                                 <div class="preview-images-zone">
+                                </div>
+                            </div>
+                            {{/isActiveFunction}}
+                            <div class="form-group">
+                                <label
+                                    class="col-md-4 control-label">Mô tả hình ảnh:</label>
+                                <div class="col-md-8">
+                                    <textarea name="description" ng-model="formUpdateImage.Note" class="form-control"
+                                        rows="3"></textarea>
                                 </div>
                             </div>
                         </div>

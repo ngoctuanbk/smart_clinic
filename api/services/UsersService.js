@@ -288,12 +288,93 @@ module.exports = {
                 { $project: project },
             ];
             const result = await UserModel.aggregate(pipeline) || [];
-            console.log(result)
             const response = result.reduce((obj, item) => {
                 obj[item.RoleCode] += item.total;
                 return obj;
             }, {AdminSystem: 0, Doctor: 0, Nurse: 0, Pharmasist: 0});
             return promiseResolve(response);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    updateStatus: async (data) => {
+        try {
+            const conditions = {
+                _id: data.UserObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                Status: STATUS[+data.Status],
+                UpdatedDate: generatorTime(),
+                UpdatedBy: data.UpdatedBy,
+            };
+            const result = await UserModel.findOneAndUpdate(conditions, set, { new: true });
+            return promiseResolve(result);
+        } catch (err) {
+            console.log(err)
+            return promiseReject(err);
+        }
+    },
+    delete: async (data) => {
+        try {
+            const conditions = {
+                _id: data.UserObjectId,
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                DeleteFlag: DELETE_FLAG[300],
+                UpdatedDate: generatorTime(),
+                UpdatedBy: data.UpdatedBy,
+            };
+            const result = await UserModel.findOneAndUpdate(conditions, set, { new: true });
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    updateAvatar: async (data) => {
+        try {
+            const conditions = {
+                _id: convertToObjectId(data.UserObjectId),
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const set = {
+                UpdatedBy: data.UpdatedBy,
+                UpdatedDate: generatorTime(),
+            };
+            if (data.Avatar) {
+                set.Avatar = data.Avatar;
+            }
+            const result = await UserModel.findOneAndUpdate(conditions, set);
+            return promiseResolve(result);
+        } catch (err) {
+            return promiseReject(err);
+        }
+    },
+    listExport: async (data) => {
+        try {
+            const sortKey = data.SortKey ? data.SortKey : 'CreatedDate';
+            const sortOrder = data.SortOrder ? data.SortOrder : -1;
+            const conditions = {
+                DeleteFlag: DELETE_FLAG[200],
+            };
+            const fieldsSelect = 'UserName Info.FullName Mobile Email Status DateOfBirth JoinDate Sex Info.Passport Info.Address';
+            const populate = [{
+                path: 'RoleObjectId',
+                select: '-_id RoleName',
+                match: {
+                    DeleteFlag: DELETE_FLAG[200],
+                },
+            }];
+            const options = {
+                sort: {
+                    [sortKey]: sortOrder,
+                },
+                select: fieldsSelect,
+                populate: populate,
+            };
+            const result = UserModel.paginate(conditions, options);
+            return promiseResolve(result);
         } catch (err) {
             return promiseReject(err);
         }

@@ -11,9 +11,15 @@ const {
     storage,
     uploadFile,
     sendQueryToAPI,
-    // joinPath,
-    // convertArrayObjectToString,
-    // formatDateToDMY,
+    sendBodyToAPI,
+    formatDateToDMY,
+    filterStatus,
+    getColumnExcel,
+    getDMYCurrent,
+    newSheetExcel,
+    writeFileExcel,
+    deleteFile,
+    styleExcel,
 } = require('../libs/shared');
 
 const { TITLE_ADMIN } = require('../configs/constants');
@@ -130,6 +136,95 @@ module.exports = {
             return sendDataToClient(req, res, result);
         } catch (err) {
             return res.status(500).json(responseError(1001, err));
+        }
+    },
+    updateStatus: async (req, res) => {
+        try {
+            const result = await sendBodyToAPI('PUT', 'api/users/updateStatus', getHeaders(req), req.body, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            console.log(err)
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
+    delete: async (req, res) => {
+        try {
+            const result = await sendBodyToAPI('PUT', 'api/users/delete', getHeaders(req), req.body, true);
+            return sendDataToClient(req, res, result);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
+    updateAvatar: async (req, res) => {
+        try {
+            beforeUpload(req, res, async () => {
+                const formData = {};
+                for (const prop in req.body) {
+                    if (!isEmpty(req.body[prop])) {
+                        formData[prop] = req.body[prop];
+                    }
+                }
+                if (!isEmpty(req.file)) {
+                    const stream = fsCreateReadStream(req.file.path);
+                    formData.Image = stream;
+                }
+                const result = await sendFormDataToAPI('PUT', 'api/users/updateAvatar', getHeaders(req), formData, true);
+                return sendDataToClient(req, res, result);
+            }, uploadImage);
+        } catch (err) {
+            return res.status(500).json(responseError(1001, err));
+        }
+    },
+    exportFile: async (req, res) => {
+        try {
+            const result = await sendQueryToAPI('GET', 'api/users/export', getHeaders(req), req.query, true);
+            const { StatusCode } = result || {};
+            if (StatusCode === 40014) {
+                return response403(res);
+            }
+            const { workbook, worksheet } = newSheetExcel('Nhân viên');
+            const columns = [
+                'Họ tên nhân viên',
+                'Tên đăng nhập',
+                'Số điện thoại',
+                'Email',
+                'Passport',
+                'Địa chỉ',
+                'Quyền',
+                'Giới tính',
+                'Ngày tháng năm sinh',
+                'Ngày gia nhập',
+                'Trạng thái'
+            ];
+            worksheet.columns = getColumnExcel(columns);
+            const data = result.Success ? result.Data.docs || [] : [];
+            console.log(data)
+            for (let i = 0, leng = data.length; i < leng; i++) {
+                const item = data[i];
+                const rowValues = [
+                    item.Info.FullName,
+                    item.UserName,
+                    (item.Mobile || ''),
+                    (item.Email || ''),
+                    (item.Info.Passport || ''),
+                    (item.Info.Address || ''),
+                    ((item.RoleObjectId || '') && item.RoleObjectId.RoleName),
+                    item.Sex || '',
+                    (formatDateToDMY(item.DateOfBirth) || ''),
+                    formatDateToDMY(item.JoinDate, 'DD-MM-YYYY HH:mm:ss'),
+                    filterStatus(item.Status),
+                ];
+                worksheet.addRow(rowValues).font = styleExcel.fontBody;
+            }
+            const filePath = `./public/data/DS_nhân_viên_${getDMYCurrent()}.xlsx`;
+            await writeFileExcel(workbook, filePath);
+            res.download(filePath);
+            setTimeout(() => {
+                deleteFile(filePath);
+            }, 1000);
+        } catch (err) {
+            console.log(err)
+            return res.status(500).json(responseError(1001));
         }
     },
 };

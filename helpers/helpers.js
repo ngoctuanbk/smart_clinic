@@ -25,7 +25,6 @@ hbs_helpers.isAcceptedScreen = function (role, screen = '', options) {
 
 const FuncForRoleDoctor = [
     'ListUser', 
-    'ExportUser',
     'ListPatient',
     'UpdatePatient',
     'UpdateStatusPatient',
@@ -44,11 +43,11 @@ const FuncForRoleDoctor = [
     'DeletePrescription',
     'ListActivity',
     'Diagnose',
+    'CreateDiagnose',
     'UpdateDiagnose'
 ];
 const FuncForRoleNurse = [
     'ListUser', 
-    'ExportUser',
     'ListPatient',
     'CreatePatient',
     'UpdatePatient',

@@ -10,6 +10,10 @@ function UsersRoute(authRouter) {
     authRouter.route('/users/listDoctorActive').get(UsersController.listDoctorActive);
     authRouter.route('/users/update').put(UsersController.update);
     authRouter.route('/users/getUser').get(UsersController.getUser);
+    authRouter.route('/users/updateStatus').put(UsersController.updateStatus);
+    authRouter.route('/users/delete').put(UsersController.delete);
+    authRouter.route('/users/updateAvatar').put(UsersController.updateAvatar);
+    authRouter.route('/users/exportFile').get(UsersController.exportFile);
 }
 
 module.exports = UsersRoute;

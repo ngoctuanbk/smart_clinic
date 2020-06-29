@@ -400,15 +400,19 @@
                             <thead>
                                 <tr>
                                     <th class="rowno"> STT </a> </th>
-                                    <th class="title"> Chỉ số </th>
-                                    <th class="title"> Kết quả </th>
+                                    <th class="title" style="width: 300px;"> Chỉ số </th>
+                                    <th class="title" class="text-center"> Kết quả </th>
+                                    <th class="title" class="text-center"> Khoảng tham chiếu</th>
+                                    <th class="title" class="text-center"> Đơn vị</th>
                                 </tr>
                             </thead>
                             <tbody ng-repeat="item in details" ng-init='valueDetails=(item.Result)' id="tbody-\{{$index}}">
                                 <tr ng-repeat="detail in valueDetails">
                                     <td ng-bind="$index + count"></td>
                                     <td ng-bind="detail.key"></td>
-                                    <td ng-bind="detail.value"></td>
+                                    <td class="text-center" ng-bind="detail.value"></td>
+                                    <td class="text-center" ng-bind="detail.range"></td>
+                                    <td class="text-center" ng-bind="detail.unit"></td>
                                 </tr>
                             </tbody>
                         </table>

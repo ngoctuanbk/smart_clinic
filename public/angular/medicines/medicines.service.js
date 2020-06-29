@@ -8,5 +8,7 @@
         this.listBrand = data => HttpService.sendData('GET', '/admin/brands/listActive', data, 'Lỗi xảy ra khi hiển thị danh sách thương hiệu');
         this.create = data => HttpService.sendData('POST', '/admin/medicines/create', data, 'Lỗi xảy ra khi thêm mới thuốc');
         this.update = data => HttpService.sendData('PUT', '/admin/medicines/update', data, 'Lỗi xảy ra khi cập nhật thuốc');
+        this.updateStatus = data => HttpService.sendData('PUT', '/admin/medicines/updateStatus', data, 'Lỗi xảy ra khi cập nhật thuốc');
+        this.delete = data => HttpService.sendData('PUT', '/admin/medicines/delete', data, 'Lỗi xảy ra khi cập nhật thuốc');
     }
 }());

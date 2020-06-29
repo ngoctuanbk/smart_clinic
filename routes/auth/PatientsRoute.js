@@ -17,6 +17,7 @@ function PatientsRoute(authRouter) {
     authRouter.route('/patients/patientByMonth').get(PatientsController.patientByMonth);
     authRouter.route('/diagnose/list').get(PatientsController.listDiagnose);
     authRouter.route('/diagnose/create').post(PatientsController.createDiagnose);
+    authRouter.route('/patients/exportFile').get(PatientsController.exportFile);
 }
 
 module.exports = PatientsRoute;

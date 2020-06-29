@@ -328,7 +328,7 @@ module.exports = {
                 raw: false,
             };
             if (options.header) {
-                _options.header = options.header;
+                _options.header = options.header;   
             }
             obj.data = xlsx.utils.sheet_to_json(worksheet, _options);
         }

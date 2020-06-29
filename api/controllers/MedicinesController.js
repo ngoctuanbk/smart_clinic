@@ -3,6 +3,8 @@ const {
     listValidator,
     createValidator,
     updateValidator,
+    updateStatusValidator,
+    _idValidator
 } = require('../validators/MedicinesValidator');
 
 const {
@@ -84,6 +86,41 @@ module.exports = {
             return res.json(responseError(40163));
         } catch (errors) {
             console.log(errors)
+            return resJsonError(res, errors, 'medicine');
+        }
+    },
+    updateStatus: async (req, res) => {
+        try {
+            req.checkBody(updateStatusValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.body.UpdatedBy = req.decoded.UserObjectId;
+            const result = await MedicinesService.updateStatus(req.body);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10123));
+            }
+            return res.json(responseError(40113));
+        } catch (errors) {
+            console.log(errors)
+            return resJsonError(res, errors, 'medicine');
+        }
+    },
+    delete: async (req, res) => {
+        try {
+            req.checkBody(_idValidator);
+            const errors = req.validationErrors();
+            if (errors) {
+                return res.json(responseError(40003, errors));
+            }
+            req.body.UpdateBy = req.decoded.UserObjectId;
+            const result = await MedicinesService.delete(req.body);
+            if (!isEmpty(result)) {
+                return res.json(responseSuccess(10124));
+            }
+            return res.json(responseError(40114));
+        } catch (errors) {
             return resJsonError(res, errors, 'medicine');
         }
     },

@@ -7,6 +7,8 @@ function MedicinesRoute(authRouter) {
     authRouter.route('/medicines/create').post(MedicinesController.create);
     authRouter.route('/medicines/update').put(MedicinesController.update);
     authRouter.route('/medicines/listActive').get(MedicinesController.listActive);
+    authRouter.route('/medicines/updateStatus').put(MedicinesController.updateStatus);
+    authRouter.route('/medicines/delete').put(MedicinesController.delete);
 }
 
 module.exports = MedicinesRoute;

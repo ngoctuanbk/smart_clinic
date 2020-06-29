@@ -283,5 +283,9 @@
             refreshSelectPicker();
             $scope.list();
         };
+        $scope.exportFile = () => {
+            let url = '/admin/patients/exportFile?SortOrder=-1';
+            window.open(url);
+        };
     }
 }());

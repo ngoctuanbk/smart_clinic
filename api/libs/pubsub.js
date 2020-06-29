@@ -1,8 +1,3 @@
-/**
-Mr : Dang Xuan Truong
-Email: truongdx@runsystem.net
-*/
-
 // Writing pubsub module for socket.io
 module.exports = {
     // Publishing a event..

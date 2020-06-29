@@ -251,6 +251,19 @@ module.exports = {
         }
         return '';
     },
+    filterStatusPatient: (status) => {
+        const { trimValue } = module.exports;
+        if (trimValue(status).toLowerCase() === 'inprocess') {
+            return 'Đang khám';
+        }
+        if (trimValue(status).toLowerCase() === 'waitingaccepted') {
+            return 'Mới';
+        }
+        if (trimValue(status).toLowerCase() === 'done') {
+            return 'Đã khám';
+        }
+        return '';
+    },
     fsCreateReadStream: (filePath) => {
         const { deleteFile } = module.exports;
         const stream = fs.createReadStream(filePath);

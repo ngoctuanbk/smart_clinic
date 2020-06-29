@@ -37,7 +37,7 @@
                 "LabTypeCode": "MT002"
             },
             {
-                "LabTypeName": "Xét nghiệm mỡ máu",
+                "LabTypeName": "Xét nghiệm máu",
                 "LabTypeCode": "MT003"
             },
             {
@@ -45,8 +45,12 @@
                 "LabTypeCode": "MT004"
             },
             {
-                "LabTypeName": "Xét nghiệm cơ bản nước tiểu",
+                "LabTypeName": "Xét nghiệm nước tiểu",
                 "LabTypeCode": "MT005"
+            },
+            {
+                "LabTypeName": "Xét nghiệm sinh hóa",
+                "LabTypeCode": "MT006"
             }
         ];
         $scope.list = () => {
